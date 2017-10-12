@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">LocSilence</string>
     <string name="title_activity_maps">Map</string>
+    <string name="settings">Settings</string>
+    <string name="about">About Us</string>
+    <string name="help">HelpSettings</string>
 </resources>
