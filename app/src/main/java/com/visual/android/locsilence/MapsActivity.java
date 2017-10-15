@@ -2,13 +2,16 @@ package com.visual.android.locsilence;
 
 import android.Manifest;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.Menu;
+import android.view.View;
+import android.widget.Button;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -30,7 +33,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        Button button_to_list = (Button) findViewById(R.id.button_to_list);
+
+        button_to_list.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v){
+                next_page(v);
+            }
+        });
     }
+
+    public void next_page(View v) {
+        Intent intent = new Intent(this, ListActivity.class);
+        startActivity(intent);
+    }
+
 
 
     /**
