@@ -8,4 +8,6 @@
     <string name="title_location_permission">TITLE</string>
     <string name="text_location_permission">TEXT</string>
     <string name="google_maps_key">AIzaSyA09f2dq3jNETSeMCMNm8lVWxFTGtAreTY</string>
+    <string name="mapButton">Map</string>
+    <string name="locationButton">Locations</string>
 </resources>

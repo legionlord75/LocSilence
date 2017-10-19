@@ -9,6 +9,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -20,7 +22,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     private GoogleMap mMap;
@@ -34,11 +36,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        Button button_to_list = (Button) findViewById(R.id.button_to_list);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Map");
+        toolbar.setSubtitle("LocSilence");
 
-        button_to_list.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v){
-                next_page(v);
+        Button mapButton = (Button)findViewById(R.id.mapButton);
+        Button locationsButton = (Button)findViewById(R.id.locButton);
+
+        mapButton.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+
+        locationsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MapsActivity.this, ListActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
     }
@@ -47,7 +60,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Intent intent = new Intent(this, ListActivity.class);
         startActivity(intent);
     }
-
 
 
     /**

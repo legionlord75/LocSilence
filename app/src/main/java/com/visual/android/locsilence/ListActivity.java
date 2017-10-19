@@ -2,7 +2,9 @@ package com.visual.android.locsilence;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 
@@ -14,13 +16,22 @@ public class ListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
 
-        Button button_to_map = (Button) findViewById(R.id.button_to_map);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Locations");
+        toolbar.setSubtitle("LocSilence");
 
-        button_to_map.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v){
-                next_page(v);
+        Button mapButton = (Button)findViewById(R.id.mapButton);
+        Button locationsButton = (Button)findViewById(R.id.locButton);
 
+        locationsButton.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
 
+        mapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ListActivity.this, MapsActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
 
