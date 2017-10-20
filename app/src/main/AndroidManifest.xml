@@ -31,19 +31,20 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:theme="@style/AppTheme.NoActionBar"
+            android:name=".ListActivity"
             android:label="List"
-            android:name=".ListActivity">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
-            android:theme="@style/AppTheme.NoActionBar"
             android:name=".MapsActivity"
-            android:label="Map">
+            android:label="Map"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".GPSSearchActivity"></activity>
     </application>
 
 </manifest>
