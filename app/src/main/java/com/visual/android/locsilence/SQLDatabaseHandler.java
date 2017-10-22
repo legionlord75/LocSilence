@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -155,6 +156,7 @@ public class SQLDatabaseHandler extends SQLiteOpenHelper {
     }
 
     // Updating single contact
+    // TODO: Double check this query for Thomas, new to sql (previous query wasn't working)
     public int updateLocalGame(Location location) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -168,8 +170,7 @@ public class SQLDatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_VOLUME, location.getVolume());
 
         // updating row
-        return db.update(TABLE_LOCATIONS, values, KEY_NAME + " = ?",
-                new String[] { location.getId() });
+        return db.update(TABLE_LOCATIONS, values, KEY_ID + "='"+location.getId()+"'",null);
     }
 
     // Deleting single contact
@@ -193,6 +194,31 @@ public class SQLDatabaseHandler extends SQLiteOpenHelper {
         return cursorCount;
     }
 
+    // Checks if Location already exists in db
+    public boolean locationInDB(String id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String Query = "Select * from " + TABLE_LOCATIONS + " where " + KEY_ID + " = '" + id +"'";
+        Cursor cursor = db.rawQuery(Query, null);
+        if (cursor.getCount() <= 0) {
+            cursor.close();
+            return false;
+        }
+        cursor.close();
+        return true;
+    }
+
+    // prints formatted DB for testing
+    public void printDB(){
+        List<Location> locations = getAllLocations();
+        for(Location location : locations){
+            Log.i("logDB", "(name: "+location.getName()+") | " +
+                    "(LatLong: "+location.getLat()+":"+location.getLongitude()+") |" +
+                    "(volume: "+location.getVolume()+") |" +
+                    "(ID: "+location.getId()+") | "
+            );
+        }
+
+    }
 
 }
 

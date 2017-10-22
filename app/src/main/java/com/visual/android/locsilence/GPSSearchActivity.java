@@ -1,9 +1,13 @@
 package com.visual.android.locsilence;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
@@ -11,10 +15,13 @@ import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class GPSSearchActivity extends AppCompatActivity {
     int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
     private static final String TAG = GPSSearchActivity.class.getSimpleName();
-
+    Place selectedPlace;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,14 +46,21 @@ public class GPSSearchActivity extends AppCompatActivity {
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-                // TODO: Get info about the selected place.
-                Log.i(TAG, "Place: " + place.getName());
+                selectedPlace = place;
             }
 
             @Override
             public void onError(Status status) {
-                // TODO: Handle the error.
+                alertToast("An error occurred with google location");
                 Log.i(TAG, "An error occurred: " + status);
+            }
+        });
+
+        final Button setButton = (Button)findViewById(R.id.setSettingsButton);
+        setButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setLocationInDB(selectedPlace);
             }
         });
     }
@@ -68,6 +82,40 @@ public class GPSSearchActivity extends AppCompatActivity {
         }
     }
 
+    protected void setLocationInDB(Place place){
+        final SQLDatabaseHandler dbReference = new SQLDatabaseHandler(this);
 
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        String currentDateandTime = sdf.format(new Date());
+        Log.i(TAG, "Place: " + place.getName());
+        Log.i(TAG, "Time: " + currentDateandTime);
+        Log.i(TAG, "LatLng: " + place.getLatLng());
+
+        if(dbReference.locationInDB(place.getId())) {
+            Log.i(TAG, "updating location in DB, id: " + place.getId());
+            Location location = dbReference.getLocation(place.getId());
+            // NOTE: check later, DB Names might save as different (saved as only "Napa" once not "Napa, CA")
+            location.setName(place.getName().toString());
+            // TODO: add functionality to have different volumes (0,1, for testing)
+            location.setVolume(1);
+            location.setUpdatedAt(currentDateandTime);
+            dbReference.updateLocalGame(location);
+        }
+        else{
+            Log.i(TAG, "adding location to DB, id: " + place.getId());
+            Location location = new Location(place.getId(), place.getName().toString(),
+                    (float)place.getLatLng().latitude,(float)place.getLatLng().latitude,
+                    currentDateandTime, currentDateandTime, 2);
+            dbReference.addLocation(location);
+        }
+    }
+
+    protected void alertToast(String msg){
+        Context context = getApplicationContext();
+        CharSequence text = msg;
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+    }
 
 }
