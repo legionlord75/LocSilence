@@ -45,26 +45,24 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         Button mapButton = (Button)findViewById(R.id.mapButton);
         Button locationsButton = (Button)findViewById(R.id.locButton);
-        FloatingActionButton toSearchButton = (FloatingActionButton)findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
 
         mapButton.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
 
         locationsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MapsActivity.this, ListActivity.class);
+                Intent intent = new Intent(MapsActivity.this, LocationsActivity.class);
                 startActivity(intent);
                 finish();
             }
         });
 
-        toSearchButton.setOnClickListener(new View.OnClickListener() {
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 Intent intent = new Intent(MapsActivity.this, GPSSearchActivity.class);
                 startActivity(intent);
-                finish();
             }
         });
     }

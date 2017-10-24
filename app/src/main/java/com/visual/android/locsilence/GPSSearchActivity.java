@@ -40,6 +40,10 @@ public class GPSSearchActivity extends AppCompatActivity {
         }
         */
 
+        final SQLDatabaseHandler db = new SQLDatabaseHandler(this);
+
+        System.out.println("BOI: " + db.getAllLocations());
+
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
 
@@ -60,7 +64,29 @@ public class GPSSearchActivity extends AppCompatActivity {
         setButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setLocationInDB(selectedPlace);
+
+                System.out.println(selectedPlace.getId());
+
+                Location location = new Location(
+                        selectedPlace.getId(),
+                        selectedPlace.getName().toString(),
+                        selectedPlace.getLatLng().latitude,
+                        selectedPlace.getLatLng().longitude,
+                        new Date().toString(),
+                        new Date().toString(),
+                        1);
+
+                if (db.getLocation(selectedPlace.getId()) == null) {
+                    db.addLocation(location);
+                } else {
+                    // TODO: 10/22/2017 Add onDuplicateKey functionality
+                    System.out.println("EXISTS");
+                }
+
+                Intent i = new Intent(GPSSearchActivity.this, MapsActivity.class);
+                startActivity(i);
+
+                // setLocationInDB(selectedPlace);
             }
         });
     }

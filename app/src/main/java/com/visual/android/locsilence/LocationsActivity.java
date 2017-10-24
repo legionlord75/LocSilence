@@ -7,9 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 
 
-public class ListActivity extends AppCompatActivity {
+public class LocationsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,11 +30,17 @@ public class ListActivity extends AppCompatActivity {
         mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ListActivity.this, MapsActivity.class);
+                Intent intent = new Intent(LocationsActivity.this, MapsActivity.class);
                 startActivity(intent);
                 finish();
             }
         });
+
+
+        SQLDatabaseHandler db = new SQLDatabaseHandler(this);
+        ListView listView = (ListView)findViewById(R.id.listview);
+        LocationsAdapter locationsAdapter = new LocationsAdapter(this, db.getAllLocations());
+        listView.setAdapter(locationsAdapter);
 
     }
 
