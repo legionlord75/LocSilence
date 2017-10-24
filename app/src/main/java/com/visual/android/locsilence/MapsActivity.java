@@ -5,8 +5,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +25,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+
     private GoogleMap mMap;
 
     @Override
@@ -36,6 +37,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Map");
@@ -43,23 +45,28 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         Button mapButton = (Button)findViewById(R.id.mapButton);
         Button locationsButton = (Button)findViewById(R.id.locButton);
+        FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
 
         mapButton.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
 
         locationsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MapsActivity.this, ListActivity.class);
+                Intent intent = new Intent(MapsActivity.this, LocationsActivity.class);
                 startActivity(intent);
                 finish();
             }
         });
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MapsActivity.this, GPSSearchActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
-    public void next_page(View v) {
-        Intent intent = new Intent(this, ListActivity.class);
-        startActivity(intent);
-    }
 
 
     /**
