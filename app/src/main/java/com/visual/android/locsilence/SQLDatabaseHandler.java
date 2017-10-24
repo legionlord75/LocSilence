@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,7 +32,7 @@ public class SQLDatabaseHandler extends SQLiteOpenHelper {
     // Contacts Table Columns names
     private static final String KEY_ID = "id";
     private static final String KEY_NAME = "name";
-    private static final String KEY_LAT= "lat";
+    private static final String KEY_LAT = "lat";
     private static final String KEY_LONG = "long";
     private static final String KEY_CREATED_AT = "created_at";
     private static final String KEY_UPDATED_AT = "updated_at";
@@ -76,7 +77,7 @@ public class SQLDatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_ID, location.getId());
         values.put(KEY_NAME, location.getName());
         values.put(KEY_LAT, location.getLat());
-        values.put(KEY_LONG, location.getLongitude());
+        values.put(KEY_LONG, location.getLng());
         values.put(KEY_CREATED_AT, location.getCreatedAt());
         values.put(KEY_UPDATED_AT, location.getUpdatedAt());
         values.put(KEY_VOLUME, location.getVolume());
@@ -84,7 +85,7 @@ public class SQLDatabaseHandler extends SQLiteOpenHelper {
         // Inserting Row
         try {
             db.insertOrThrow(TABLE_LOCATIONS, null, values);
-        } catch (SQLiteConstraintException e){
+        } catch (SQLiteConstraintException e) {
             e.printStackTrace();
             responseCode = false;
         }
@@ -103,18 +104,24 @@ public class SQLDatabaseHandler extends SQLiteOpenHelper {
         if (cursor != null)
             cursor.moveToFirst();
 
-        Location location = new Location();
-        location.setId(cursor.getString(0));
-        location.setName(cursor.getString(1));
-        location.setLat(cursor.getFloat(2));
-        location.setLongitude(cursor.getFloat(3));
-        location.setCreatedAt(cursor.getString(4));
-        location.setUpdatedAt(cursor.getString(5));
-        location.setVolume(cursor.getInt(6));
+        if (cursor != null && cursor.getCount() > 0) {
+            Location location = new Location();
+            location.setId(cursor.getString(0));
+            location.setName(cursor.getString(1));
+            location.setLat(cursor.getFloat(2));
+            location.setLng(cursor.getFloat(3));
+            location.setCreatedAt(cursor.getString(4));
+            location.setUpdatedAt(cursor.getString(5));
+            location.setVolume(cursor.getInt(6));
+
+            cursor.close();
+            return location;
+
+        }
 
         cursor.close();
-        // return contact
-        return location;
+
+        return null;
     }
 
     // Getting All Contacts
@@ -133,7 +140,7 @@ public class SQLDatabaseHandler extends SQLiteOpenHelper {
                 location.setId(cursor.getString(0));
                 location.setName(cursor.getString(1));
                 location.setLat(cursor.getFloat(2));
-                location.setLongitude(cursor.getFloat(3));
+                location.setLng(cursor.getFloat(3));
                 location.setCreatedAt(cursor.getString(4));
                 location.setUpdatedAt(cursor.getString(5));
                 location.setVolume(cursor.getInt(6));
@@ -155,6 +162,7 @@ public class SQLDatabaseHandler extends SQLiteOpenHelper {
     }
 
     // Updating single contact
+    // TODO: Double check this query for Thomas, new to sql (previous query wasn't working)
     public int updateLocalGame(Location location) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -162,21 +170,20 @@ public class SQLDatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_ID, location.getId());
         values.put(KEY_NAME, location.getName());
         values.put(KEY_LAT, location.getLat());
-        values.put(KEY_LONG, location.getLongitude());
+        values.put(KEY_LONG, location.getLng());
         values.put(KEY_CREATED_AT, location.getCreatedAt());
         values.put(KEY_UPDATED_AT, location.getUpdatedAt());
         values.put(KEY_VOLUME, location.getVolume());
 
         // updating row
-        return db.update(TABLE_LOCATIONS, values, KEY_NAME + " = ?",
-                new String[] { location.getId() });
+        return db.update(TABLE_LOCATIONS, values, KEY_ID + "='" + location.getId() + "'", null);
     }
 
     // Deleting single contact
     public void deleteLocalGame(String uniqueName) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_LOCATIONS, KEY_NAME + " = ?",
-                new String[] { uniqueName });
+                new String[]{uniqueName});
         db.close();
     }
 
@@ -193,6 +200,31 @@ public class SQLDatabaseHandler extends SQLiteOpenHelper {
         return cursorCount;
     }
 
+    // Checks if Location already exists in db
+    public boolean locationInDB(String id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String Query = "Select * from " + TABLE_LOCATIONS + " where " + KEY_ID + " = '" + id + "'";
+        Cursor cursor = db.rawQuery(Query, null);
+        if (cursor.getCount() <= 0) {
+            cursor.close();
+            return false;
+        }
+        cursor.close();
+        return true;
+    }
+
+    // prints formatted DB for testing
+    public void printDB() {
+        List<Location> locations = getAllLocations();
+        for (Location location : locations) {
+            Log.i("logDB", "(name: " + location.getName() + ") | " +
+                    "(LatLong: " + location.getLat() + ":" + location.getLng() + ") |" +
+                    "(volume: " + location.getVolume() + ") |" +
+                    "(ID: " + location.getId() + ") | "
+            );
+        }
+
+    }
 
 }
 

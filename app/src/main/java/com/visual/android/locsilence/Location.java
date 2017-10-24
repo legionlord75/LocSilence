@@ -8,8 +8,8 @@ public class Location {
 
     private String id;
     private String name;
-    private float lat;
-    private float longitude;
+    private double lat;
+    private double lng;
     private String createdAt;
     private String updatedAt;
     private int volume;
@@ -17,12 +17,12 @@ public class Location {
     // default constructor
     public Location() {}
 
-    public Location(String id, String name, float lat, float longitude,
+    public Location(String id, String name, double lat, double lng,
                     String createdAt, String updatedAt, int volume) {
         this.id = id;
         this.name = name;
         this.lat = lat;
-        this.longitude = longitude;
+        this.lng = lng;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.volume = volume;
@@ -38,12 +38,12 @@ public class Location {
         return name;
     }
 
-    public float getLat() {
+    public double getLat() {
         return lat;
     }
 
-    public float getLongitude() {
-        return longitude;
+    public double getLng() {
+        return lng;
     }
 
     public String getCreatedAt() {
@@ -72,8 +72,8 @@ public class Location {
         this.lat = lat;
     }
 
-    public void setLongitude(float longitude) {
-        this.longitude = longitude;
+    public void setLng(float lng) {
+        this.lng = lng;
     }
 
     public void setCreatedAt(String createdAt) {
