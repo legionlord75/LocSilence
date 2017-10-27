@@ -38,7 +38,7 @@ public class Graphics extends AppCompatActivity {
         handler.updateLocalGame(loc);
     }
 
-    //On Click radius changing (Work in Progress)
+    //On Click radius changing Method to do so now valid
     public void radChange(GoogleMap map,String id,int nrad){
         map.clear();
         SQLDatabaseHandler handle = new SQLDatabaseHandler(this);
