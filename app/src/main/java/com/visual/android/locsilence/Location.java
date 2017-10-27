@@ -13,12 +13,14 @@ public class Location {
     private String createdAt;
     private String updatedAt;
     private int volume;
+    private String cid;
+    private int rad;
 
     // default constructor
     public Location() {}
 
     public Location(String id, String name, double lat, double lng,
-                    String createdAt, String updatedAt, int volume) {
+                    String createdAt, String updatedAt, int volume, String cid, int rad) {
         this.id = id;
         this.name = name;
         this.lat = lat;
@@ -26,6 +28,8 @@ public class Location {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.volume = volume;
+        this.cid=cid;
+        this.rad=rad;
     }
 
     // GET methods
@@ -58,6 +62,10 @@ public class Location {
         return volume;
     }
 
+    public String getCid() { return cid; }
+
+    public int getRad() { return rad; }
+
     // SET methods
 
     public void setId(String id) {
@@ -87,4 +95,8 @@ public class Location {
     public void setVolume(int volume) {
         this.volume = volume;
     }
+
+    public void setCid(String cid) { this.cid = cid; }
+
+    public void setRad(int rad) { this.rad = rad; }
 }
