@@ -1,4 +1,13 @@
 <resources>
     <string name="app_name">LocSilence</string>
     <string name="title_activity_maps">Map</string>
+    <string name="settings">Settings</string>
+    <string name="about">About Us</string>
+    <string name="help">HelpSettings</string>
+    <string name="ok">Okay</string>
+    <string name="title_location_permission">TITLE</string>
+    <string name="text_location_permission">TEXT</string>
+    <string name="google_maps_key">AIzaSyA09f2dq3jNETSeMCMNm8lVWxFTGtAreTY</string>
+    <string name="mapButton">Map</string>
+    <string name="locationButton">Locations</string>
 </resources>
