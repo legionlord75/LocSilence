@@ -79,8 +79,7 @@ public class GPSSearchActivity extends AppCompatActivity {
                 if (db.getLocation(selectedPlace.getId()) == null) {
                     db.addLocation(location);
                 } else {
-                    // TODO: 10/22/2017 Add onDuplicateKey functionality
-                    System.out.println("EXISTS");
+                    db.updateLocalGame(location);
                 }
 
                 Intent i = new Intent(GPSSearchActivity.this, MapsActivity.class);
