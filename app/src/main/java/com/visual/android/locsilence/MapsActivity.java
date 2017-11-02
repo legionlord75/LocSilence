@@ -17,7 +17,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -51,7 +50,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
 
         mapButton.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
-
+        Graphics draw = new Graphics();
+        draw.startDraw(mMap);
         locationsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
