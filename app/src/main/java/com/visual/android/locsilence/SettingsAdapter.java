@@ -74,6 +74,12 @@ public class SettingsAdapter extends ArrayAdapter<String>{
         return customView;
     }
 
+    // returns an array representation of the current volume settings
+    public int[] getVolumeLevels(){
+        return volumeLevels;
+    }
+
+
     @Override
     public String getItem(int position) {
         return volumeTypes[position];
@@ -81,8 +87,5 @@ public class SettingsAdapter extends ArrayAdapter<String>{
     @Override
     public long getItemId(int position) {
         return position;
-    }
-    public int[] getVolume(){
-        return volumeLevels;
     }
 }
