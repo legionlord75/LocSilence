@@ -74,6 +74,38 @@ public class AddLocSettingsActivity extends AppCompatActivity {
 
             }
         });
+/*
+        final Button setButton = (Button)findViewById(R.id.setSettingsButton);
+        setButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                System.out.println(selectedPlace.getId());
+
+                Location location = new Location(
+                        selectedPlace.getId(),
+                        selectedPlace.getName().toString(),
+                        selectedPlace.getLatLng().latitude,
+                        selectedPlace.getLatLng().longitude,
+                        new Date().toString(),
+                        new Date().toString(),
+                        1,
+                        "",
+                        100);
+
+                if (db.getLocation(selectedPlace.getId()) == null) {
+                    db.addLocation(location);
+                } else {
+                    db.updateLocalGame(location);
+                }
+
+                Intent i = new Intent(GPSSearchActivity.this, MapsActivity.class);
+                startActivity(i);
+
+                // setLocationInDB(selectedPlace);
+            }
+        });*/
+
     }
 
     // EX: testVolumes(settingsAdapter.getVolume());
@@ -107,7 +139,7 @@ public class AddLocSettingsActivity extends AppCompatActivity {
             Log.i(TAG, "adding location to DB, id: " + place.getId());
             Location location = new Location(place.getId(), place.getName().toString(),
                     (float) place.getLatLng().latitude, (float) place.getLatLng().latitude,
-                    currentDateandTime, currentDateandTime, 2);
+                    currentDateandTime, currentDateandTime, 2, "", 100);
             dbReference.addLocation(location);
         }
     }

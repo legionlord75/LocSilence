@@ -22,6 +22,8 @@ public class Location implements Parcelable{
     private String createdAt;
     private String updatedAt;
     private int volume;
+    private String cid;
+    private int rad;
 
     public Location(){}
 
@@ -37,7 +39,7 @@ public class Location implements Parcelable{
     }
 
     public Location(String id, String name, double lat, double lng,
-                    String createdAt, String updatedAt, int volume) {
+                    String createdAt, String updatedAt, int volume, String cid, int rad) {
         this.id = id;
         this.name = name;
         this.lat = lat;
@@ -45,6 +47,8 @@ public class Location implements Parcelable{
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.volume = volume;
+        this.cid=cid;
+        this.rad=rad;
     }
 
     @Override
@@ -101,6 +105,10 @@ public class Location implements Parcelable{
         return volume;
     }
 
+    public String getCid() { return cid; }
+
+    public int getRad() { return rad; }
+
     // SET methods
 
     public void setId(String id) {
@@ -130,4 +138,8 @@ public class Location implements Parcelable{
     public void setVolume(int volume) {
         this.volume = volume;
     }
+
+    public void setCid(String cid) { this.cid = cid; }
+
+    public void setRad(int rad) { this.rad = rad; }
 }

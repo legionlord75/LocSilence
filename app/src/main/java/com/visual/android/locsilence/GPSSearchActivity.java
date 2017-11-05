@@ -17,6 +17,7 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.gms.maps.model.Circle;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -25,22 +26,13 @@ public class GPSSearchActivity extends AppCompatActivity {
     int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
     private static final String TAG = GPSSearchActivity.class.getSimpleName();
 
+    Place selectedPlace;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gpssearch);
-        /*
-        try {
-            Intent intent =
-                    new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
-                            .build(this);
-            startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
-        } catch (GooglePlayServicesRepairableException e) {
-            // TODO: Handle the error.
-        } catch (GooglePlayServicesNotAvailableException e) {
-            // TODO: Handle the error.
-        }
-        */
+
         final SQLDatabaseHandler db = new SQLDatabaseHandler(this);
 
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
@@ -61,12 +53,10 @@ public class GPSSearchActivity extends AppCompatActivity {
                 else{
                     selectedLocation = new Location(place.getId(), place.getName().toString(),
                             (float)place.getLatLng().latitude,(float)place.getLatLng().latitude,
-                            currentDateandTime, currentDateandTime, 0);
+                            currentDateandTime, currentDateandTime, 0, "", 100);
                 }
                 // Pass location to settings activity to set the volume settings
                 Intent settingsIntent = new Intent(GPSSearchActivity.this, AddLocSettingsActivity.class);
-                //Bundle locationBundle = new Bundle();
-                //locationBundle.putParcelable("selectedLocation", selectedLocation);
                 settingsIntent.putExtra("selectedLocation", selectedLocation);
                 startActivity(settingsIntent);
             }
@@ -117,9 +107,10 @@ public class GPSSearchActivity extends AppCompatActivity {
         }
         else{
             Log.i(TAG, "adding location to DB, id: " + place.getId());
+            //Circle circle = newLocDraw();
             Location location = new Location(place.getId(), place.getName().toString(),
                     (float)place.getLatLng().latitude,(float)place.getLatLng().latitude,
-                    currentDateandTime, currentDateandTime, 2);
+                    currentDateandTime, currentDateandTime, 2,"",100);
             dbReference.addLocation(location);
         }
     }

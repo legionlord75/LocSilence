@@ -17,11 +17,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class SQLDatabaseHandler extends SQLiteOpenHelper {
+public class  SQLDatabaseHandler extends SQLiteOpenHelper {
 
     // All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     // Database Name
     private static final String DATABASE_NAME = "Locations.db";
@@ -37,6 +37,8 @@ public class SQLDatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_CREATED_AT = "created_at";
     private static final String KEY_UPDATED_AT = "updated_at";
     private static final String KEY_VOLUME = "volume";
+    private static final String KEY_CID = "circle_id";
+    private static final String KEY_RAD = "radius";
 
     public SQLDatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -49,7 +51,7 @@ public class SQLDatabaseHandler extends SQLiteOpenHelper {
                 + KEY_ID + " VARCHAR(255) PRIMARY KEY," + KEY_NAME + " VARCHAR(255),"
                 + KEY_LAT + " FLOAT(255, 255)," + KEY_LONG + " FLOAT(255, 255),"
                 + KEY_CREATED_AT + " DATETIME," + KEY_UPDATED_AT + " DATETIME," +
-                KEY_VOLUME + " TINYINT(255)" + ")";
+                KEY_VOLUME + " TINYINT(255)," + KEY_CID + " VARCHAR(255)," + KEY_RAD + " TINY(255))";
         System.out.println(CREATE_CONTACTS_TABLE);
         db.execSQL(CREATE_CONTACTS_TABLE);
     }
@@ -81,6 +83,8 @@ public class SQLDatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_CREATED_AT, location.getCreatedAt());
         values.put(KEY_UPDATED_AT, location.getUpdatedAt());
         values.put(KEY_VOLUME, location.getVolume());
+        values.put(KEY_CID, location.getCid());
+        values.put(KEY_RAD, location.getRad());
 
         // Inserting Row
         try {
@@ -89,6 +93,7 @@ public class SQLDatabaseHandler extends SQLiteOpenHelper {
             e.printStackTrace();
             responseCode = false;
         }
+
         db.close(); // Closing database connection
         return responseCode;
     }
@@ -98,7 +103,7 @@ public class SQLDatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABLE_LOCATIONS, new String[] { KEY_ID,
                 KEY_NAME, KEY_LAT, KEY_LONG, KEY_CREATED_AT, KEY_UPDATED_AT,
-                KEY_VOLUME}, KEY_ID + "=?",
+                KEY_VOLUME,KEY_CID,KEY_RAD}, KEY_ID + "=?",
                 new String[] { id }, null, null, null, null);
 
         if (cursor != null)
@@ -113,8 +118,10 @@ public class SQLDatabaseHandler extends SQLiteOpenHelper {
             location.setCreatedAt(cursor.getString(4));
             location.setUpdatedAt(cursor.getString(5));
             location.setVolume(cursor.getInt(6));
+            location.setCid(cursor.getString(7));
+            location.setRad(cursor.getInt(8));
 
-            cursor.close();
+          //  cursor.close();
             return location;
 
         }
@@ -144,6 +151,8 @@ public class SQLDatabaseHandler extends SQLiteOpenHelper {
                 location.setCreatedAt(cursor.getString(4));
                 location.setUpdatedAt(cursor.getString(5));
                 location.setVolume(cursor.getInt(6));
+                location.setCid(cursor.getString(7));
+                location.setRad(cursor.getInt(8));
                 // Adding contact to list
                 allLocations.add(location);
             } while (cursor.moveToNext());
@@ -174,7 +183,8 @@ public class SQLDatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_CREATED_AT, location.getCreatedAt());
         values.put(KEY_UPDATED_AT, location.getUpdatedAt());
         values.put(KEY_VOLUME, location.getVolume());
-
+        values.put(KEY_CID, location.getCid());
+        values.put(KEY_RAD, location.getRad());
         // updating row
         return db.update(TABLE_LOCATIONS, values, KEY_ID + "='" + location.getId() + "'", null);
     }
@@ -220,7 +230,8 @@ public class SQLDatabaseHandler extends SQLiteOpenHelper {
             Log.i("logDB", "(name: " + location.getName() + ") | " +
                     "(LatLong: " + location.getLat() + ":" + location.getLng() + ") |" +
                     "(volume: " + location.getVolume() + ") |" +
-                    "(ID: " + location.getId() + ") | "
+                    "(ID: " + location.getId() + ") | " + "(Cid: " + location.getCid() + ") |" +
+                    "(Radius: " + location.getRad() + ") |"
             );
         }
 
