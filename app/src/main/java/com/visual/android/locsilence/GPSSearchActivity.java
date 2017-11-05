@@ -6,7 +6,10 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
@@ -21,7 +24,6 @@ import java.util.Date;
 public class GPSSearchActivity extends AppCompatActivity {
     int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
     private static final String TAG = GPSSearchActivity.class.getSimpleName();
-    Place selectedPlace;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,10 +41,7 @@ public class GPSSearchActivity extends AppCompatActivity {
             // TODO: Handle the error.
         }
         */
-
         final SQLDatabaseHandler db = new SQLDatabaseHandler(this);
-
-        System.out.println("BOI: " + db.getAllLocations());
 
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
@@ -50,7 +49,26 @@ public class GPSSearchActivity extends AppCompatActivity {
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-                selectedPlace = place;
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                String currentDateandTime = sdf.format(new Date());
+                Location selectedLocation;
+                // If place is in db already update location info in db
+                if(db.locationInDB(place.getId())) {
+                    selectedLocation = db.getLocation(place.getId());
+                    selectedLocation.setUpdatedAt(currentDateandTime);
+                }
+                // If place is new set basic of a new locations
+                else{
+                    selectedLocation = new Location(place.getId(), place.getName().toString(),
+                            (float)place.getLatLng().latitude,(float)place.getLatLng().latitude,
+                            currentDateandTime, currentDateandTime, 0);
+                }
+                // Pass location to settings activity to set the volume settings
+                Intent settingsIntent = new Intent(GPSSearchActivity.this, AddLocSettingsActivity.class);
+                //Bundle locationBundle = new Bundle();
+                //locationBundle.putParcelable("selectedLocation", selectedLocation);
+                settingsIntent.putExtra("selectedLocation", selectedLocation);
+                startActivity(settingsIntent);
             }
 
             @Override
@@ -60,35 +78,6 @@ public class GPSSearchActivity extends AppCompatActivity {
             }
         });
 
-        final Button setButton = (Button)findViewById(R.id.setSettingsButton);
-        setButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                System.out.println(selectedPlace.getId());
-
-                Location location = new Location(
-                        selectedPlace.getId(),
-                        selectedPlace.getName().toString(),
-                        selectedPlace.getLatLng().latitude,
-                        selectedPlace.getLatLng().longitude,
-                        new Date().toString(),
-                        new Date().toString(),
-                        1);
-
-                if (db.getLocation(selectedPlace.getId()) == null) {
-                    db.addLocation(location);
-                } else {
-                    // TODO: 10/22/2017 Add onDuplicateKey functionality
-                    System.out.println("EXISTS");
-                }
-
-                Intent i = new Intent(GPSSearchActivity.this, MapsActivity.class);
-                startActivity(i);
-
-                // setLocationInDB(selectedPlace);
-            }
-        });
     }
 
     @Override
@@ -107,7 +96,7 @@ public class GPSSearchActivity extends AppCompatActivity {
             }
         }
     }
-
+/*
     protected void setLocationInDB(Place place){
         final SQLDatabaseHandler dbReference = new SQLDatabaseHandler(this);
 
@@ -120,7 +109,6 @@ public class GPSSearchActivity extends AppCompatActivity {
         if(dbReference.locationInDB(place.getId())) {
             Log.i(TAG, "updating location in DB, id: " + place.getId());
             Location location = dbReference.getLocation(place.getId());
-            // NOTE: check later, DB Names might save as different (saved as only "Napa" once not "Napa, CA")
             location.setName(place.getName().toString());
             // TODO: add functionality to have different volumes (0,1, for testing)
             location.setVolume(1);
@@ -135,7 +123,7 @@ public class GPSSearchActivity extends AppCompatActivity {
             dbReference.addLocation(location);
         }
     }
-
+*/
     protected void alertToast(String msg){
         Context context = getApplicationContext();
         CharSequence text = msg;

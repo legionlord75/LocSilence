@@ -1,10 +1,19 @@
 package com.visual.android.locsilence;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.util.Log;
+
+import com.google.android.gms.location.places.Place;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by RamiK on 10/14/2017.
  */
 
-public class Location {
+public class Location implements Parcelable{
 
     private String id;
     private String name;
@@ -14,8 +23,18 @@ public class Location {
     private String updatedAt;
     private int volume;
 
-    // default constructor
-    public Location() {}
+    public Location(){}
+
+    // default parcel constructor
+    public Location(Parcel parcel) {
+       this.id = parcel.readString();
+       this.name = parcel.readString();
+       this.createdAt = parcel.readString();
+       this.updatedAt = parcel.readString();
+       this.lat = parcel.readDouble();
+       this.lng = parcel.readDouble();
+       this.volume = parcel.readInt();
+    }
 
     public Location(String id, String name, double lat, double lng,
                     String createdAt, String updatedAt, int volume) {
@@ -28,8 +47,32 @@ public class Location {
         this.volume = volume;
     }
 
-    // GET methods
+    @Override
+    public void writeToParcel(Parcel parcel, int args){
+        parcel.writeString(this.id);
+        parcel.writeString(this.name);
+        parcel.writeString(this.createdAt);
+        parcel.writeString(this.updatedAt);
+        parcel.writeDouble(this.lat);
+        parcel.writeDouble(this.lng);
+        parcel.writeInt(this.volume);
+    }
 
+    public static final Creator<Location> CREATOR=new Creator<Location>(){
+        @Override
+        public Location createFromParcel(Parcel parcel){
+            return new Location(parcel);
+        }
+        @Override
+        public Location[] newArray(int i) {
+            return new Location[i];
+        }
+    };
+    @Override
+    public int describeContents(){return 0;}
+
+
+    // GET methods
     public String getId() {
         return id;
     }

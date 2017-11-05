@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingTop="10dp"
+    android:paddingBottom="10dp">
+
+    <TextView
+        android:id="@+id/title_volumeType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/check_default"
+        android:layout_alignBottom="@+id/check_default"
+        android:layout_alignLeft="@+id/seekBar_volume"
+        android:layout_alignStart="@+id/seekBar_volume"
+        android:text="volume-title" />
+
+    <SeekBar
+        android:id="@+id/seekBar_volume"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/check_default"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp" />
+
+    <CheckBox
+        android:id="@+id/check_default"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="default"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="13dp"
+        android:layout_marginEnd="13dp" />
+
+
+</RelativeLayout>
