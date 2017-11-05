@@ -21,7 +21,7 @@ public class  SQLDatabaseHandler extends SQLiteOpenHelper {
 
     // All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     // Database Name
     private static final String DATABASE_NAME = "Locations.db";
@@ -37,7 +37,7 @@ public class  SQLDatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_CREATED_AT = "created_at";
     private static final String KEY_UPDATED_AT = "updated_at";
     private static final String KEY_VOLUME = "volume";
-    private static final String KEY_CID = "circle id";
+    private static final String KEY_CID = "circle_id";
     private static final String KEY_RAD = "radius";
 
     public SQLDatabaseHandler(Context context) {
@@ -51,7 +51,7 @@ public class  SQLDatabaseHandler extends SQLiteOpenHelper {
                 + KEY_ID + " VARCHAR(255) PRIMARY KEY," + KEY_NAME + " VARCHAR(255),"
                 + KEY_LAT + " FLOAT(255, 255)," + KEY_LONG + " FLOAT(255, 255),"
                 + KEY_CREATED_AT + " DATETIME," + KEY_UPDATED_AT + " DATETIME," +
-                KEY_VOLUME + " TINYINT(255)" + KEY_CID + "VARCHAR(255) SECONDARY KEY" + KEY_RAD + "TINYINT(255)" + ")";
+                KEY_VOLUME + " TINYINT(255)," + KEY_CID + " VARCHAR(255)," + KEY_RAD + " TINY(255))";
         System.out.println(CREATE_CONTACTS_TABLE);
         db.execSQL(CREATE_CONTACTS_TABLE);
     }

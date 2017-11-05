@@ -1,12 +1,15 @@
 package com.visual.android.locsilence;
 
 import android.Manifest;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.LocationManager;
+import android.media.AudioManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
@@ -51,7 +54,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         mapButton.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
         Graphics draw = new Graphics();
-        draw.startDraw(mMap);
+        // draw.startDraw(mMap);
+
         locationsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -68,6 +72,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 startActivity(intent);
             }
         });
+
     }
 
 
@@ -105,7 +110,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
 
+        if (!isNotificationPolicyAccessGranted()) {
+            requestNotificationPolicyAccess();
+        }
+
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 14.5f));
+
+        SQLDatabaseHandler db = new SQLDatabaseHandler(this);
+        RecursiveSilencePhoneTask recursiveSilencePhoneTask = new RecursiveSilencePhoneTask(locationManager, db, this);
+        recursiveSilencePhoneTask.execute(locationManager);
 
     }
 
@@ -117,6 +130,24 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return true;
     }
 
+    private boolean isNotificationPolicyAccessGranted()  {
+        if (Build.VERSION.SDK_INT >= 23) {
+            NotificationManager notificationManager = (NotificationManager)
+                    this.getSystemService(Context.NOTIFICATION_SERVICE);
+            return notificationManager.isNotificationPolicyAccessGranted();
+        }
+
+        return true;
+    }
+
+    private void requestNotificationPolicyAccess() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && !isNotificationPolicyAccessGranted()) {
+            Intent intent = new Intent(android.provider.Settings.
+                    ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+            startActivity(intent);
+        }
+    }
+
     public boolean checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission. ACCESS_FINE_LOCATION)
@@ -124,7 +155,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission. ACCESS_FINE_LOCATION)) {
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
 
                 // Show an explanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
@@ -137,7 +168,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 //Prompt the user once explanation has been shown
                                 ActivityCompat.requestPermissions(MapsActivity.this,
-                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                        new String[]{
+                                                Manifest.permission.ACCESS_FINE_LOCATION},
                                         MY_PERMISSIONS_REQUEST_LOCATION);
                             }
                         })
@@ -148,7 +180,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             } else {
                 // No explanation needed, we can request the permission.
                 ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission. ACCESS_FINE_LOCATION},
+                        new String[]{
+                                Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_LOCATION);
             }
             return false;
