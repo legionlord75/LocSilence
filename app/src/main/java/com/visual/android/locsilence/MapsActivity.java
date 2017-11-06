@@ -107,8 +107,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         android.location.Location location = locationManager.getLastKnownLocation(locationManager
                 .getBestProvider(criteria, false));
 
-        double latitude = location.getLatitude();
-        double longitude = location.getLongitude();
+        double latitude;
+        double longitude;
+        if(location != null) {
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+        }
+        else {
+            latitude = 36.9914;
+            longitude = 122.0609;
+        }
 
         if (!isNotificationPolicyAccessGranted()) {
             requestNotificationPolicyAccess();

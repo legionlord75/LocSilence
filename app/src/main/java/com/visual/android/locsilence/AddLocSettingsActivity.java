@@ -45,15 +45,15 @@ public class AddLocSettingsActivity extends AppCompatActivity {
             public void onClick(View view) {
                 int[] volumeLevels = settingsAdapter.getVolumeLevels();
                 setLocationVolumes(selectedLocation, volumeLevels);
-                printTestVolumes(selectedLocation);
 
                 if (db.getLocation(selectedLocation.getId()) == null) {
                     db.addLocation(selectedLocation);
                 } else {
                     db.updateLocalGame(selectedLocation);
                 }
+                // printTestVolumes(selectedLocation);
                 Intent i = new Intent(AddLocSettingsActivity.this, MapsActivity.class);
-//                startActivity(i);
+                startActivity(i);
             }
         });
     }
@@ -61,7 +61,13 @@ public class AddLocSettingsActivity extends AppCompatActivity {
     public void setLocationVolumes(Location location, int[] volumeLevels){
         final CheckBox checkBoxSilence = (CheckBox) findViewById(R.id.checkbox_silence);
         // Volumes default to 0, therefore location volumes would not need to be set
-        if(!checkBoxSilence.isChecked()){
+        if(checkBoxSilence.isChecked()){
+            location.setVolRingtone(volumeLevels[0]);
+            location.setVolMedia(volumeLevels[0]);
+            location.setVolAlarms(volumeLevels[0]);
+            location.setVolCall(volumeLevels[0]);
+        }
+        else{
             location.setVolRingtone(volumeLevels[0]);
             location.setVolMedia(volumeLevels[1]);
             location.setVolAlarms(volumeLevels[2]);
@@ -71,12 +77,21 @@ public class AddLocSettingsActivity extends AppCompatActivity {
 
     // for testing, USAGE: testVolumes(selectedLocation);
     public void printTestVolumes(Location selectedLocation){
+        final SQLDatabaseHandler db = new SQLDatabaseHandler(this);
         final TextView volumeLevel = (TextView) findViewById(R.id.volume_levels);
         String currentVolumes = "";
-        currentVolumes += selectedLocation.getVolRingtone() + ",";
-        currentVolumes += selectedLocation.getVolMedia() + ",";
-        currentVolumes += selectedLocation.getVolAlarms() + ",";
-        currentVolumes += selectedLocation.getVolCall() + ",";
+        Location dbLocation;
+        if(db.locationInDB(selectedLocation.getId())) {
+            dbLocation = db.getLocation(selectedLocation.getId());
+            currentVolumes += dbLocation.getVolRingtone() + ",";
+            currentVolumes += dbLocation.getVolMedia() + ",";
+            currentVolumes += dbLocation.getVolAlarms() + ",";
+            currentVolumes += dbLocation.getVolCall() + ",";
+
+        }
+        else{
+            currentVolumes = "not in db";
+        }
         volumeLevel.setText(currentVolumes);
     }
 
