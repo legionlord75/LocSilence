@@ -1,10 +1,19 @@
 package com.visual.android.locsilence;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.util.Log;
+
+import com.google.android.gms.location.places.Place;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by RamiK on 10/14/2017.
  */
 
-public class Location {
+public class Location implements Parcelable{
 
     private String id;
     private String name;
@@ -12,28 +21,78 @@ public class Location {
     private double lng;
     private String createdAt;
     private String updatedAt;
-    private int volume;
+    private int vol_ringtone;
+    private int vol_media;
+    private int vol_alarms;
+    private int vol_call;
     private String cid;
     private int rad;
 
-    // default constructor
-    public Location() {}
+    public Location(){}
+
+    // default parcel constructor
+    public Location(Parcel parcel) {
+        this.id = parcel.readString();
+        this.name = parcel.readString();
+        this.createdAt = parcel.readString();
+        this.updatedAt = parcel.readString();
+        this.lat = parcel.readDouble();
+        this.lng = parcel.readDouble();
+        this.vol_ringtone = parcel.readInt();
+        this.vol_media = parcel.readInt();
+        this.vol_alarms = parcel.readInt();
+        this.vol_call = parcel.readInt();
+        this.cid = parcel.readString();
+        this.rad = parcel.readInt();
+    }
 
     public Location(String id, String name, double lat, double lng,
-                    String createdAt, String updatedAt, int volume, String cid, int rad) {
+                    String createdAt, String updatedAt, String cid, int rad) {
         this.id = id;
         this.name = name;
         this.lat = lat;
         this.lng = lng;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.volume = volume;
+        this.vol_ringtone = 0;
+        this.vol_media = 0;
+        this.vol_alarms = 0;
+        this.vol_call = 0;
         this.cid=cid;
         this.rad=rad;
     }
 
-    // GET methods
+    @Override
+    public void writeToParcel(Parcel parcel, int args){
+        parcel.writeString(this.id);
+        parcel.writeString(this.name);
+        parcel.writeString(this.createdAt);
+        parcel.writeString(this.updatedAt);
+        parcel.writeDouble(this.lat);
+        parcel.writeDouble(this.lng);
+        parcel.writeInt(this.vol_ringtone);
+        parcel.writeInt(this.vol_media);
+        parcel.writeInt(this.vol_alarms);
+        parcel.writeInt(this.vol_call);
+        parcel.writeString(this.cid);
+        parcel.writeInt(this.rad);
+    }
 
+    public static final Creator<Location> CREATOR=new Creator<Location>(){
+        @Override
+        public Location createFromParcel(Parcel parcel){
+            return new Location(parcel);
+        }
+        @Override
+        public Location[] newArray(int i) {
+            return new Location[i];
+        }
+    };
+    @Override
+    public int describeContents(){return 0;}
+
+
+    // GET methods
     public String getId() {
         return id;
     }
@@ -58,8 +117,20 @@ public class Location {
         return updatedAt;
     }
 
-    public int getVolume() {
-        return volume;
+    public int getVolRingtone() {
+        return vol_ringtone;
+    }
+
+    public int getVolMedia() {
+        return vol_media;
+    }
+
+    public int getVolAlarms() {
+        return vol_alarms;
+    }
+
+    public int getVolCall() {
+        return vol_call;
     }
 
     public String getCid() { return cid; }
@@ -92,9 +163,13 @@ public class Location {
         this.updatedAt = updatedAt;
     }
 
-    public void setVolume(int volume) {
-        this.volume = volume;
-    }
+    public void setVolRingtone(int vol_ringtone) { this.vol_ringtone = vol_ringtone; }
+
+    public void setVolMedia(int vol_media) { this.vol_media = vol_media; }
+
+    public void setVolAlarms(int vol_alarms) { this.vol_alarms = vol_alarms; }
+
+    public void setVolCall(int vol_call) { this.vol_call = vol_call; }
 
     public void setCid(String cid) { this.cid = cid; }
 
