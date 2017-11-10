@@ -10,4 +10,5 @@
     <string name="google_maps_key">AIzaSyA09f2dq3jNETSeMCMNm8lVWxFTGtAreTY</string>
     <string name="mapButton">Map</string>
     <string name="locationButton">Locations</string>
+    <string name="title_activity_add_loc_settings">addLocSettingsActivity</string>
 </resources>

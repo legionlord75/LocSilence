@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
@@ -14,7 +12,6 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
-import com.google.android.gms.maps.model.Circle;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -22,27 +19,15 @@ import java.util.Date;
 public class GPSSearchActivity extends AppCompatActivity {
     int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
     private static final String TAG = GPSSearchActivity.class.getSimpleName();
+
     Place selectedPlace;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gpssearch);
-        /*
-        try {
-            Intent intent =
-                    new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
-                            .build(this);
-            startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
-        } catch (GooglePlayServicesRepairableException e) {
-            // TODO: Handle the error.
-        } catch (GooglePlayServicesNotAvailableException e) {
-            // TODO: Handle the error.
-        }
-        */
 
         final SQLDatabaseHandler db = new SQLDatabaseHandler(this);
-
-        System.out.println("BOI: " + db.getAllLocations());
 
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
@@ -50,45 +35,34 @@ public class GPSSearchActivity extends AppCompatActivity {
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-                selectedPlace = place;
+                Location selectedLocation;
+                // If place is in db already update location info in db
+                if(db.locationInDB(place.getId())) {
+                    selectedLocation = db.getLocation(place.getId());
+                    selectedLocation.setUpdatedAt(new Date().toString());
+                }
+                // If place is new set basic new locations
+                else{
+                    selectedLocation = new Location(
+                            place.getId(),
+                            place.getName().toString(),
+                            (float)place.getLatLng().latitude,
+                            (float)place.getLatLng().latitude,
+                            new Date().toString(),
+                            new Date().toString(),
+                            "",
+                            100);
+                }
+                // Pass location to settings activity to set the volume settings
+                Intent settingsIntent = new Intent(GPSSearchActivity.this, AddLocSettingsActivity.class);
+                settingsIntent.putExtra("selectedLocation", selectedLocation);
+                startActivity(settingsIntent);
             }
 
             @Override
             public void onError(Status status) {
                 alertToast("An error occurred with google location");
                 Log.i(TAG, "An error occurred: " + status);
-            }
-        });
-
-        final Button setButton = (Button)findViewById(R.id.setSettingsButton);
-        setButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                System.out.println(selectedPlace.getId());
-
-                Location location = new Location(
-                        selectedPlace.getId(),
-                        selectedPlace.getName().toString(),
-                        selectedPlace.getLatLng().latitude,
-                        selectedPlace.getLatLng().longitude,
-                        new Date().toString(),
-                        new Date().toString(),
-                        1,
-                        "",
-                        100);
-
-                if (db.getLocation(selectedPlace.getId()) == null) {
-                    db.addLocation(location);
-                } else {
-                    // TODO: 10/22/2017 Add onDuplicateKey functionality
-                    System.out.println("EXISTS");
-                }
-
-                Intent i = new Intent(GPSSearchActivity.this, MapsActivity.class);
-                startActivity(i);
-
-                // setLocationInDB(selectedPlace);
             }
         });
     }
@@ -110,35 +84,6 @@ public class GPSSearchActivity extends AppCompatActivity {
         }
     }
 
-    protected void setLocationInDB(Place place){
-        final SQLDatabaseHandler dbReference = new SQLDatabaseHandler(this);
-
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        String currentDateandTime = sdf.format(new Date());
-        Log.i(TAG, "Place: " + place.getName());
-        Log.i(TAG, "Time: " + currentDateandTime);
-        Log.i(TAG, "LatLng: " + place.getLatLng());
-
-        if(dbReference.locationInDB(place.getId())) {
-            Log.i(TAG, "updating location in DB, id: " + place.getId());
-            Location location = dbReference.getLocation(place.getId());
-            // NOTE: check later, DB Names might save as different (saved as only "Napa" once not "Napa, CA")
-            location.setName(place.getName().toString());
-            // TODO: add functionality to have different volumes (0,1, for testing)
-            location.setVolume(1);
-            location.setUpdatedAt(currentDateandTime);
-            dbReference.updateLocalGame(location);
-        }
-        else{
-            Log.i(TAG, "adding location to DB, id: " + place.getId());
-            //Circle circle = newLocDraw();
-            Location location = new Location(place.getId(), place.getName().toString(),
-                    (float)place.getLatLng().latitude,(float)place.getLatLng().latitude,
-                    currentDateandTime, currentDateandTime, 2,"",100);
-            dbReference.addLocation(location);
-        }
-    }
-
     protected void alertToast(String msg){
         Context context = getApplicationContext();
         CharSequence text = msg;
@@ -146,5 +91,4 @@ public class GPSSearchActivity extends AppCompatActivity {
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
     }
-
 }
