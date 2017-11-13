@@ -84,13 +84,6 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
             }
         }
 
-        try {
-            // 10 second sleep
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         RecursiveSilencePhoneTask recursiveSilencePhoneTask = new RecursiveSilencePhoneTask(locationManager, db, context);
         recursiveSilencePhoneTask.execute(this.locationManager);
 
