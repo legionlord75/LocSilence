@@ -18,8 +18,7 @@ import java.util.List;
 
 public class Graphics extends AppCompatActivity {
     //On Start drawing the circles for stored locations
-    public void startDraw(GoogleMap map){
-        SQLDatabaseHandler handler = new SQLDatabaseHandler(this);
+    public void startDraw(GoogleMap map, SQLDatabaseHandler handler){
         List<Location> enslavingall = handler.getAllLocations();
         //iterates through database and draws the circles
         for(int x=0; x<enslavingall.size();x++){
@@ -45,7 +44,7 @@ public class Graphics extends AppCompatActivity {
         Location nloc = handle.getLocation(id);
         nloc.setRad(nrad);
         handle.updateLocalGame(nloc);
-        startDraw(map);
+        startDraw(map,handle);
     }
 
     //Perimeter outlining (Work in Progress)

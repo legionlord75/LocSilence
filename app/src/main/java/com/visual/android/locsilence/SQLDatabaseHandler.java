@@ -21,7 +21,7 @@ public class  SQLDatabaseHandler extends SQLiteOpenHelper {
 
     // All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 5;
 
     // Database Name
     private static final String DATABASE_NAME = "Locations.db";
@@ -36,8 +36,11 @@ public class  SQLDatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_LONG = "long";
     private static final String KEY_CREATED_AT = "created_at";
     private static final String KEY_UPDATED_AT = "updated_at";
-    private static final String KEY_VOLUME = "volume";
-    private static final String KEY_CID = "circle id";
+    private static final String KEY_VOL_RINGTONE = "vol_ringtone";
+    private static final String KEY_VOL_MEDIA = "vol_media";
+    private static final String KEY_VOL_ALARMS = "vol_alarms";
+    private static final String KEY_VOL_CALL = "vol_call";
+    private static final String KEY_CID = "circle_id";
     private static final String KEY_RAD = "radius";
 
     public SQLDatabaseHandler(Context context) {
@@ -51,7 +54,9 @@ public class  SQLDatabaseHandler extends SQLiteOpenHelper {
                 + KEY_ID + " VARCHAR(255) PRIMARY KEY," + KEY_NAME + " VARCHAR(255),"
                 + KEY_LAT + " FLOAT(255, 255)," + KEY_LONG + " FLOAT(255, 255),"
                 + KEY_CREATED_AT + " DATETIME," + KEY_UPDATED_AT + " DATETIME," +
-                KEY_VOLUME + " TINYINT(255)" + KEY_CID + "VARCHAR(255) SECONDARY KEY" + KEY_RAD + "TINYINT(255)" + ")";
+                KEY_VOL_RINGTONE + " TINYINT(255)," + KEY_VOL_MEDIA + " TINYINT(255)," +
+                KEY_VOL_ALARMS + " TINYINT(255)," + KEY_VOL_CALL + " TINYINT(255)," +
+                KEY_CID + " VARCHAR(255)," + KEY_RAD + " TINY(255))";
         System.out.println(CREATE_CONTACTS_TABLE);
         db.execSQL(CREATE_CONTACTS_TABLE);
     }
@@ -82,7 +87,10 @@ public class  SQLDatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_LONG, location.getLng());
         values.put(KEY_CREATED_AT, location.getCreatedAt());
         values.put(KEY_UPDATED_AT, location.getUpdatedAt());
-        values.put(KEY_VOLUME, location.getVolume());
+        values.put(KEY_VOL_RINGTONE, location.getVolRingtone());
+        values.put(KEY_VOL_MEDIA, location.getVolMedia());
+        values.put(KEY_VOL_ALARMS, location.getVolAlarms());
+        values.put(KEY_VOL_CALL, location.getVolCall());
         values.put(KEY_CID, location.getCid());
         values.put(KEY_RAD, location.getRad());
 
@@ -103,7 +111,8 @@ public class  SQLDatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABLE_LOCATIONS, new String[] { KEY_ID,
                 KEY_NAME, KEY_LAT, KEY_LONG, KEY_CREATED_AT, KEY_UPDATED_AT,
-                KEY_VOLUME,KEY_CID,KEY_RAD}, KEY_ID + "=?",
+                KEY_VOL_RINGTONE, KEY_VOL_MEDIA, KEY_VOL_ALARMS, KEY_VOL_CALL,
+                        KEY_CID,KEY_RAD}, KEY_ID + "=?",
                 new String[] { id }, null, null, null, null);
 
         if (cursor != null)
@@ -117,9 +126,12 @@ public class  SQLDatabaseHandler extends SQLiteOpenHelper {
             location.setLng(cursor.getFloat(3));
             location.setCreatedAt(cursor.getString(4));
             location.setUpdatedAt(cursor.getString(5));
-            location.setVolume(cursor.getInt(6));
-            location.setCid(cursor.getString(7));
-            location.setRad(cursor.getInt(8));
+            location.setVolRingtone(cursor.getInt(6));
+            location.setVolMedia(cursor.getInt(7));
+            location.setVolAlarms(cursor.getInt(8));
+            location.setVolCall(cursor.getInt(9));
+            location.setCid(cursor.getString(10));
+            location.setRad(cursor.getInt(11));
 
           //  cursor.close();
             return location;
@@ -150,9 +162,12 @@ public class  SQLDatabaseHandler extends SQLiteOpenHelper {
                 location.setLng(cursor.getFloat(3));
                 location.setCreatedAt(cursor.getString(4));
                 location.setUpdatedAt(cursor.getString(5));
-                location.setVolume(cursor.getInt(6));
-                location.setCid(cursor.getString(7));
-                location.setRad(cursor.getInt(8));
+                location.setVolRingtone(cursor.getInt(6));
+                location.setVolMedia(cursor.getInt(7));
+                location.setVolAlarms(cursor.getInt(8));
+                location.setVolCall(cursor.getInt(9));
+                location.setCid(cursor.getString(10));
+                location.setRad(cursor.getInt(11));
                 // Adding contact to list
                 allLocations.add(location);
             } while (cursor.moveToNext());
@@ -182,7 +197,10 @@ public class  SQLDatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_LONG, location.getLng());
         values.put(KEY_CREATED_AT, location.getCreatedAt());
         values.put(KEY_UPDATED_AT, location.getUpdatedAt());
-        values.put(KEY_VOLUME, location.getVolume());
+        values.put(KEY_VOL_RINGTONE, location.getVolRingtone());
+        values.put(KEY_VOL_MEDIA, location.getVolMedia());
+        values.put(KEY_VOL_ALARMS, location.getVolAlarms());
+        values.put(KEY_VOL_CALL, location.getVolCall());
         values.put(KEY_CID, location.getCid());
         values.put(KEY_RAD, location.getRad());
         // updating row
@@ -229,7 +247,10 @@ public class  SQLDatabaseHandler extends SQLiteOpenHelper {
         for (Location location : locations) {
             Log.i("logDB", "(name: " + location.getName() + ") | " +
                     "(LatLong: " + location.getLat() + ":" + location.getLng() + ") |" +
-                    "(volume: " + location.getVolume() + ") |" +
+                    "(vol_ringtone: " + location.getVolRingtone() + ") |" +
+                    "(vol_media: " + location.getVolMedia() + ") |" +
+                    "(vol_alarms: " + location.getVolAlarms() + ") |" +
+                    "(vol_call: " + location.getVolCall() + ") |" +
                     "(ID: " + location.getId() + ") | " + "(Cid: " + location.getCid() + ") |" +
                     "(Radius: " + location.getRad() + ") |"
             );
