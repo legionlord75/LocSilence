@@ -28,6 +28,12 @@ public abstract class RetrieveLocation extends AsyncTask<LocationManager, Void, 
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
 
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         return new LatLng(latitude, longitude);
     }
 }
