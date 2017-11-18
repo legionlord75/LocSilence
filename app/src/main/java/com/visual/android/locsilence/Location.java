@@ -22,9 +22,8 @@ public class Location implements Parcelable{
     private String createdAt;
     private String updatedAt;
     private int vol_ringtone;
-    private int vol_media;
+    private int vol_notifications;
     private int vol_alarms;
-    private int vol_call;
     private String cid;
     private int rad;
 
@@ -39,9 +38,8 @@ public class Location implements Parcelable{
         this.lat = parcel.readDouble();
         this.lng = parcel.readDouble();
         this.vol_ringtone = parcel.readInt();
-        this.vol_media = parcel.readInt();
+        this.vol_notifications = parcel.readInt();
         this.vol_alarms = parcel.readInt();
-        this.vol_call = parcel.readInt();
         this.cid = parcel.readString();
         this.rad = parcel.readInt();
     }
@@ -55,9 +53,8 @@ public class Location implements Parcelable{
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.vol_ringtone = 0;
-        this.vol_media = 0;
+        this.vol_notifications = 0;
         this.vol_alarms = 0;
-        this.vol_call = 0;
         this.cid=cid;
         this.rad=rad;
     }
@@ -71,9 +68,8 @@ public class Location implements Parcelable{
         parcel.writeDouble(this.lat);
         parcel.writeDouble(this.lng);
         parcel.writeInt(this.vol_ringtone);
-        parcel.writeInt(this.vol_media);
+        parcel.writeInt(this.vol_notifications);
         parcel.writeInt(this.vol_alarms);
-        parcel.writeInt(this.vol_call);
         parcel.writeString(this.cid);
         parcel.writeInt(this.rad);
     }
@@ -121,16 +117,12 @@ public class Location implements Parcelable{
         return vol_ringtone;
     }
 
-    public int getVolMedia() {
-        return vol_media;
+    public int getVolNotifications() {
+        return vol_notifications;
     }
 
     public int getVolAlarms() {
         return vol_alarms;
-    }
-
-    public int getVolCall() {
-        return vol_call;
     }
 
     public String getCid() { return cid; }
@@ -165,11 +157,9 @@ public class Location implements Parcelable{
 
     public void setVolRingtone(int vol_ringtone) { this.vol_ringtone = vol_ringtone; }
 
-    public void setVolMedia(int vol_media) { this.vol_media = vol_media; }
+    public void setVolNotifications(int vol_media) { this.vol_notifications = vol_notifications; }
 
     public void setVolAlarms(int vol_alarms) { this.vol_alarms = vol_alarms; }
-
-    public void setVolCall(int vol_call) { this.vol_call = vol_call; }
 
     public void setCid(String cid) { this.cid = cid; }
 
