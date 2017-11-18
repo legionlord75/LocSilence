@@ -12,6 +12,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Date;
+
 public class AddLocSettingsActivity extends AppCompatActivity {
 
     int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
@@ -31,7 +33,8 @@ public class AddLocSettingsActivity extends AppCompatActivity {
         TextView lastUpdated = (TextView) findViewById(R.id.title_lastUpdated);
         title.setText(selectedLocation.getName());
         lastUpdated.setText("Last updated: "+ selectedLocation.getUpdatedAt());
-
+        selectedLocation.setUpdatedAt(new Date().toString());
+        
         // Create and set listView of different volume type settings
         AudioManager am = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
         final SettingsAdapter settingsAdapter = new SettingsAdapter(this, volumeTypes,

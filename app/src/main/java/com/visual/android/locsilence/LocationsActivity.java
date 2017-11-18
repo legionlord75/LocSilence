@@ -30,11 +30,6 @@ public class LocationsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
 
-        /*Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Locations");
-        toolbar.setSubtitle("LocSilence");*/
-
         Button mapButton = (Button)findViewById(R.id.mapButton);
         Button locationsButton = (Button)findViewById(R.id.locButton);
         locationsButton.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
@@ -64,6 +59,10 @@ public class LocationsActivity extends AppCompatActivity {
                             "",
                             100);
                 }
+                // Pass location to settings activity to set the volume settings
+                Intent settingsIntent = new Intent(LocationsActivity.this, AddLocSettingsActivity.class);
+                settingsIntent.putExtra("selectedLocation", selectedLocation);
+                startActivity(settingsIntent);
              }
             @Override
             public void onError(Status status) {

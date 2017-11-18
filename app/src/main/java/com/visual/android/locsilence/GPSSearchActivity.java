@@ -40,13 +40,12 @@ public class GPSSearchActivity extends AppCompatActivity {
                 // If place is in db already update location info in db
                 if(db.locationInDB(place.getId())) {
                     selectedLocation = db.getLocation(place.getId());
-                    selectedLocation.setUpdatedAt(new Date().toString());
                 }
                 // If place is new set basic new locations
                 else{
                     selectedLocation = new Location(
                             place.getId(),
-                            place.getName().toString(),
+                            place.getName().toString() + "\n" + place.getAddress().toString(),
                             (float)place.getLatLng().latitude,
                             (float)place.getLatLng().latitude,
                             new Date().toString(),
