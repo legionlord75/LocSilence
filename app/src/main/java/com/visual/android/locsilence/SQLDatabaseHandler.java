@@ -21,7 +21,7 @@ public class  SQLDatabaseHandler extends SQLiteOpenHelper {
 
     // All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 7;
 
     // Database Name
     private static final String DATABASE_NAME = "Locations.db";
@@ -183,7 +183,6 @@ public class  SQLDatabaseHandler extends SQLiteOpenHelper {
     }
 
     // Updating single contact
-    // TODO: Double check this query for Thomas, new to sql (previous query wasn't working)
     public int updateLocalGame(Location location) {
         SQLiteDatabase db = this.getWritableDatabase();
 

@@ -56,6 +56,7 @@ public class AddLocSettingsActivity extends AppCompatActivity {
                 }
                 Intent i = new Intent(AddLocSettingsActivity.this, MapsActivity.class);
                 startActivity(i);
+                finish();
             }
         });
 
@@ -70,6 +71,7 @@ public class AddLocSettingsActivity extends AppCompatActivity {
                 }
                 Intent i = new Intent(AddLocSettingsActivity.this, MapsActivity.class);
                 startActivity(i);
+                finish();
             }
         });
     }
