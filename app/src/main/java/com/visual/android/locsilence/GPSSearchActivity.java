@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceFilter;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
@@ -39,13 +40,12 @@ public class GPSSearchActivity extends AppCompatActivity {
                 // If place is in db already update location info in db
                 if(db.locationInDB(place.getId())) {
                     selectedLocation = db.getLocation(place.getId());
-                    selectedLocation.setUpdatedAt(new Date().toString());
                 }
                 // If place is new set basic new locations
                 else{
                     selectedLocation = new Location(
                             place.getId(),
-                            place.getName().toString(),
+                            place.getName().toString() + "\n" + place.getAddress().toString(),
                             (float)place.getLatLng().latitude,
                             (float)place.getLatLng().latitude,
                             new Date().toString(),

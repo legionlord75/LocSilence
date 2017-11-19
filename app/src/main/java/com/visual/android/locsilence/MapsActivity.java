@@ -64,15 +64,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
 
         mapButton.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
-        Graphics draw = new Graphics();
-        // draw.startDraw(mMap);
 
         locationsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MapsActivity.this, LocationsActivity.class);
                 startActivity(intent);
-                finish();
             }
         });
 
@@ -81,6 +78,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onClick(View view) {
                 Intent intent = new Intent(MapsActivity.this, GPSSearchActivity.class);
                 startActivity(intent);
+
             }
         });
 
@@ -158,6 +156,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 14.5f));
 
         SQLDatabaseHandler db = new SQLDatabaseHandler(this);
+        if(db.getLocalGamesCount()>0) {
+            Graphics draw = new Graphics();
+             draw.startDraw(mMap,db);
+        }
+
         RecursiveSilencePhoneTask recursiveSilencePhoneTask = new RecursiveSilencePhoneTask(locationManager, db, this);
         //recursiveSilencePhoneTask.execute(locationManager);
 
