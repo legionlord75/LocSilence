@@ -24,24 +24,13 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
-    <CheckBox
-        android:id="@+id/checkbox_silence"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Silence"
-        android:layout_below="@+id/title_lastUpdated"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="20dp" />
-
     <ListView
         android:id="@+id/listView_settings"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/linearLayout"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/checkbox_silence" />
+        android:layout_below="@+id/title_lastUpdated" />
 
     <LinearLayout
         android:layout_width="match_parent"

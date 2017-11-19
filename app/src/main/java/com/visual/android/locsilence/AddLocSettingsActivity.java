@@ -34,7 +34,7 @@ public class AddLocSettingsActivity extends AppCompatActivity {
         title.setText(selectedLocation.getName());
         lastUpdated.setText("Last updated: "+ selectedLocation.getUpdatedAt());
         selectedLocation.setUpdatedAt(new Date().toString());
-        
+
         // Create and set listView of different volume type settings
         AudioManager am = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
         final SettingsAdapter settingsAdapter = new SettingsAdapter(this, volumeTypes,
@@ -72,25 +72,14 @@ public class AddLocSettingsActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
-
-
     }
 
     public void setLocationVolumes(Location location, int[] volumeLevels){
-        final CheckBox checkBoxSilence = (CheckBox) findViewById(R.id.checkbox_silence);
         // Volumes default to 0, therefore location volumes would not need to be set
-        if(checkBoxSilence.isChecked()){
-            location.setVolRingtone(volumeLevels[0]);
-            location.setVolNotifications(volumeLevels[0]);
-            location.setVolAlarms(volumeLevels[0]);
-        }
-        else{
-            location.setVolRingtone(volumeLevels[0]);
-            location.setVolNotifications(volumeLevels[1]);
-            location.setVolAlarms(volumeLevels[2]);
-        }
+        location.setVolRingtone(volumeLevels[0]);
+        location.setVolNotifications(volumeLevels[1]);
+        location.setVolAlarms(volumeLevels[2]);
     }
-
 
     protected void alertToast(String msg) {
         Context context = getApplicationContext();

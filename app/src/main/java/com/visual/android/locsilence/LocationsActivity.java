@@ -51,7 +51,7 @@ public class LocationsActivity extends AppCompatActivity {
                 else {
                     selectedLocation = new Location(
                             place.getId(),
-                            place.getName().toString(),
+                            place.getName().toString() + "\n" + place.getAddress().toString(),
                             (float) place.getLatLng().latitude,
                             (float) place.getLatLng().latitude,
                             new Date().toString(),
