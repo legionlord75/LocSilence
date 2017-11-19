@@ -90,6 +90,7 @@ public class LocationsActivity extends AppCompatActivity {
     public void next_page(View v) {
         Intent intent = new Intent(this, MapsActivity.class);
         startActivity(intent);
+        finish();
     }
 
 

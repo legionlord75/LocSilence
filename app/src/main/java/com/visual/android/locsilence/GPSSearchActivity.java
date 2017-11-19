@@ -57,7 +57,6 @@ public class GPSSearchActivity extends AppCompatActivity {
                 Intent settingsIntent = new Intent(GPSSearchActivity.this, AddLocSettingsActivity.class);
                 settingsIntent.putExtra("selectedLocation", selectedLocation);
                 startActivity(settingsIntent);
-                finish();
             }
 
             @Override

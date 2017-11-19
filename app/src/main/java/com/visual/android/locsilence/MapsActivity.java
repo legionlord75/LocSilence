@@ -58,7 +58,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onClick(View view) {
                 Intent intent = new Intent(MapsActivity.this, LocationsActivity.class);
                 startActivity(intent);
-                finish();
             }
         });
 
@@ -67,7 +66,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onClick(View view) {
                 Intent intent = new Intent(MapsActivity.this, GPSSearchActivity.class);
                 startActivity(intent);
-                finish();
+
             }
         });
 
