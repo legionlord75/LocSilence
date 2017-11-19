@@ -1,5 +1,6 @@
 package com.visual.android.locsilence;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -9,8 +10,19 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.util.Log;
+
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
