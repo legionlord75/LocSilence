@@ -5,4 +5,13 @@
         android:defaultValue="true"
         android:key="operation_switch"
         android:title="LocSilence Active" />
+
+    <Preference
+        android:key="about"
+        android:title="About Us" >
+
+    </Preference>
+
+
+
 </PreferenceScreen>

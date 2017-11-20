@@ -4,8 +4,10 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.media.AudioManager;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -38,39 +40,47 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
         this.db = db;
         this.context = context;
         audio = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        //notification = new NotificationCompat.Builder(context);
-        //notification.setAutoCancel(true);
     }
 
     @Override
     protected void onPostExecute(LatLng latLng) {
         System.out.println("POST");
 
+
         super.onPostExecute(latLng);
-
-        List<Location> locations = db.getAllLocations();
-
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.context);
+        Boolean worker_on = prefs.getBoolean("operation_switch", true);
         boolean flag = false;
-        for (Location location : locations) {
-            float[] results = new float[5];
-            int radius = location.getRad();
-            double lat = location.getLat();
-            double lng = location.getLng();
-            android.location.Location.distanceBetween(lat, lng, latLng.latitude, latLng.longitude, results);
-            // The computed distance is stored in results[0].
-            // If results has length 2 or greater, the initial bearing is stored in results[1].
-            // If results has length 3 or greater, the final bearing is stored in results[2]
-            if (results[0] < radius) {
-                try {
-                    audio.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-                    sendNotification("Silencing activated");
-                    recently_silenced = true;
-                } catch (SecurityException e) {
-                    e.printStackTrace();
+
+        if (worker_on){
+            System.out.println("Worker is on");
+            List<Location> locations = db.getAllLocations();
+
+            flag = false;
+            for (Location location : locations) {
+                float[] results = new float[5];
+                int radius = location.getRad();
+                double lat = location.getLat();
+                double lng = location.getLng();
+                android.location.Location.distanceBetween(lat, lng, latLng.latitude, latLng.longitude, results);
+                // The computed distance is stored in results[0].
+                // If results has length 2 or greater, the initial bearing is stored in results[1].
+                // If results has length 3 or greater, the final bearing is stored in results[2]
+                if (results[0] < radius) {
+                    try {
+                        audio.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                        sendNotification("Silencing activated");
+                        recently_silenced = true;
+                    } catch (SecurityException e) {
+                        e.printStackTrace();
+                    }
+                    flag = true;
+                    break;
                 }
-                flag = true;
-                break;
             }
+        }
+        else {
+            System.out.println("Worker is off");
         }
 
         if (!flag) {

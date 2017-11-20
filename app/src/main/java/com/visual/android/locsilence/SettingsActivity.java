@@ -3,6 +3,7 @@ package com.visual.android.locsilence;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -16,6 +17,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.MenuItem;
 
@@ -37,6 +39,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
      */
+
+    private static Context context;
+
     private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
         @Override
         public boolean onPreferenceChange(Preference preference, Object value) {
@@ -120,21 +125,68 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         super.onCreate(savedInstanceState);
         setupActionBar();
 
+        SettingsActivity.context = getApplicationContext();
+
         //Sets preferences in pref_headers as default settings
         getFragmentManager().beginTransaction().replace(android.R.id.content,
                 new PrefsFragment()).commit();
-
-
-        //addPreferencesFromResource(R.xml.pref_main);
     }
 
-    public static class PrefsFragment extends PreferenceFragment {
+
+
+    public static class PrefsFragment extends PreferenceFragment{
+
+       //final public static Context context = null;
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-
-            // Load the preferences from an XML resource
+            //PrefsFragment.context = getApplicationContext();
             addPreferencesFromResource(R.xml.pref_main);
+            final Preference pref_about = (Preference) findPreference("about");
+
+            pref_about.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    System.out.println("about preference hit");
+
+                    AlertDialog.Builder a_builder = new AlertDialog.Builder(getActivity());
+                    a_builder.setMessage("Developed by Alon Pekurovsky, Erik Lau, Rami Khader, and Thomas Brochard")
+                            .setCancelable(false)
+                            .setNeutralButton("Done", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            });
+                    AlertDialog alert = a_builder.create();
+                    alert.setTitle("About Us");
+                    alert.show();
+                    return false;
+                }
+            });
+        }
+
+        @Override
+        public boolean onOptionsItemSelected(MenuItem item) {
+            int id = item.getItemId();
+            System.out.println("id: " + Integer.toString(id));
+            if (id == android.R.id.home) {
+                //startActivity(new Intent(getActivity(), SettingsActivity.class));
+                getActivity().onBackPressed();
+                return true;
+            }
+            Preference pref = (Preference) findPreference("about");
+
+//            pref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+//                @Override
+//                public boolean onPreferenceClick(Preference preference) {
+//                    System.out.println("about us hit");
+//                    return false;
+//                }
+//            });
+            //if (id == android.R.id)
+            return super.onOptionsItemSelected(item);
         }
     }
 
@@ -208,14 +260,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_general);
-            setHasOptionsMenu(true);
 
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
-            bindPreferenceSummaryToValue(findPreference("example_text"));
-            bindPreferenceSummaryToValue(findPreference("example_list"));
         }
 
         @Override
@@ -226,6 +271,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 getActivity().onBackPressed();
                 return true;
             }
+            //if (id == android.R.id)
             return super.onOptionsItemSelected(item);
         }
     }

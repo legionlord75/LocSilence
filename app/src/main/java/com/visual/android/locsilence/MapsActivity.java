@@ -109,7 +109,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     /**
-     * Manipulates the map once available.
+`     * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
      * This is where we can add markers or lines, add listeners or move the camera. In this case,
      * we just add a marker near Sydney, Australia.
@@ -162,7 +162,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
         RecursiveSilencePhoneTask recursiveSilencePhoneTask = new RecursiveSilencePhoneTask(locationManager, db, this);
-        //recursiveSilencePhoneTask.execute(locationManager);
+        recursiveSilencePhoneTask.execute(locationManager);
 
     }
 
