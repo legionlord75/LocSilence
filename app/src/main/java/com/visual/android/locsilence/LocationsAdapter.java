@@ -38,6 +38,7 @@ public class LocationsAdapter extends ArrayAdapter<Location> {
                 @Override
                 public void onClick(View v) {
                     Intent settingsIntent = new Intent(context, AddLocSettingsActivity.class);
+                    settingsIntent.putExtra("editing", true);
                     settingsIntent.putExtra("selectedLocation", locations.get(position));
                     context.startActivity(settingsIntent);
                 }

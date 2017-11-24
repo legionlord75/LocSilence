@@ -157,7 +157,7 @@ public class Location implements Parcelable{
 
     public void setVolRingtone(int vol_ringtone) { this.vol_ringtone = vol_ringtone; }
 
-    public void setVolNotifications(int vol_media) { this.vol_notifications = vol_notifications; }
+    public void setVolNotifications(int vol_notifications) { this.vol_notifications = vol_notifications; }
 
     public void setVolAlarms(int vol_alarms) { this.vol_alarms = vol_alarms; }
 

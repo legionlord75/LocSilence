@@ -37,9 +37,12 @@ public class GPSSearchActivity extends AppCompatActivity {
             @Override
             public void onPlaceSelected(Place place) {
                 Location selectedLocation;
+                boolean editing = false;
+                Intent settingsIntent = new Intent(GPSSearchActivity.this, AddLocSettingsActivity.class);
                 // If place is in db already update location info in db
                 if(db.locationInDB(place.getId())) {
                     selectedLocation = db.getLocation(place.getId());
+                    editing = true;
                 }
                 // If place is new set basic new locations
                 else{
@@ -54,8 +57,9 @@ public class GPSSearchActivity extends AppCompatActivity {
                             100);
                 }
                 // Pass location to settings activity to set the volume settings
-                Intent settingsIntent = new Intent(GPSSearchActivity.this, AddLocSettingsActivity.class);
+                settingsIntent.putExtra("editing", editing);
                 settingsIntent.putExtra("selectedLocation", selectedLocation);
+                db.close();
                 startActivity(settingsIntent);
             }
 

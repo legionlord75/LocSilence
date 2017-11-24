@@ -42,10 +42,11 @@ public class LocationsActivity extends AppCompatActivity {
             @Override
             public void onPlaceSelected(Place place) {
                 Location selectedLocation;
+                boolean editing = false;
                 // If place is in db already update location info in db
                 if (db.locationInDB(place.getId())) {
                     selectedLocation = db.getLocation(place.getId());
-                    selectedLocation.setUpdatedAt(new Date().toString());
+                    editing = true;
                 }
                 // If place is new set basic new locations
                 else {
@@ -61,6 +62,7 @@ public class LocationsActivity extends AppCompatActivity {
                 }
                 // Pass location to settings activity to set the volume settings
                 Intent settingsIntent = new Intent(LocationsActivity.this, AddLocSettingsActivity.class);
+                settingsIntent.putExtra("editing", editing);
                 settingsIntent.putExtra("selectedLocation", selectedLocation);
                 startActivity(settingsIntent);
              }

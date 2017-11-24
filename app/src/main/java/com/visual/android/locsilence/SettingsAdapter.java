@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.media.AudioManager;
 import android.text.Layout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,15 +24,16 @@ import java.util.List;
 public class SettingsAdapter extends ArrayAdapter<String>{
 
     String[] volumeTypes;
-    int[] volumeLevels = {0,0,0,0};
+    int[] volumeLevels;
     int maxVolume;
     CheckBox silenceCheckBox;
     List<CheckBox> box;
 
-    public SettingsAdapter(Context context, String[] volumeTypes, int maxVolume) {
+    public SettingsAdapter(Context context, String[] volumeTypes, int[] defaultVolumes, int maxVolume) {
         super(context, R.layout.settings_row, volumeTypes);
         this.volumeTypes = volumeTypes;
         this.maxVolume = maxVolume;
+        this.volumeLevels = defaultVolumes;
     }
 
     @Override
@@ -47,6 +49,7 @@ public class SettingsAdapter extends ArrayAdapter<String>{
         final SeekBar volumeSeekbar = (SeekBar) customView.findViewById(R.id.seekBar_volume);
         final CheckBox defaultCheckBox = (CheckBox) customView.findViewById(R.id.check_default);
         volumeSeekbar.setMax(this.maxVolume);
+        volumeSeekbar.setProgress(volumeLevels[position]);
         volumeSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
