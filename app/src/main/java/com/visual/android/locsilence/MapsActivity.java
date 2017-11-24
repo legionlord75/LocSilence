@@ -58,7 +58,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onClick(View view) {
                 Intent intent = new Intent(MapsActivity.this, LocationsActivity.class);
                 startActivity(intent);
-                finish();
             }
         });
 
@@ -67,6 +66,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onClick(View view) {
                 Intent intent = new Intent(MapsActivity.this, GPSSearchActivity.class);
                 startActivity(intent);
+
             }
         });
 
@@ -112,7 +112,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         else {
             latitude = 36.9914;
-            longitude = 122.0609;
+            longitude = -122.0609;
         }
 
         if (!isNotificationPolicyAccessGranted()) {
@@ -123,8 +123,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         SQLDatabaseHandler db = new SQLDatabaseHandler(this);
         if(db.getLocalGamesCount()>0) {
-            Graphics draw = new Graphics();
-             draw.startDraw(mMap,db);
+             Graphics.startDraw(mMap,db);
         }
 
         RecursiveSilencePhoneTask recursiveSilencePhoneTask = new RecursiveSilencePhoneTask(locationManager, db, this);

@@ -12,11 +12,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Date;
+
 public class AddLocSettingsActivity extends AppCompatActivity {
 
     int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
     private static final String TAG = GPSSearchActivity.class.getSimpleName();
-    String[] volumeTypes = {"ringtone", "media", "alarms", "call"};
+    String[] volumeTypes = {"ringtone", "notifications", "alarms"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +33,7 @@ public class AddLocSettingsActivity extends AppCompatActivity {
         TextView lastUpdated = (TextView) findViewById(R.id.title_lastUpdated);
         title.setText(selectedLocation.getName());
         lastUpdated.setText("Last updated: "+ selectedLocation.getUpdatedAt());
+        selectedLocation.setUpdatedAt(new Date().toString());
 
         // Create and set listView of different volume type settings
         AudioManager am = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
@@ -51,48 +54,33 @@ public class AddLocSettingsActivity extends AppCompatActivity {
                 } else {
                     db.updateLocalGame(selectedLocation);
                 }
-                // printTestVolumes(selectedLocation);
                 Intent i = new Intent(AddLocSettingsActivity.this, MapsActivity.class);
                 startActivity(i);
+                finish();
+            }
+        });
+
+        final Button deleteButton = (Button) findViewById(R.id.button_deleteSettings);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (db.getLocation(selectedLocation.getId()) != null) {
+                    db.deleteLocalGame(selectedLocation.getId());
+                } else {
+                    alertToast("Error: unable to delete location");
+                }
+                Intent i = new Intent(AddLocSettingsActivity.this, MapsActivity.class);
+                startActivity(i);
+                finish();
             }
         });
     }
 
     public void setLocationVolumes(Location location, int[] volumeLevels){
-        final CheckBox checkBoxSilence = (CheckBox) findViewById(R.id.checkbox_silence);
         // Volumes default to 0, therefore location volumes would not need to be set
-        if(checkBoxSilence.isChecked()){
-            location.setVolRingtone(volumeLevels[0]);
-            location.setVolMedia(volumeLevels[0]);
-            location.setVolAlarms(volumeLevels[0]);
-            location.setVolCall(volumeLevels[0]);
-        }
-        else{
-            location.setVolRingtone(volumeLevels[0]);
-            location.setVolMedia(volumeLevels[1]);
-            location.setVolAlarms(volumeLevels[2]);
-            location.setVolCall(volumeLevels[3]);
-        }
-    }
-
-    // for testing, USAGE: testVolumes(selectedLocation);
-    public void printTestVolumes(Location selectedLocation){
-        final SQLDatabaseHandler db = new SQLDatabaseHandler(this);
-        final TextView volumeLevel = (TextView) findViewById(R.id.volume_levels);
-        String currentVolumes = "";
-        Location dbLocation;
-        if(db.locationInDB(selectedLocation.getId())) {
-            dbLocation = db.getLocation(selectedLocation.getId());
-            currentVolumes += dbLocation.getVolRingtone() + ",";
-            currentVolumes += dbLocation.getVolMedia() + ",";
-            currentVolumes += dbLocation.getVolAlarms() + ",";
-            currentVolumes += dbLocation.getVolCall() + ",";
-
-        }
-        else{
-            currentVolumes = "not in db";
-        }
-        volumeLevel.setText(currentVolumes);
+        location.setVolRingtone(volumeLevels[0]);
+        location.setVolNotifications(volumeLevels[1]);
+        location.setVolAlarms(volumeLevels[2]);
     }
 
     protected void alertToast(String msg) {

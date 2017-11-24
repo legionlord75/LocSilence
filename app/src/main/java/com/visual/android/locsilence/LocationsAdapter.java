@@ -18,10 +18,12 @@ import java.util.List;
 public class LocationsAdapter extends ArrayAdapter<Location> {
 
     List<Location> locations;
+    private Context context;
 
     public LocationsAdapter(Context context, List<Location> locations) {
         super(context, 0, locations);
         this.locations = locations;
+        this.context = context;
     }
 
     @Override
@@ -35,7 +37,9 @@ public class LocationsAdapter extends ArrayAdapter<Location> {
             locationName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    System.out.println("DOES SOMETHING LATER");
+                    Intent settingsIntent = new Intent(context, AddLocSettingsActivity.class);
+                    settingsIntent.putExtra("selectedLocation", locations.get(position));
+                    context.startActivity(settingsIntent);
                 }
             });
 
@@ -43,6 +47,10 @@ public class LocationsAdapter extends ArrayAdapter<Location> {
         }
 
         return convertView;
+    }
+
+    public Location getItem(int position){
+        return locations.get(position);
     }
 
 }

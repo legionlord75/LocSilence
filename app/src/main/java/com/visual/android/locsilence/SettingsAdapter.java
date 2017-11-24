@@ -25,6 +25,8 @@ public class SettingsAdapter extends ArrayAdapter<String>{
     String[] volumeTypes;
     int[] volumeLevels = {0,0,0,0};
     int maxVolume;
+    CheckBox silenceCheckBox;
+    List<CheckBox> box;
 
     public SettingsAdapter(Context context, String[] volumeTypes, int maxVolume) {
         super(context, R.layout.settings_row, volumeTypes);
@@ -63,10 +65,11 @@ public class SettingsAdapter extends ArrayAdapter<String>{
             public void onClick(View view) {
                 if(defaultCheckBox.isChecked()) {
                     volumeLevels[position] = -1;
+                    volumeSeekbar.setEnabled(false);
                     // In future grey out seekbar to demonstrate that it is not being used
-                    //seekVolume.setProgress(0);
                 }
                 else {
+                    volumeSeekbar.setEnabled(true);
                     volumeLevels[position] = volumeSeekbar.getProgress();
                 }
             }
