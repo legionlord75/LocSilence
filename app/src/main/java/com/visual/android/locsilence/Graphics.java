@@ -31,7 +31,7 @@ public class Graphics extends AppCompatActivity {
   
     public void newLocDraw(GoogleMap map,Location loc){
         Circle circle = map.addCircle(new CircleOptions().center(new LatLng(loc.getLat(),loc.getLng())).radius(100).strokeColor(Color.BLACK).fillColor(0x88FF0000));
-
+        SQLDatabaseHandler handler = new SQLDatabaseHandler(this);
         circle.setClickable(true);
         loc.setCid(circle.getId());
         handler.updateLocalGame(loc);
@@ -39,15 +39,17 @@ public class Graphics extends AppCompatActivity {
 
     //On Click radius changing Method to do so now valid
     public void radChange(GoogleMap map,String id,int nrad){
+        SQLDatabaseHandler handler = new SQLDatabaseHandler(this);
         map.clear();
-        Location nloc = handle.getLocation(id);
+        Location nloc = handler.getLocation(id);
         nloc.setRad(nrad);
-        handle.updateLocalGame(nloc);
-        startDraw(map, handle);
+        handler.updateLocalGame(nloc);
+        startDraw(map, handler);
     }
 
     //Perimeter outlining (Work in Progress) LatLngBounds promising to help
     public void perimeter(GoogleMap map){
+        SQLDatabaseHandler handler = new SQLDatabaseHandler(this);
         List<Location> enslavingall = handler.getAllLocations();
         for (int x = 0; x < enslavingall.size(); x++) {
 
