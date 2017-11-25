@@ -31,6 +31,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
     private GoogleMap mMap;
+    private double DEFAULT_LAT = 37.4220;
+    private double DEFAULT_LONG = 122.0841;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,12 +46,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Map");
-        toolbar.setSubtitle("LocSilence");
+        getSupportActionBar().setTitle("LocSilence");
+        toolbar.setSubtitle("Map");
 
-        Button mapButton = (Button)findViewById(R.id.mapButton);
-        Button locationsButton = (Button)findViewById(R.id.locButton);
-        FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
+        Button mapButton = (Button) findViewById(R.id.mapButton);
+        Button locationsButton = (Button) findViewById(R.id.locButton);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
         mapButton.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
 
@@ -73,7 +75,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -89,7 +90,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         if (checkLocationPermission()) {
             if (ContextCompat.checkSelfPermission(this,
-                    Manifest.permission. ACCESS_FINE_LOCATION)
+                    Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
                 if (mMap != null) {
                     mMap.setMyLocationEnabled(true);
@@ -106,13 +107,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         double latitude;
         double longitude;
-        if(location != null) {
+        if (location != null) {
             latitude = location.getLatitude();
             longitude = location.getLongitude();
-        }
-        else {
-            latitude = 36.9914;
-            longitude = 122.0609;
+        } else {
+            latitude = DEFAULT_LAT;
+            longitude = DEFAULT_LONG;
         }
 
         if (!isNotificationPolicyAccessGranted()) {
@@ -122,9 +122,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 14.5f));
 
         SQLDatabaseHandler db = new SQLDatabaseHandler(this);
-        if(db.getLocalGamesCount()>0) {
+        if (db.getLocalGamesCount() > 0) {
             Graphics draw = new Graphics();
-             draw.startDraw(mMap,db);
+            draw.startDraw(mMap, db);
         }
 
         RecursiveSilencePhoneTask recursiveSilencePhoneTask = new RecursiveSilencePhoneTask(locationManager, db, this);
@@ -140,7 +140,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return true;
     }
 
-    private boolean isNotificationPolicyAccessGranted()  {
+    private boolean isNotificationPolicyAccessGranted() {
         if (Build.VERSION.SDK_INT >= 23) {
             NotificationManager notificationManager = (NotificationManager)
                     this.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -160,7 +160,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public boolean checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission. ACCESS_FINE_LOCATION)
+                Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
             // Should we show an explanation?

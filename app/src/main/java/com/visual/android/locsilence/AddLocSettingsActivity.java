@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Date;
+import java.util.List;
 
 public class AddLocSettingsActivity extends AppCompatActivity {
 
@@ -26,31 +27,33 @@ public class AddLocSettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_loc_settings);
-        // Get location passed from searchBar activity
+
+        // Init info
+        final SQLDatabaseHandler db = new SQLDatabaseHandler(this);
         final Location selectedLocation = (Location)getIntent().getParcelableExtra("selectedLocation");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        final Button setButton = (Button) findViewById(R.id.button_setSettings);
+        final Button deleteButton = (Button) findViewById(R.id.button_deleteSettings);
+
+        // Set basic ui
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(selectedLocation.getAddress());
         toolbar.setSubtitle("Last updated: "+ selectedLocation.getUpdatedAt());
-        final SQLDatabaseHandler db = new SQLDatabaseHandler(this);
-        // Set Title information passed from searchBar activity
         selectedLocation.setUpdatedAt(new Date().toString());
 
-        // Create and set listView of different volume type settings
-        int[] defaultVolumes = getDefaultVolumes(selectedLocation, getIntent().getExtras().getBoolean("editing"), db);
-
+        // Create and set custom adapter of different volume type settings
         AudioManager am = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
         final SettingsAdapter settingsAdapter = new SettingsAdapter(this, volumeTypes,
-                defaultVolumes, am.getStreamMaxVolume(AudioManager.STREAM_RING));
+                selectedLocation.getVolumes(), am.getStreamMaxVolume(AudioManager.STREAM_SYSTEM));
         ListView settingsListView = (ListView) findViewById(R.id.listView_settings);
         settingsListView.setAdapter(settingsAdapter);
 
-        final Button setButton = (Button) findViewById(R.id.button_setSettings);
+        // Init Listeners
         setButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int[] volumeLevels = settingsAdapter.getVolumeLevels();
-                setLocationVolumes(selectedLocation, volumeLevels);
+                List<Integer> volumeLevels = settingsAdapter.getVolumeLevels();
+                selectedLocation.setVolumes(volumeLevels);
 
                 if (db.getLocation(selectedLocation.getId()) == null) {
                     db.addLocation(selectedLocation);
@@ -64,7 +67,6 @@ public class AddLocSettingsActivity extends AppCompatActivity {
             }
         });
 
-        final Button deleteButton = (Button) findViewById(R.id.button_deleteSettings);
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -78,32 +80,4 @@ public class AddLocSettingsActivity extends AppCompatActivity {
             }
         });
     }
-
-
-    public int[] getDefaultVolumes(Location location, boolean editing, SQLDatabaseHandler db){
-        int[] defaultVolumes;
-        if(editing){
-            defaultVolumes = new int[]{location.getVolRingtone(), location.getVolNotifications(), location.getVolAlarms()};
-        }
-        else{
-            defaultVolumes = new int[]{0,0,0};
-        }
-        return defaultVolumes;
-    }
-
-    public void setLocationVolumes(Location location, int[] volumeLevels){
-        location.setVolRingtone(volumeLevels[0]);
-        location.setVolNotifications(volumeLevels[1]);
-        location.setVolAlarms(volumeLevels[2]);
-    }
-
-
-    protected void alertToast(String msg) {
-        Context context = getApplicationContext();
-        CharSequence text = msg;
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
-    }
-
 }

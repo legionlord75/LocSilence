@@ -1,20 +1,16 @@
 package com.visual.android.locsilence;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.PlaceFilter;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class GPSSearchActivity extends AppCompatActivity {
@@ -28,37 +24,17 @@ public class GPSSearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gpssearch);
 
+        // Init info
         final SQLDatabaseHandler db = new SQLDatabaseHandler(this);
 
+        // Set searchBar
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
-
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-                Location selectedLocation;
-                boolean editing = false;
+                Location selectedLocation = getSelectedLocation(place, db);
                 Intent settingsIntent = new Intent(GPSSearchActivity.this, AddLocSettingsActivity.class);
-                // If place is in db already update location info in db
-                if(db.locationInDB(place.getId())) {
-                    selectedLocation = db.getLocation(place.getId());
-                    editing = true;
-                }
-                // If place is new set basic new locations
-                else{
-                    selectedLocation = new Location(
-                            place.getId(),
-                            place.getName().toString(),
-                            place.getAddress().toString(),
-                            (float)place.getLatLng().latitude,
-                            (float)place.getLatLng().latitude,
-                            new Date().toString(),
-                            new Date().toString(),
-                            "",
-                            100);
-                }
-                // Pass location to settings activity to set the volume settings
-                settingsIntent.putExtra("editing", editing);
                 settingsIntent.putExtra("selectedLocation", selectedLocation);
                 db.close();
                 startActivity(settingsIntent);
@@ -66,11 +42,35 @@ public class GPSSearchActivity extends AppCompatActivity {
 
             @Override
             public void onError(Status status) {
-                alertToast("An error occurred with google location");
+                Utility.alertToast(getApplicationContext(),"An error occurred with google location");
                 Log.i(TAG, "An error occurred: " + status);
             }
         });
     }
+
+    // Return either a location object if 'place' already exists in db, else a new location object
+    public Location getSelectedLocation(Place place, SQLDatabaseHandler db){
+        // If place is in db already update location info in db
+        Location selectedLocation;
+        if (db.locationInDB(place.getId())) {
+            selectedLocation = db.getLocation(place.getId());
+        }
+        // If place is new set basic new locations
+        else {
+            selectedLocation = new Location(
+                    place.getId(),
+                    place.getName().toString(),
+                    place.getAddress().toString(),
+                    (float) place.getLatLng().latitude,
+                    (float) place.getLatLng().latitude,
+                    new Date().toString(),
+                    new Date().toString(),
+                    "",
+                    100);
+        }
+        return selectedLocation;
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -89,11 +89,4 @@ public class GPSSearchActivity extends AppCompatActivity {
         }
     }
 
-    protected void alertToast(String msg){
-        Context context = getApplicationContext();
-        CharSequence text = msg;
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
-    }
 }

@@ -7,7 +7,9 @@ import android.util.Log;
 import com.google.android.gms.location.places.Place;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by RamiK on 10/14/2017.
@@ -119,6 +121,10 @@ public class Location implements Parcelable{
         return updatedAt;
     }
 
+    public List<Integer> getVolumes(){
+        return Arrays.asList(this.vol_ringtone, this.vol_notifications, this.vol_alarms);
+    }
+
     public int getVolRingtone() {
         return vol_ringtone;
     }
@@ -162,6 +168,12 @@ public class Location implements Parcelable{
     public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    public void setVolumes(List<Integer> volumeLevels){
+        this.setVolRingtone(volumeLevels.get(0));
+        this.setVolNotifications(volumeLevels.get(1));
+        this.setVolAlarms(volumeLevels.get(2));
+    };
 
     public void setVolRingtone(int vol_ringtone) { this.vol_ringtone = vol_ringtone; }
 
