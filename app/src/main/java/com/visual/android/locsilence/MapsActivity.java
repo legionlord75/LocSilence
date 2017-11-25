@@ -161,7 +161,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         SQLDatabaseHandler db = new SQLDatabaseHandler(this);
         if (db.getLocalGamesCount() > 0) {
-            draw.startDraw(mMap, db);
+           db = draw.startDraw(mMap, db);
         }
 
         RecursiveSilencePhoneTask recursiveSilencePhoneTask = new RecursiveSilencePhoneTask(locationManager, db, this);

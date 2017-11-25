@@ -40,7 +40,6 @@ public class SQLDatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_VOL_RINGTONE = "vol_ringtone";
     private static final String KEY_VOL_MEDIA = "vol_media";
     private static final String KEY_VOL_ALARMS = "vol_alarms";
-    private static final String KEY_VOL_CALL = "vol_call";
     private static final String KEY_CID = "circle_id";
     private static final String KEY_RAD = "radius";
 
@@ -56,7 +55,7 @@ public class SQLDatabaseHandler extends SQLiteOpenHelper {
                 + KEY_ADDRESS + " VARCHAR(255)," + KEY_LAT + " FLOAT(255, 255)," + KEY_LONG + " FLOAT(255, 255),"
                 + KEY_CREATED_AT + " DATETIME," + KEY_UPDATED_AT + " DATETIME," +
                 KEY_VOL_RINGTONE + " TINYINT(255)," + KEY_VOL_MEDIA + " TINYINT(255)," +
-                KEY_VOL_ALARMS + " TINYINT(255)," + KEY_VOL_CALL + " TINYINT(255)," +
+                KEY_VOL_ALARMS + " TINYINT(255)," +
                 KEY_CID + " VARCHAR(255)," + KEY_RAD + " TINY(255))";
         System.out.println(CREATE_CONTACTS_TABLE);
         db.execSQL(CREATE_CONTACTS_TABLE);
