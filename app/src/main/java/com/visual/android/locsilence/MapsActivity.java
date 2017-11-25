@@ -53,15 +53,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         actionBar.setDisplayUseLogoEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
 
-        /*
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Map");
-        toolbar.setSubtitle("LocSilence");
-        */
 
-        getSupportActionBar().setTitle("LocSilence");
-        toolbar.setSubtitle("Map");
 
         Button mapButton = (Button) findViewById(R.id.mapButton);
         Button locationsButton = (Button) findViewById(R.id.locButton);

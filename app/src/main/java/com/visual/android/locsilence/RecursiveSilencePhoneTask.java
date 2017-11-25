@@ -48,18 +48,17 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
     protected void onPostExecute(LatLng latLng) {
         System.out.println("POST");
 
-
         super.onPostExecute(latLng);
 
         //List<Location> locations = db.getAllLocations();
         List<Integer> streamTypes = Arrays.asList(AudioManager.STREAM_RING,
                 AudioManager.STREAM_NOTIFICATION, AudioManager.STREAM_ALARM);
 
-
         super.onPostExecute(latLng);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.context);
         Boolean worker_on = prefs.getBoolean("operation_switch", true);
         boolean flag = false;
+
 
         if (worker_on){
             System.out.println("Worker is on");
@@ -79,6 +78,7 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
                     try {
                         //audio.setRingerMode(AudioManager.RINGER_MODE_SILENT);
                         modifyPhoneVolume(streamTypes, location.getVolumes());
+
                         sendNotification("Silencing activated");
                         recently_silenced = true;
                     } catch (SecurityException e) {
@@ -86,7 +86,6 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
                     }
                     flag = true;
                     break;
-
                 }
             }
         }
@@ -155,8 +154,14 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
 
     private void revertPhoneVolume(List<Integer> streamType) {
         for (int i = 0; i < streamType.size(); i++) {
-            if (savedVolumes.get(i) != -1) {
-                audio.setStreamVolume(streamType.get(i), savedVolumes.get(i), 0);
+            //Tries to do get on a list that may be empty
+            try {
+                if (savedVolumes.get(i) != -1) {
+                    audio.setStreamVolume(streamType.get(i), savedVolumes.get(i), 0);
+                }
+            }
+            catch (NullPointerException e){
+                    continue;
             }
         }
     }
