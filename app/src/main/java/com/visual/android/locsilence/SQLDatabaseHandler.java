@@ -17,11 +17,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class  SQLDatabaseHandler extends SQLiteOpenHelper {
+public class SQLDatabaseHandler extends SQLiteOpenHelper {
 
     // All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 8;
 
     // Database Name
     private static final String DATABASE_NAME = "Locations.db";
@@ -32,6 +32,7 @@ public class  SQLDatabaseHandler extends SQLiteOpenHelper {
     // Contacts Table Columns names
     private static final String KEY_ID = "id";
     private static final String KEY_NAME = "name";
+    private static final String KEY_ADDRESS = "address";
     private static final String KEY_LAT = "lat";
     private static final String KEY_LONG = "long";
     private static final String KEY_CREATED_AT = "created_at";
@@ -52,7 +53,7 @@ public class  SQLDatabaseHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_LOCATIONS + "("
                 + KEY_ID + " VARCHAR(255) PRIMARY KEY," + KEY_NAME + " VARCHAR(255),"
-                + KEY_LAT + " FLOAT(255, 255)," + KEY_LONG + " FLOAT(255, 255),"
+                + KEY_ADDRESS + " VARCHAR(255)," + KEY_LAT + " FLOAT(255, 255)," + KEY_LONG + " FLOAT(255, 255),"
                 + KEY_CREATED_AT + " DATETIME," + KEY_UPDATED_AT + " DATETIME," +
                 KEY_VOL_RINGTONE + " TINYINT(255)," + KEY_VOL_MEDIA + " TINYINT(255)," +
                 KEY_VOL_ALARMS + " TINYINT(255)," + KEY_VOL_CALL + " TINYINT(255)," +
@@ -83,6 +84,7 @@ public class  SQLDatabaseHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(KEY_ID, location.getId());
         values.put(KEY_NAME, location.getName());
+        values.put(KEY_ADDRESS, location.getAddress());
         values.put(KEY_LAT, location.getLat());
         values.put(KEY_LONG, location.getLng());
         values.put(KEY_CREATED_AT, location.getCreatedAt());
@@ -108,11 +110,11 @@ public class  SQLDatabaseHandler extends SQLiteOpenHelper {
     // Getting single contact
     public Location getLocation(String id) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_LOCATIONS, new String[] { KEY_ID,
-                KEY_NAME, KEY_LAT, KEY_LONG, KEY_CREATED_AT, KEY_UPDATED_AT,
-                KEY_VOL_RINGTONE, KEY_VOL_MEDIA, KEY_VOL_ALARMS, KEY_VOL_CALL,
-                        KEY_CID,KEY_RAD}, KEY_ID + "=?",
-                new String[] { id }, null, null, null, null);
+        Cursor cursor = db.query(TABLE_LOCATIONS, new String[]{KEY_ID,
+                        KEY_NAME, KEY_ADDRESS, KEY_LAT, KEY_LONG, KEY_CREATED_AT, KEY_UPDATED_AT,
+                        KEY_VOL_RINGTONE, KEY_VOL_MEDIA, KEY_VOL_ALARMS, KEY_VOL_CALL,
+                        KEY_CID, KEY_RAD}, KEY_ID + "=?",
+                new String[]{id}, null, null, null, null);
 
         if (cursor != null)
             cursor.moveToFirst();
@@ -121,17 +123,18 @@ public class  SQLDatabaseHandler extends SQLiteOpenHelper {
             Location location = new Location();
             location.setId(cursor.getString(0));
             location.setName(cursor.getString(1));
-            location.setLat(cursor.getFloat(2));
-            location.setLng(cursor.getFloat(3));
-            location.setCreatedAt(cursor.getString(4));
-            location.setUpdatedAt(cursor.getString(5));
-            location.setVolRingtone(cursor.getInt(6));
-            location.setVolNotifications(cursor.getInt(7));
-            location.setVolAlarms(cursor.getInt(8));
-            location.setCid(cursor.getString(9));
-            location.setRad(cursor.getInt(10));
+            location.setAddress(cursor.getString(2));
+            location.setLat(cursor.getFloat(3));
+            location.setLng(cursor.getFloat(4));
+            location.setCreatedAt(cursor.getString(5));
+            location.setUpdatedAt(cursor.getString(6));
+            location.setVolRingtone(cursor.getInt(7));
+            location.setVolNotifications(cursor.getInt(8));
+            location.setVolAlarms(cursor.getInt(9));
+            location.setCid(cursor.getString(10));
+            location.setRad(cursor.getInt(11));
 
-          //  cursor.close();
+            //  cursor.close();
             return location;
 
         }
@@ -156,15 +159,16 @@ public class  SQLDatabaseHandler extends SQLiteOpenHelper {
                 Location location = new Location();
                 location.setId(cursor.getString(0));
                 location.setName(cursor.getString(1));
-                location.setLat(cursor.getFloat(2));
-                location.setLng(cursor.getFloat(3));
-                location.setCreatedAt(cursor.getString(4));
-                location.setUpdatedAt(cursor.getString(5));
-                location.setVolRingtone(cursor.getInt(6));
-                location.setVolNotifications(cursor.getInt(7));
-                location.setVolAlarms(cursor.getInt(8));
-                location.setCid(cursor.getString(9));
-                location.setRad(cursor.getInt(10));
+                location.setAddress(cursor.getString(2));
+                location.setLat(cursor.getFloat(3));
+                location.setLng(cursor.getFloat(4));
+                location.setCreatedAt(cursor.getString(5));
+                location.setUpdatedAt(cursor.getString(6));
+                location.setVolRingtone(cursor.getInt(7));
+                location.setVolNotifications(cursor.getInt(8));
+                location.setVolAlarms(cursor.getInt(9));
+                location.setCid(cursor.getString(10));
+                location.setRad(cursor.getInt(11));
                 // Adding contact to list
                 allLocations.add(location);
             } while (cursor.moveToNext());
@@ -189,6 +193,7 @@ public class  SQLDatabaseHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(KEY_ID, location.getId());
         values.put(KEY_NAME, location.getName());
+        values.put(KEY_ADDRESS, location.getAddress());
         values.put(KEY_LAT, location.getLat());
         values.put(KEY_LONG, location.getLng());
         values.put(KEY_CREATED_AT, location.getCreatedAt());
@@ -241,6 +246,7 @@ public class  SQLDatabaseHandler extends SQLiteOpenHelper {
         List<Location> locations = getAllLocations();
         for (Location location : locations) {
             Log.i("logDB", "(name: " + location.getName() + ") | " +
+                    "(Address: " + location.getAddress() + ") | " +
                     "(LatLong: " + location.getLat() + ":" + location.getLng() + ") |" +
                     "(vol_ringtone: " + location.getVolRingtone() + ") |" +
                     "(vol_media: " + location.getVolNotifications() + ") |" +
