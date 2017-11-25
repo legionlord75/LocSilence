@@ -32,7 +32,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private GoogleMap mMap;
     private double DEFAULT_LAT = 37.4220;
-    private double DEFAULT_LONG = 122.0841;
+    private double DEFAULT_LONG = -122.0841;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
