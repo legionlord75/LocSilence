@@ -100,8 +100,7 @@ public class LocationsActivity extends AppCompatActivity {
                     (float) place.getLatLng().longitude,
                     new Date().toString(),
                     new Date().toString(),
-                    "",
-                    100);
+                    "");
         }
         return selectedLocation;
     }
