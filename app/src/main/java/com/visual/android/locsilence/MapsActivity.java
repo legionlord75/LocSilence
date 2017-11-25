@@ -110,9 +110,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (location != null) {
             latitude = location.getLatitude();
             longitude = location.getLongitude();
-        } else {
-            latitude = DEFAULT_LAT;
-            longitude = DEFAULT_LONG;
+        }
+        else {
+            latitude = 36.9914;
+            longitude = -122.0609;
         }
 
         if (!isNotificationPolicyAccessGranted()) {
