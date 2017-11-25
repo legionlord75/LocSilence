@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -27,16 +28,16 @@ public class AddLocSettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_loc_settings);
         // Get location passed from searchBar activity
         final Location selectedLocation = (Location)getIntent().getParcelableExtra("selectedLocation");
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(selectedLocation.getAddress());
+        toolbar.setSubtitle("Last updated: "+ selectedLocation.getUpdatedAt());
         final SQLDatabaseHandler db = new SQLDatabaseHandler(this);
         // Set Title information passed from searchBar activity
-        TextView title = (TextView) findViewById(R.id.title_place);
-        title.setText(selectedLocation.getName());
-        TextView lastUpdated = (TextView) findViewById(R.id.title_lastUpdated);
-        lastUpdated.setText("Last updated: "+ selectedLocation.getUpdatedAt());
         selectedLocation.setUpdatedAt(new Date().toString());
 
         // Create and set listView of different volume type settings
-        int[] defaultVolumes = setDefaultVolumes(selectedLocation, getIntent().getExtras().getBoolean("editing"), db);
+        int[] defaultVolumes = getDefaultVolumes(selectedLocation, getIntent().getExtras().getBoolean("editing"), db);
 
         AudioManager am = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
         final SettingsAdapter settingsAdapter = new SettingsAdapter(this, volumeTypes,
@@ -69,8 +70,6 @@ public class AddLocSettingsActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (db.getLocation(selectedLocation.getId()) != null) {
                     db.deleteLocalGame(selectedLocation.getId());
-                } else {
-                    alertToast("Error: unable to delete location");
                 }
                 Intent i = new Intent(AddLocSettingsActivity.this, MapsActivity.class);
                 db.close();
@@ -81,7 +80,7 @@ public class AddLocSettingsActivity extends AppCompatActivity {
     }
 
 
-    public int[] setDefaultVolumes(Location location, boolean editing, SQLDatabaseHandler db){
+    public int[] getDefaultVolumes(Location location, boolean editing, SQLDatabaseHandler db){
         int[] defaultVolumes;
         if(editing){
             defaultVolumes = new int[]{location.getVolRingtone(), location.getVolNotifications(), location.getVolAlarms()};
@@ -97,6 +96,7 @@ public class AddLocSettingsActivity extends AppCompatActivity {
         location.setVolNotifications(volumeLevels[1]);
         location.setVolAlarms(volumeLevels[2]);
     }
+
 
     protected void alertToast(String msg) {
         Context context = getApplicationContext();

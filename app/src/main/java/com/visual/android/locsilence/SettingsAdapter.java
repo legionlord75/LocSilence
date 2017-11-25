@@ -49,8 +49,14 @@ public class SettingsAdapter extends ArrayAdapter<String>{
         final SeekBar volumeSeekbar = (SeekBar) customView.findViewById(R.id.seekBar_volume);
         final CheckBox defaultCheckBox = (CheckBox) customView.findViewById(R.id.check_default);
         volumeSeekbar.setMax(this.maxVolume);
-        volumeSeekbar.setProgress(volumeLevels[position]);
-        volumeSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        if(volumeLevels[position] >= 0) {
+            volumeSeekbar.setProgress(volumeLevels[position]);
+        }
+        else{
+            defaultCheckBox.setChecked(true);
+            volumeSeekbar.setEnabled(false);
+        }
+           volumeSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 volumeLevels[position] = progress;
@@ -84,7 +90,6 @@ public class SettingsAdapter extends ArrayAdapter<String>{
     public int[] getVolumeLevels(){
         return volumeLevels;
     }
-
 
     @Override
     public String getItem(int position) {

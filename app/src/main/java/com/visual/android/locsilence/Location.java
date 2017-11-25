@@ -17,6 +17,7 @@ public class Location implements Parcelable{
 
     private String id;
     private String name;
+    private String address;
     private double lat;
     private double lng;
     private String createdAt;
@@ -33,6 +34,7 @@ public class Location implements Parcelable{
     public Location(Parcel parcel) {
         this.id = parcel.readString();
         this.name = parcel.readString();
+        this.address = parcel.readString();
         this.createdAt = parcel.readString();
         this.updatedAt = parcel.readString();
         this.lat = parcel.readDouble();
@@ -44,10 +46,11 @@ public class Location implements Parcelable{
         this.rad = parcel.readInt();
     }
 
-    public Location(String id, String name, double lat, double lng,
+    public Location(String id, String name, String address, double lat, double lng,
                     String createdAt, String updatedAt, String cid, int rad) {
         this.id = id;
         this.name = name;
+        this.address = address;
         this.lat = lat;
         this.lng = lng;
         this.createdAt = createdAt;
@@ -63,6 +66,7 @@ public class Location implements Parcelable{
     public void writeToParcel(Parcel parcel, int args){
         parcel.writeString(this.id);
         parcel.writeString(this.name);
+        parcel.writeString(this.address);
         parcel.writeString(this.createdAt);
         parcel.writeString(this.updatedAt);
         parcel.writeDouble(this.lat);
@@ -96,6 +100,8 @@ public class Location implements Parcelable{
     public String getName() {
         return name;
     }
+
+    public String getAddress(){ return address; }
 
     public double getLat() {
         return lat;
@@ -138,6 +144,8 @@ public class Location implements Parcelable{
     public void setName(String name) {
         this.name = name;
     }
+
+    public void setAddress(String address){ this.address = address; }
 
     public void setLat(float lat) {
         this.lat = lat;

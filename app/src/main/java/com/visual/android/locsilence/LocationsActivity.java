@@ -30,11 +30,18 @@ public class LocationsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.list_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Locations List");
+        toolbar.setSubtitle("LocSilence");
+
+
         Button mapButton = (Button)findViewById(R.id.mapButton);
         Button locationsButton = (Button)findViewById(R.id.locButton);
         locationsButton.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
 
         final SQLDatabaseHandler db = new SQLDatabaseHandler(this);
+
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.locList_place_autocomplete_fragment);
         autocompleteFragment.setHint("Update or add location");
@@ -52,7 +59,8 @@ public class LocationsActivity extends AppCompatActivity {
                 else {
                     selectedLocation = new Location(
                             place.getId(),
-                            place.getName().toString() + "\n" + place.getAddress().toString(),
+                            place.getName().toString(),
+                            place.getAddress().toString(),
                             (float) place.getLatLng().latitude,
                             (float) place.getLatLng().latitude,
                             new Date().toString(),
@@ -84,7 +92,7 @@ public class LocationsActivity extends AppCompatActivity {
 
         ListView listView = (ListView)findViewById(R.id.listview);
         List<Location> locations = db.getAllLocations();
-        LocationsAdapter locationsAdapter = new LocationsAdapter(this, locations);
+        LocationsAdapter locationsAdapter = new LocationsAdapter(this, locations, db);
         listView.setAdapter(locationsAdapter);
 
     }

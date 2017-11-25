@@ -48,7 +48,8 @@ public class GPSSearchActivity extends AppCompatActivity {
                 else{
                     selectedLocation = new Location(
                             place.getId(),
-                            place.getName().toString() + "\n" + place.getAddress().toString(),
+                            place.getName().toString(),
+                            place.getAddress().toString(),
                             (float)place.getLatLng().latitude,
                             (float)place.getLatLng().latitude,
                             new Date().toString(),
