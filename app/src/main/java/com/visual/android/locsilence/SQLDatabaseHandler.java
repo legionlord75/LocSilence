@@ -133,7 +133,7 @@ public class SQLDatabaseHandler extends SQLiteOpenHelper {
             location.setCid(cursor.getString(10));
             location.setRad(cursor.getInt(11));
 
-            //  cursor.close();
+            cursor.close();
             return location;
 
         }
