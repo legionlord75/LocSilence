@@ -22,11 +22,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.List;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -40,10 +44,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -53,13 +53,62 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         actionBar.setDisplayUseLogoEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
 
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
 
         Button mapButton = (Button) findViewById(R.id.mapButton);
         Button locationsButton = (Button) findViewById(R.id.locButton);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab_cur = (FloatingActionButton) findViewById(R.id.fab_go_to_cur_loc);
+
 
         mapButton.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+
+        fab_cur.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mMap != null){
+                    if (checkLocationPermission()) {
+                        if (ContextCompat.checkSelfPermission(getApplicationContext(),
+                                Manifest.permission.ACCESS_FINE_LOCATION)
+                                == PackageManager.PERMISSION_GRANTED) {
+                            if (mMap != null) {
+                                mMap.setMyLocationEnabled(true);
+                                mMap.getUiSettings().setMyLocationButtonEnabled(true);
+                            }
+                        }
+                    }
+                    LocationManager locationManager = (LocationManager)
+                            getSystemService(Context.LOCATION_SERVICE);
+                    Criteria criteria = new Criteria();
+                    android.location.Location location = locationManager.getLastKnownLocation(locationManager
+                            .getBestProvider(criteria, false));
+
+                    double latitude;
+                    double longitude;
+                    if (location != null) {
+                        latitude = location.getLatitude();
+                        longitude = location.getLongitude();
+                    }
+                    else {
+                        latitude = 36.9914;
+                        longitude = -122.0609;
+                    }
+
+                    if (!isNotificationPolicyAccessGranted()) {
+                        requestNotificationPolicyAccess();
+                    }
+
+                    CameraUpdate cam_loc = CameraUpdateFactory.newLatLngZoom(
+                            new LatLng(latitude, longitude), 14.5f);
+                    mMap.animateCamera(cam_loc);
+
+                }
+            }
+        });
 
         locationsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,20 +205,24 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             draw.startDraw(mMap, db);
         }
 
+        // Obtain all locations
+        List<Location> locations = db.getAllLocations();
+
+        for (Location Savedlocation : locations) {
+            System.out.println("marker maker hit");
+            System.out.println("current lat: " + Savedlocation.getLat());
+            System.out.println("current lng: " + Savedlocation.getLng());
+            LatLng loc = new LatLng(Savedlocation.getLat(), Savedlocation.getLng());
+            mMap.addMarker(new MarkerOptions().position(loc).title(Savedlocation.getName()));
+        }
+
+
         RecursiveSilencePhoneTask recursiveSilencePhoneTask = new RecursiveSilencePhoneTask(locationManager, db, this);
         recursiveSilencePhoneTask.execute(locationManager);
 
     }
 
-    /*
-    //To Setup dropdown Menu
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        //Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-    */
+
 
     private boolean isNotificationPolicyAccessGranted() {
         if (Build.VERSION.SDK_INT >= 23) {

@@ -88,7 +88,7 @@ public class LocationsActivity extends AppCompatActivity {
                     place.getName().toString(),
                     place.getAddress().toString(),
                     (float) place.getLatLng().latitude,
-                    (float) place.getLatLng().latitude,
+                    (float) place.getLatLng().longitude,
                     new Date().toString(),
                     new Date().toString(),
                     "",
