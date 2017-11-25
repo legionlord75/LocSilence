@@ -112,7 +112,7 @@ public class SQLDatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABLE_LOCATIONS, new String[]{KEY_ID,
                         KEY_NAME, KEY_ADDRESS, KEY_LAT, KEY_LONG, KEY_CREATED_AT, KEY_UPDATED_AT,
-                        KEY_VOL_RINGTONE, KEY_VOL_MEDIA, KEY_VOL_ALARMS, KEY_VOL_CALL,
+                        KEY_VOL_RINGTONE, KEY_VOL_MEDIA, KEY_VOL_ALARMS,
                         KEY_CID, KEY_RAD}, KEY_ID + "=?",
                 new String[]{id}, null, null, null, null);
 
