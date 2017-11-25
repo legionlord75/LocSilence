@@ -18,11 +18,13 @@ import java.util.List;
 public class Graphics extends AppCompatActivity {
     public static String ids = null;
     //On Start drawing the circles for stored locations
-    public void startDraw(GoogleMap map, SQLDatabaseHandler handler){
+    public SQLDatabaseHandler startDraw(GoogleMap map, SQLDatabaseHandler handler){
         List<Location> enslavingall = handler.getAllLocations();
         //iterates through database and draws the circles
         for (int x = 0; x < enslavingall.size(); x++) {
             Location cur = enslavingall.get(x);
+            Integer tmp = cur.getRad();
+            Log.e("rad",tmp.toString());
             LatLng cent = new LatLng(cur.getLat(),cur.getLng());
             CircleOptions opt = new CircleOptions().center(cent).radius(100).strokeColor(Color.BLACK).fillColor(0xFFFF0000).clickable(true);
             final Circle circle = map.addCircle(opt);
@@ -36,6 +38,7 @@ public class Graphics extends AppCompatActivity {
             cur.setRad(100);
             handler.updateLocalGame(cur);
         }
+        return handler;
     }
 
     // when a new location is added then newLocDraw needs to be called to add the location(for if we add adding locations on map activity)

@@ -32,24 +32,8 @@ public class Location implements Parcelable{
 
     public Location(){}
 
-    // default parcel constructor
-    public Location(Parcel parcel) {
-        this.id = parcel.readString();
-        this.name = parcel.readString();
-        this.address = parcel.readString();
-        this.createdAt = parcel.readString();
-        this.updatedAt = parcel.readString();
-        this.lat = parcel.readDouble();
-        this.lng = parcel.readDouble();
-        this.vol_ringtone = parcel.readInt();
-        this.vol_notifications = parcel.readInt();
-        this.vol_alarms = parcel.readInt();
-        this.cid = parcel.readString();
-        this.rad = parcel.readInt();
-    }
-
     public Location(String id, String name, String address, double lat, double lng,
-                    String createdAt, String updatedAt, String cid, int rad) {
+                    String createdAt, String updatedAt, String cid) {
         this.id = id;
         this.name = name;
         this.address = address;
@@ -61,7 +45,22 @@ public class Location implements Parcelable{
         this.vol_notifications = 0;
         this.vol_alarms = 0;
         this.cid=cid;
-        this.rad=rad;
+        this.rad=100;
+    }
+    // default parcel constructor
+    public Location(Parcel parcel) {
+        this.id = parcel.readString();
+        this.name = parcel.readString();
+        this.address = parcel.readString();
+        this.lat = parcel.readDouble();
+        this.lng = parcel.readDouble();
+        this.createdAt = parcel.readString();
+        this.updatedAt = parcel.readString();
+        this.vol_ringtone = parcel.readInt();
+        this.vol_notifications = parcel.readInt();
+        this.vol_alarms = parcel.readInt();
+        this.cid = parcel.readString();
+        this.rad = parcel.readInt();
     }
 
     @Override
