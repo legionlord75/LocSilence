@@ -9,9 +9,11 @@ import android.location.LocationManager;
 import android.media.AudioManager;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
@@ -27,12 +29,12 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
     private SQLDatabaseHandler db;
     private Context context;
     private AudioManager audio;
+    private List<Integer> savedVolumes;
 
     boolean recently_silenced = false;
 
     NotificationCompat.Builder notification;
     private static final int notifID = 12345;
-
 
 
     public RecursiveSilencePhoneTask(LocationManager locationManager, SQLDatabaseHandler db, Context context) {
@@ -45,6 +47,13 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
     @Override
     protected void onPostExecute(LatLng latLng) {
         System.out.println("POST");
+
+
+        super.onPostExecute(latLng);
+
+        //List<Location> locations = db.getAllLocations();
+        List<Integer> streamTypes = Arrays.asList(AudioManager.STREAM_RING,
+                AudioManager.STREAM_NOTIFICATION, AudioManager.STREAM_ALARM);
 
 
         super.onPostExecute(latLng);
@@ -68,7 +77,8 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
                 // If results has length 3 or greater, the final bearing is stored in results[2]
                 if (results[0] < radius) {
                     try {
-                        audio.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                        //audio.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                        modifyPhoneVolume(streamTypes, location.getVolumes());
                         sendNotification("Silencing activated");
                         recently_silenced = true;
                     } catch (SecurityException e) {
@@ -76,6 +86,7 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
                     }
                     flag = true;
                     break;
+
                 }
             }
         }
@@ -84,8 +95,10 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
         }
 
         if (!flag) {
+            Log.i("debug", "Did not find location within range");
             try {
-                audio.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                //audio.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                revertPhoneVolume(streamTypes);
                 if (recently_silenced) {
                     sendNotification("Silencing deactivated");
                 }
@@ -102,7 +115,7 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
     public void sendNotification(String message) {
         NotificationManager nm = (NotificationManager) this.context.getSystemService(NOTIFICATION_SERVICE);
 
-        if(isNotificationVisible()){
+        if (isNotificationVisible()) {
             nm.cancel(notifID);
         }
 
@@ -128,4 +141,24 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
         PendingIntent test = PendingIntent.getActivity(context, notifID, notificationIntent, PendingIntent.FLAG_NO_CREATE);
         return test != null;
     }
+
+    private void modifyPhoneVolume(List<Integer> streamTypes, List<Integer> volumeLevels) {
+        for (int i = 0; i < streamTypes.size(); i++) {
+            if (volumeLevels.get(i) != -1) {
+                savedVolumes.add(audio.getStreamVolume(streamTypes.get(i)));
+                audio.setStreamVolume(streamTypes.get(i), volumeLevels.get(i), 0);
+            } else {
+                savedVolumes.add(-1);
+            }
+        }
+    }
+
+    private void revertPhoneVolume(List<Integer> streamType) {
+        for (int i = 0; i < streamType.size(); i++) {
+            if (savedVolumes.get(i) != -1) {
+                audio.setStreamVolume(streamType.get(i), savedVolumes.get(i), 0);
+            }
+        }
+    }
+
 }

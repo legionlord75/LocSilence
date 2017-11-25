@@ -7,7 +7,9 @@ import android.util.Log;
 import com.google.android.gms.location.places.Place;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by RamiK on 10/14/2017.
@@ -17,6 +19,7 @@ public class Location implements Parcelable{
 
     private String id;
     private String name;
+    private String address;
     private double lat;
     private double lng;
     private String createdAt;
@@ -33,6 +36,7 @@ public class Location implements Parcelable{
     public Location(Parcel parcel) {
         this.id = parcel.readString();
         this.name = parcel.readString();
+        this.address = parcel.readString();
         this.createdAt = parcel.readString();
         this.updatedAt = parcel.readString();
         this.lat = parcel.readDouble();
@@ -44,10 +48,11 @@ public class Location implements Parcelable{
         this.rad = parcel.readInt();
     }
 
-    public Location(String id, String name, double lat, double lng,
+    public Location(String id, String name, String address, double lat, double lng,
                     String createdAt, String updatedAt, String cid, int rad) {
         this.id = id;
         this.name = name;
+        this.address = address;
         this.lat = lat;
         this.lng = lng;
         this.createdAt = createdAt;
@@ -63,6 +68,7 @@ public class Location implements Parcelable{
     public void writeToParcel(Parcel parcel, int args){
         parcel.writeString(this.id);
         parcel.writeString(this.name);
+        parcel.writeString(this.address);
         parcel.writeString(this.createdAt);
         parcel.writeString(this.updatedAt);
         parcel.writeDouble(this.lat);
@@ -97,6 +103,8 @@ public class Location implements Parcelable{
         return name;
     }
 
+    public String getAddress(){ return address; }
+
     public double getLat() {
         return lat;
     }
@@ -111,6 +119,10 @@ public class Location implements Parcelable{
 
     public String getUpdatedAt() {
         return updatedAt;
+    }
+
+    public List<Integer> getVolumes(){
+        return Arrays.asList(this.vol_ringtone, this.vol_notifications, this.vol_alarms);
     }
 
     public int getVolRingtone() {
@@ -139,6 +151,8 @@ public class Location implements Parcelable{
         this.name = name;
     }
 
+    public void setAddress(String address){ this.address = address; }
+
     public void setLat(float lat) {
         this.lat = lat;
     }
@@ -155,9 +169,15 @@ public class Location implements Parcelable{
         this.updatedAt = updatedAt;
     }
 
+    public void setVolumes(List<Integer> volumeLevels){
+        this.setVolRingtone(volumeLevels.get(0));
+        this.setVolNotifications(volumeLevels.get(1));
+        this.setVolAlarms(volumeLevels.get(2));
+    };
+
     public void setVolRingtone(int vol_ringtone) { this.vol_ringtone = vol_ringtone; }
 
-    public void setVolNotifications(int vol_media) { this.vol_notifications = vol_notifications; }
+    public void setVolNotifications(int vol_notifications) { this.vol_notifications = vol_notifications; }
 
     public void setVolAlarms(int vol_alarms) { this.vol_alarms = vol_alarms; }
 
