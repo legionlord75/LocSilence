@@ -17,6 +17,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
@@ -32,7 +34,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private GoogleMap mMap;
     private double DEFAULT_LAT = 37.4220;
-    private double DEFAULT_LONG = 122.0841;
+    private double DEFAULT_LONG = -122.0841;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,9 +45,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("Map");
+        actionBar.setSubtitle("LocSilence");
+        actionBar.setDisplayUseLogoEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(true);
+
+        /*
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Map");
+        toolbar.setSubtitle("LocSilence");
+        */
+
         getSupportActionBar().setTitle("LocSilence");
         toolbar.setSubtitle("Map");
 
@@ -74,9 +88,31 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.activity_main_actions, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()){
+            case R.id.setting_id:
+                //Go to settings activity
+                //Toast.makeText(getApplicationContext(), "Settings button hit", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(MapsActivity.this, SettingsActivity.class);
+                startActivity(intent);
+                //startActivity(new Intent(MapsActivity.this, SettingsActivity.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
 
     /**
-     * Manipulates the map once available.
+`     * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
      * This is where we can add markers or lines, add listeners or move the camera. In this case,
      * we just add a marker near Sydney, Australia.
@@ -129,17 +165,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
         RecursiveSilencePhoneTask recursiveSilencePhoneTask = new RecursiveSilencePhoneTask(locationManager, db, this);
-        //recursiveSilencePhoneTask.execute(locationManager);
+        recursiveSilencePhoneTask.execute(locationManager);
 
     }
 
+    /*
     //To Setup dropdown Menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        //Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
+    */
 
     private boolean isNotificationPolicyAccessGranted() {
         if (Build.VERSION.SDK_INT >= 23) {
