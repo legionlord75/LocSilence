@@ -40,7 +40,6 @@ public class AddLocSettingsActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(selectedLocation.getAddress());
         toolbar.setSubtitle("Last updated: "+ selectedLocation.getUpdatedAt());
         selectedLocation.setUpdatedAt(new Date().toString());
-
         // Create and set custom adapter of different volume type settings
         AudioManager am = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
         final SettingsAdapter settingsAdapter = new SettingsAdapter(this, volumeTypes,
