@@ -16,6 +16,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -31,7 +32,7 @@ import com.google.android.gms.maps.model.LatLng;
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
-
+    private Graphics draw = new Graphics();
     private GoogleMap mMap;
     private double DEFAULT_LAT = 37.4220;
     private double DEFAULT_LONG = -122.0841;
@@ -148,8 +149,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             longitude = location.getLongitude();
         }
         else {
-            latitude = 36.9914;
-            longitude = -122.0609;
+            latitude = DEFAULT_LAT;
+            longitude = DEFAULT_LONG;
         }
 
         if (!isNotificationPolicyAccessGranted()) {
@@ -160,12 +161,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         SQLDatabaseHandler db = new SQLDatabaseHandler(this);
         if (db.getLocalGamesCount() > 0) {
-            Graphics draw = new Graphics();
-            draw.startDraw(mMap, db);
+           db = draw.startDraw(mMap, db);
         }
 
         RecursiveSilencePhoneTask recursiveSilencePhoneTask = new RecursiveSilencePhoneTask(locationManager, db, this);
-        recursiveSilencePhoneTask.execute(locationManager);
+       // recursiveSilencePhoneTask.execute(locationManager);
 
     }
 
