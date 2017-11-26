@@ -30,19 +30,23 @@
         android:id="@+id/linearLayout">
 
         <Button
-            android:id="@+id/button_setSettings"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="false"
-            android:layout_weight="0.5"
-            android:text="Set" />
-
-        <Button
+            android:textColor="@color/white"
+            android:background="@drawable/button"
             android:id="@+id/button_deleteSettings"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:text="Delete" />
+            android:layout_weight="1"
+            android:text="Back" />
+
+        <Button
+            android:textColor="@color/white"
+            android:background="@drawable/button"
+            android:id="@+id/button_setSettings"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Add" />
+
     </LinearLayout>
 
 </RelativeLayout>

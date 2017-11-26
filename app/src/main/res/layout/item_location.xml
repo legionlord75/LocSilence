@@ -26,17 +26,17 @@
     </LinearLayout>
 
     <Button
+        android:background="@drawable/ic_edit"
         android:id="@+id/button_locList_edit"
-        android:layout_width="40dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="edit" />
+        android:layout_weight="1"/>
 
     <Button
+        android:background="@drawable/ic_delete"
         android:id="@+id/button_locList_delete"
-        android:layout_width="40dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="Del" />
+        android:layout_weight="1" />
 
 </LinearLayout>

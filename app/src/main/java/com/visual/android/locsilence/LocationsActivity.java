@@ -38,7 +38,7 @@ public class LocationsActivity extends AppCompatActivity {
 
         // Set Basic ui
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Locations List");
+        getSupportActionBar().setTitle("Saved Locations");
         toolbar.setSubtitle("LocSilence");
 
         LocationsAdapter locationsAdapter = new LocationsAdapter(this, locations, db);
