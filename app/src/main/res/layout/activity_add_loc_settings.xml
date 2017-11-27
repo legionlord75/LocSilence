@@ -22,6 +22,26 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/toolbar" />
 
+    <TextView
+        android:id="@+id/title_radius"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/check_default"
+        android:layout_alignBottom="@+id/check_default"
+        android:layout_alignLeft="@+id/seekBar_volume"
+        android:layout_alignStart="@+id/seekBar_volume"
+        android:text="Set Your Radius" />
+
+    <NumberPicker
+        android:id="@+id/numberPicker_radius"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignTop="@+id/title_radius"
+        android:text="100" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

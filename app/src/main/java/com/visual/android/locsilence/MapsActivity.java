@@ -59,7 +59,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Button mapButton = (Button) findViewById(R.id.mapButton);
         Button locationsButton = (Button) findViewById(R.id.locButton);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-
         mapButton.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
 
         locationsButton.setOnClickListener(new View.OnClickListener() {
@@ -155,7 +154,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (db.getLocalGamesCount() > 0) {
            db = draw.startDraw(mMap, db);
         }
-
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener(){
+            @Override
+            public void onMapClick(LatLng point) {
+                if(draw.getIfClicked()==true){
+                    draw.setIfClicked();
+                    Intent intent = new Intent(MapsActivity.this, AddLocSettingsActivity.class);
+                    startActivity(intent);
+                }
+            }
+        });
         RecursiveSilencePhoneTask recursiveSilencePhoneTask = new RecursiveSilencePhoneTask(locationManager, db, this);
         recursiveSilencePhoneTask.execute(locationManager);
 
