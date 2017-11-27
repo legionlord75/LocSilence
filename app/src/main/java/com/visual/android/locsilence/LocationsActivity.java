@@ -3,23 +3,14 @@ package com.visual.android.locsilence;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.support.v7.widget.Toolbar;
-
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
-
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
-import com.google.android.gms.location.places.ui.PlaceSelectionListener;
-
-import java.util.Date;
-import java.util.List;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
@@ -47,8 +38,8 @@ public class LocationsActivity extends AppCompatActivity {
 
         // Set Basic ui
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("LocSilence");
-        toolbar.setSubtitle("Locations List");
+        getSupportActionBar().setTitle("Saved Locations");
+        toolbar.setSubtitle("LocSilence");
 
         LocationsAdapter locationsAdapter = new LocationsAdapter(this, locations, db);
         listView.setAdapter(locationsAdapter);
