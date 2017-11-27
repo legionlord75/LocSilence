@@ -68,10 +68,10 @@ public class Location implements Parcelable{
         parcel.writeString(this.id);
         parcel.writeString(this.name);
         parcel.writeString(this.address);
-        parcel.writeString(this.createdAt);
-        parcel.writeString(this.updatedAt);
         parcel.writeDouble(this.lat);
         parcel.writeDouble(this.lng);
+        parcel.writeString(this.createdAt);
+        parcel.writeString(this.updatedAt);
         parcel.writeInt(this.vol_ringtone);
         parcel.writeInt(this.vol_notifications);
         parcel.writeInt(this.vol_alarms);
@@ -183,4 +183,16 @@ public class Location implements Parcelable{
     public void setCid(String cid) { this.cid = cid; }
 
     public void setRad(int rad) { this.rad = rad; }
+
+    public void printLocation(){
+        Log.i("logDB", "Location: (name: " + this.getName() + ") | " +
+                "(Address: " + this.getAddress() + ") | " +
+                "(LatLong: " + this.getLat() + ":" + this.getLng() + ") |" +
+                "(vol_ringtone: " + this.getVolRingtone() + ") |" +
+                "(vol_media: " + this.getVolNotifications() + ") |" +
+                "(vol_alarms: " + this.getVolAlarms() + ") |" +
+                "(ID: " + this.getId() + ") | " + "(Cid: " + this.getCid() + ") |" +
+                "(Radius: " + this.getRad() + ") |"
+        );
+    }
 }
