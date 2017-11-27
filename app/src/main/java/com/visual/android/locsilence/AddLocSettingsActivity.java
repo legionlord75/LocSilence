@@ -21,7 +21,7 @@ public class AddLocSettingsActivity extends AppCompatActivity {
 
     int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
     private static final String TAG = GPSSearchActivity.class.getSimpleName();
-    String[] volumeTypes = {"ringtone", "notifications", "alarms"};
+    String[] volumeTypes = {"Ringtone", "Notifications", "Alarms"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,9 +38,9 @@ public class AddLocSettingsActivity extends AppCompatActivity {
         // Set basic ui
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(selectedLocation.getAddress());
-        toolbar.setSubtitle("Last updated: "+ selectedLocation.getUpdatedAt());
-        selectedLocation.setUpdatedAt(new Date().toString());
-
+//        toolbar.setSubtitle("Last updated: "+ selectedLocation.getUpdatedAt());
+//        selectedLocation.setUpdatedAt(new Date().toString());
+        toolbar.setSubtitle("LocSilence");
         // Create and set custom adapter of different volume type settings
         AudioManager am = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
         final SettingsAdapter settingsAdapter = new SettingsAdapter(this, volumeTypes,
