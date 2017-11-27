@@ -4,16 +4,14 @@ import android.location.Criteria;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 
-import com.google.android.gms.maps.model.LatLng;
-
 /**
  * Created by RamiK on 11/1/2017.
  */
 
-public abstract class RetrieveLocation extends AsyncTask<LocationManager, Void, LatLng> {
+public abstract class RetrieveLocation extends AsyncTask<LocationManager, Void, android.location.Location> {
 
     @Override
-    protected LatLng doInBackground(LocationManager... locationManagers) {
+    protected android.location.Location doInBackground(LocationManager... locationManagers) {
         System.out.println("DO IN BACKGROUND");
 
         Criteria criteria = new Criteria();
@@ -25,8 +23,8 @@ public abstract class RetrieveLocation extends AsyncTask<LocationManager, Void, 
             e.printStackTrace();
         }
 
-        double latitude = location.getLatitude();
-        double longitude = location.getLongitude();
+        //double latitude = location.getLatitude();
+        //double longitude = location.getLongitude();
 
         try {
             Thread.sleep(5000);
@@ -34,6 +32,6 @@ public abstract class RetrieveLocation extends AsyncTask<LocationManager, Void, 
             e.printStackTrace();
         }
 
-        return new LatLng(latitude, longitude);
+        return location;
     }
 }

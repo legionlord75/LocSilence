@@ -35,7 +35,7 @@ public class Graphics extends AppCompatActivity {
                 }
             });*/
             cur.setCid(circle.getId());
-            cur.setRad(100);
+            //cur.setRad(100);
             handler.updateLocalGame(cur);
         }
         return handler;

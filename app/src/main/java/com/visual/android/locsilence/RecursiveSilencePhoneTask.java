@@ -11,8 +11,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -46,22 +44,27 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
     }
 
     @Override
-    protected void onPostExecute(LatLng latLng) {
+    protected void onPostExecute(android.location.Location current_location) {
         System.out.println("POST");
 
-        super.onPostExecute(latLng);
+
+        super.onPostExecute(current_location);
 
         //List<Location> locations = db.getAllLocations();
         List<Integer> streamTypes = Arrays.asList(AudioManager.STREAM_RING,
                 AudioManager.STREAM_NOTIFICATION, AudioManager.STREAM_ALARM);
 
-        super.onPostExecute(latLng);
+        //super.onPostExecute(current_location);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.context);
         Boolean worker_on = prefs.getBoolean("operation_switch", true);
         boolean flag = false;
 
 
         if (worker_on){
+            double cur_lat = current_location.getLatitude();
+            double cur_long = current_location.getLongitude();
+            double cur_accuracy = current_location.getAccuracy();
+
             System.out.println("Worker is on");
             List<Location> locations = db.getAllLocations();
 
@@ -70,13 +73,18 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
                 System.out.println(location.getAddress());
                 float[] results = new float[5];
                 int radius = location.getRad();
+                System.out.println("Current radius: " + Integer.toString(radius));
+                System.out.println("Current accuracy: " + Double.toString(cur_accuracy));
                 double lat = location.getLat();
                 double lng = location.getLng();
-                android.location.Location.distanceBetween(lat, lng, latLng.latitude, latLng.longitude, results);
+                android.location.Location.distanceBetween(lat, lng, cur_lat, cur_long, results);
+
                 // The computed distance is stored in results[0].
                 // If results has length 2 or greater, the initial bearing is stored in results[1].
                 // If results has length 3 or greater, the final bearing is stored in results[2]
-                if (results[0] < radius) {
+                System.out.println("Current distance: " + Float.toString(results[0]));
+
+                if (results[0] < radius + cur_accuracy) {
                     System.out.println("IN CIRCLE!!!");
                     try {
                         //audio.setRingerMode(AudioManager.RINGER_MODE_SILENT);
