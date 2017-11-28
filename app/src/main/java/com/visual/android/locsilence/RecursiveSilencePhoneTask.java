@@ -28,9 +28,9 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
     private SQLDatabaseHandler db;
     private Context context;
     private AudioManager audio;
-    private List<Integer> savedVolumes = new ArrayList<>();
+    private List<Integer> savedVolumes;
 
-    boolean recently_silenced = false;
+    private boolean recentlySilenced = false;
 
     NotificationCompat.Builder notification;
     private static final int notifID = 12345;
@@ -40,12 +40,13 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
         this.locationManager = locationManager;
         this.db = db;
         this.context = context;
+        this.savedVolumes = new ArrayList<>();
         audio = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
     }
 
     @Override
     protected void onPostExecute(android.location.Location current_location) {
-        System.out.println("POST");
+        Log.i("POST", "===============================================");
 
 
         super.onPostExecute(current_location);
@@ -60,59 +61,63 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
         boolean flag = false;
 
 
-        if (worker_on){
-            double cur_lat = current_location.getLatitude();
-            double cur_long = current_location.getLongitude();
-            double cur_accuracy = current_location.getAccuracy();
+        if (worker_on) {
+            double currentLat = current_location.getLatitude();
+            double currentLon = current_location.getLongitude();
+            double currentAccuracy = current_location.getAccuracy();
 
-            System.out.println("Worker is on");
+            Log.i("Worker Status", "Is On");
             List<Location> locations = db.getAllLocations();
 
             flag = false;
             for (Location location : locations) {
-                System.out.println(location.getAddress());
+                Log.i(".", "---------------------------------------------");
+                Log.i("Location", location.getAddress());
                 float[] results = new float[5];
                 int radius = location.getRad();
-                System.out.println("Current radius: " + Integer.toString(radius));
-                System.out.println("Current accuracy: " + Double.toString(cur_accuracy));
+                Log.i("Current radius", Integer.toString(radius));
+                Log.i("Current accuracy", Double.toString(currentAccuracy));
                 double lat = location.getLat();
                 double lng = location.getLng();
-                android.location.Location.distanceBetween(lat, lng, cur_lat, cur_long, results);
+                android.location.Location.distanceBetween(lat, lng, currentLat, currentLon, results);
 
                 // The computed distance is stored in results[0].
                 // If results has length 2 or greater, the initial bearing is stored in results[1].
                 // If results has length 3 or greater, the final bearing is stored in results[2]
-                System.out.println("Current distance: " + Float.toString(results[0]));
+                Log.i("Current distance", Float.toString(results[0]));
 
-                if (results[0] < radius + cur_accuracy) {
-                    System.out.println("IN CIRCLE!!!");
+                if (results[0] < radius + currentAccuracy) {
+                    Log.i("User", "In Circle!");
                     try {
                         //audio.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-                        modifyPhoneVolume(streamTypes, location.getVolumes());
-
-                        sendNotification("Silencing activated");
-                        recently_silenced = true;
+                        if (!recentlySilenced) {
+                            Log.i("Silencing", "Activated");
+                            modifyPhoneVolume(streamTypes, location.getVolumes());
+                            sendNotification("Silencing activated");
+                        }
+                        recentlySilenced = true;
                     } catch (SecurityException e) {
                         e.printStackTrace();
                     }
                     flag = true;
                     break;
                 } else {
-                    System.out.println("NOT IN CIRCLE!!!");
+                    Log.i("User", "Not In Circle!");
                 }
             }
-        }
-        else {
-            System.out.println("Worker is off");
+        } else {
+            Log.i("Worker Status", "Is Off");
         }
 
         if (!flag) {
-            Log.i("debug", "Did not find location within range");
+            Log.i("User", "Not in any locations");
             try {
                 //audio.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                 revertPhoneVolume(streamTypes);
-                if (recently_silenced) {
+                if (recentlySilenced) {
+                    Log.i("Silencing", "Deactivated");
                     sendNotification("Silencing deactivated");
+                    recentlySilenced = false;
                 }
             } catch (SecurityException e) {
                 e.printStackTrace();
@@ -167,14 +172,8 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
 
     private void revertPhoneVolume(List<Integer> streamType) {
         for (int i = 0; i < streamType.size(); i++) {
-            //Tries to do get on a list that may be empty
-            try {
-                if (savedVolumes.size() > 0 && savedVolumes.get(i) != -1) {
-                    audio.setStreamVolume(streamType.get(i), savedVolumes.get(i), 0);
-                }
-            }
-            catch (NullPointerException e){
-                    continue;
+            if (savedVolumes.size() > 0 && savedVolumes.get(i) != -1) {
+                audio.setStreamVolume(streamType.get(i), savedVolumes.get(i), 0);
             }
         }
     }
