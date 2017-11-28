@@ -119,8 +119,8 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
             }
         }
 
-        RecursiveSilencePhoneTask recursiveSilencePhoneTask = new RecursiveSilencePhoneTask(locationManager, db, context);
-        recursiveSilencePhoneTask.execute(this.locationManager);
+        Utility.recursiveSilencePhoneTask = new RecursiveSilencePhoneTask(locationManager, db, context);
+        Utility.recursiveSilencePhoneTask.execute(this.locationManager);
 
     }
 

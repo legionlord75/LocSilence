@@ -216,8 +216,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
 
-        RecursiveSilencePhoneTask recursiveSilencePhoneTask = new RecursiveSilencePhoneTask(locationManager, db, this);
-        recursiveSilencePhoneTask.execute(locationManager);
+        Utility.recursiveSilencePhoneTask = new RecursiveSilencePhoneTask(locationManager, db, this);
+        Utility.recursiveSilencePhoneTask.execute(locationManager);
 
     }
 

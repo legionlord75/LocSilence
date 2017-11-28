@@ -9,6 +9,8 @@ import android.widget.Toast;
 
 public class Utility {
 
+    public static RecursiveSilencePhoneTask recursiveSilencePhoneTask;
+
     public static String cropText(String text, int max_length, String append){
         if(text.length() > max_length)
             return text.substring(0, max_length-append.length()) + append;
