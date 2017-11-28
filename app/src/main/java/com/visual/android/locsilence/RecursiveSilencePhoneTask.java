@@ -30,7 +30,7 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
     private AudioManager audio;
     private List<Integer> savedVolumes;
 
-    private boolean recentlySilenced = false;
+    private static boolean recentlySilenced = false;
 
     NotificationCompat.Builder notification;
     private static final int notifID = 12345;

@@ -8,7 +8,9 @@ import android.os.AsyncTask;
  * Created by RamiK on 11/1/2017.
  */
 
+
 public abstract class RetrieveLocation extends AsyncTask<LocationManager, Void, android.location.Location> {
+
 
     @Override
     protected android.location.Location doInBackground(LocationManager... locationManagers) {
@@ -26,11 +28,16 @@ public abstract class RetrieveLocation extends AsyncTask<LocationManager, Void, 
         //double latitude = location.getLatitude();
         //double longitude = location.getLongitude();
 
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if (!Utility.firstRecursiveExecution) {
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Utility.firstRecursiveExecution = false;
         }
+
 
         return location;
     }

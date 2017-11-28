@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
+import android.preference.SwitchPreference;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.view.MenuItem;
@@ -55,6 +56,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         //Sets preferences in pref_headers as default settings
         getFragmentManager().beginTransaction().replace(android.R.id.content,
                 new PrefsFragment()).commit();
+
     }
 
 
@@ -65,7 +67,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             //PrefsFragment.context = getApplicationContext();
-            addPreferencesFromResource(R.xml.pref_main);
+            addPreferencesFromResource(R.xml.activity_settings);
             final Preference pref_about = (Preference) findPreference("about");
 
             pref_about.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -74,7 +76,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                     System.out.println("about preference hit");
 
                     AlertDialog.Builder a_builder = new AlertDialog.Builder(getActivity());
-                    a_builder.setMessage("Developed by Alon Pekurovsky, Erik Lau, Rami Khader, and Thomas Brochard")
+                    a_builder.setMessage("Developed by Alon Pekurovsky, Erik Lau, Rami Khadder, and Thomas Brochard")
                             .setCancelable(false)
                             .setNeutralButton("Done", new DialogInterface.OnClickListener() {
                                 @Override
