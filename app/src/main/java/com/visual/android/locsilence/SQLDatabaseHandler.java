@@ -75,6 +75,10 @@ public class SQLDatabaseHandler extends SQLiteOpenHelper {
      * All CRUD(Create, Read, Update, Delete) Operations
      */
 
+    public int getSize(){
+        return this.getAllLocations().size();
+    }
+
     // Adding new contact
     public boolean addLocation(Location location) {
         boolean responseCode = true;

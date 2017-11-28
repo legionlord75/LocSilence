@@ -52,10 +52,16 @@ public class SavedLocActivity extends AppCompatActivity {
             @Override
             public void onPlaceSelected(Place place) {
                 Location selectedLocation = getSelectedLocation(place, db);
-                Intent settingsIntent = new Intent(SavedLocActivity.this, LocSettingsActivity.class);
-                settingsIntent.putExtra("selectedLocation", selectedLocation);
-                startActivity(settingsIntent);
+                if(selectedLocation != null) {
+                    Intent settingsIntent = new Intent(SavedLocActivity.this, LocSettingsActivity.class);
+                    settingsIntent.putExtra("selectedLocation", selectedLocation);
+                    startActivity(settingsIntent);
+                }
+                else{
+                    Utility.alertToast(SavedLocActivity.this, "saved locations is limited to " + Constants.MAX_DB_SIZE);
+                }
             }
+
 
             @Override
             public void onError(Status status) {
@@ -77,12 +83,13 @@ public class SavedLocActivity extends AppCompatActivity {
     // Return either a location object if 'place' already exists in db, else a new location object
     public Location getSelectedLocation(Place place, SQLDatabaseHandler db) {
         // If place is in db already update location info in db
-        Location selectedLocation;
+        Location selectedLocation = null;
+        Log.i("plz", db.getSize()+"");
         if (db.locationInDB(place.getId())) {
             selectedLocation = db.getLocation(place.getId());
         }
         // If place is new set basic new locations
-        else {
+        else if(db.getSize()<Constants.MAX_DB_SIZE){
             selectedLocation = new Location(
                     place.getId(),
                     place.getName().toString(),
@@ -95,7 +102,6 @@ public class SavedLocActivity extends AppCompatActivity {
         }
         return selectedLocation;
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu){

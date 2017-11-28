@@ -39,12 +39,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleMap mMap;
     private double DEFAULT_LAT = 37.4220;
     private double DEFAULT_LONG = -122.0841;
+    final int MAX_DB_SIZE = 5;
+    SQLDatabaseHandler db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
+        db = new SQLDatabaseHandler(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
@@ -121,8 +124,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MapsActivity.this, LocSearchActivity.class);
-                startActivity(intent);
+                if(db.getSize()<Constants.MAX_DB_SIZE) {
+                    Intent intent = new Intent(MapsActivity.this, LocSearchActivity.class);
+                    startActivity(intent);
+                }
+                else{
+                    Utility.alertToast(MapsActivity.this, "saved locations is limited to " + Constants.MAX_DB_SIZE);
+                }
 
             }
         });
