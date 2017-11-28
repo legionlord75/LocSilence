@@ -8,22 +8,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.Date;
 import java.util.List;
 
-public class AddLocSettingsActivity extends AppCompatActivity {
+public class LocSettingsActivity extends AppCompatActivity {
 
     int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
-    private static final String TAG = GPSSearchActivity.class.getSimpleName();
+    private static final String TAG = LocSearchActivity.class.getSimpleName();
     String[] volumeTypes = {"Ringtone", "Notifications", "Alarms"};
     final int DEFAULT_RADIUS = 100;
 
@@ -31,7 +27,7 @@ public class AddLocSettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_loc_settings);
+        setContentView(R.layout.activity_loc_settings);
 
         // Init info
         final SQLDatabaseHandler db = new SQLDatabaseHandler(this);
@@ -49,10 +45,10 @@ public class AddLocSettingsActivity extends AppCompatActivity {
 
         // Create and set custom adapter of different volume type settings
         AudioManager am = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-        final SettingsAdapter settingsAdapter = new SettingsAdapter(this, volumeTypes,
+        final LocSettingsVolumeAdapter locSettingsVolumeAdapter = new LocSettingsVolumeAdapter(this, volumeTypes,
                 selectedLocation.getVolumes(), am.getStreamMaxVolume(AudioManager.STREAM_SYSTEM));
         ListView settingsListView = (ListView) findViewById(R.id.listView_settings);
-        settingsListView.setAdapter(settingsAdapter);
+        settingsListView.setAdapter(locSettingsVolumeAdapter);
 
         // Init Listeners
         genProximity.addTextChangedListener(new TextWatcher(){
@@ -88,7 +84,7 @@ public class AddLocSettingsActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (custProximity.isChecked()) {
                     genProximity.setText("");
-                    Intent customProxIntent = new Intent(AddLocSettingsActivity.this, CustomProximityMap.class);
+                    Intent customProxIntent = new Intent(LocSettingsActivity.this, CustomProximityMap.class);
                     customProxIntent.putExtra("selectedLocation", selectedLocation);
                     startActivity(customProxIntent);
                 }
@@ -103,7 +99,7 @@ public class AddLocSettingsActivity extends AppCompatActivity {
         setButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                List<Integer> volumeLevels = settingsAdapter.getVolumeLevels();
+                List<Integer> volumeLevels = locSettingsVolumeAdapter.getVolumeLevels();
                 selectedLocation.setVolumes(volumeLevels);
                 if(custProximity.isChecked()){
                     // Option 2: here we would set proximity data
@@ -119,7 +115,7 @@ public class AddLocSettingsActivity extends AppCompatActivity {
                     db.updateLocalGame(selectedLocation);
                 }
                 selectedLocation.printLocation();
-                Intent i = new Intent(AddLocSettingsActivity.this, MapsActivity.class);
+                Intent i = new Intent(LocSettingsActivity.this, MapsActivity.class);
                 db.close();
                 startActivity(i);
                 finish();
@@ -132,7 +128,7 @@ public class AddLocSettingsActivity extends AppCompatActivity {
                 if (db.getLocation(selectedLocation.getId()) != null) {
                     db.deleteLocalGame(selectedLocation.getId());
                 }
-                Intent i = new Intent(AddLocSettingsActivity.this, MapsActivity.class);
+                Intent i = new Intent(LocSettingsActivity.this, MapsActivity.class);
                 db.close();
                 startActivity(i);
                 finish();

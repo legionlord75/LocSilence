@@ -13,16 +13,16 @@ import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 
 import java.util.Date;
 
-public class GPSSearchActivity extends AppCompatActivity {
+public class LocSearchActivity extends AppCompatActivity {
     int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
-    private static final String TAG = GPSSearchActivity.class.getSimpleName();
+    private static final String TAG = LocSearchActivity.class.getSimpleName();
 
     Place selectedPlace;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_gpssearch);
+        setContentView(R.layout.activity_loc_search);
 
         // Init info
         final SQLDatabaseHandler db = new SQLDatabaseHandler(this);
@@ -34,7 +34,7 @@ public class GPSSearchActivity extends AppCompatActivity {
             @Override
             public void onPlaceSelected(Place place) {
                 Location selectedLocation = getSelectedLocation(place, db);
-                Intent settingsIntent = new Intent(GPSSearchActivity.this, AddLocSettingsActivity.class);
+                Intent settingsIntent = new Intent(LocSearchActivity.this, LocSettingsActivity.class);
                 settingsIntent.putExtra("selectedLocation", selectedLocation);
                 db.close();
                 startActivity(settingsIntent);

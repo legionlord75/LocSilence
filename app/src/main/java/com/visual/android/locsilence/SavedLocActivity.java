@@ -21,13 +21,13 @@ import java.util.Date;
 import java.util.List;
 
 
-public class LocationsActivity extends AppCompatActivity {
-    private static final String TAG = GPSSearchActivity.class.getSimpleName();
+public class SavedLocActivity extends AppCompatActivity {
+    private static final String TAG = LocSearchActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list);
+        setContentView(R.layout.activity_saved_loc);
 
         // Init info
         final SQLDatabaseHandler db = new SQLDatabaseHandler(this);
@@ -41,8 +41,8 @@ public class LocationsActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Saved Locations");
         toolbar.setSubtitle("LocSilence");
 
-        LocationsAdapter locationsAdapter = new LocationsAdapter(this, locations, db);
-        listView.setAdapter(locationsAdapter);
+        SavedLocAdapter savedLocAdapter = new SavedLocAdapter(this, locations, db);
+        listView.setAdapter(savedLocAdapter);
 
         // Set searchBar
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
@@ -52,7 +52,7 @@ public class LocationsActivity extends AppCompatActivity {
             @Override
             public void onPlaceSelected(Place place) {
                 Location selectedLocation = getSelectedLocation(place, db);
-                Intent settingsIntent = new Intent(LocationsActivity.this, AddLocSettingsActivity.class);
+                Intent settingsIntent = new Intent(SavedLocActivity.this, LocSettingsActivity.class);
                 settingsIntent.putExtra("selectedLocation", selectedLocation);
                 startActivity(settingsIntent);
             }
@@ -67,7 +67,7 @@ public class LocationsActivity extends AppCompatActivity {
         mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent mapIntent = new Intent(LocationsActivity.this, MapsActivity.class);
+                Intent mapIntent = new Intent(SavedLocActivity.this, MapsActivity.class);
                 startActivity(mapIntent);
                 finish();
             }
@@ -110,7 +110,7 @@ public class LocationsActivity extends AppCompatActivity {
             case R.id.setting_id:
                 //Go to settings activity
                 //Toast.makeText(getApplicationContext(), "Settings button hit", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(LocationsActivity.this, SettingsActivity.class);
+                Intent intent = new Intent(SavedLocActivity.this, SettingsActivity.class);
                 startActivity(intent);
                 //startActivity(new Intent(MapsActivity.this, SettingsActivity.class));
                 return true;

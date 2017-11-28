@@ -1,7 +1,6 @@
 package com.visual.android.locsilence;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,7 @@ import java.util.List;
  * Created by Thomas Brochard on 10/27/2017.
  */
 
-public class SettingsAdapter extends ArrayAdapter<String> {
+public class LocSettingsVolumeAdapter extends ArrayAdapter<String> {
 
     String[] volumeTypes;
     List<Integer> volumeLevels;
@@ -24,8 +23,8 @@ public class SettingsAdapter extends ArrayAdapter<String> {
     CheckBox silenceCheckBox;
     List<CheckBox> box;
 
-    public SettingsAdapter(Context context, String[] volumeTypes, List<Integer> defaultVolumes, int maxVolume) {
-        super(context, R.layout.settings_row, volumeTypes);
+    public LocSettingsVolumeAdapter(Context context, String[] volumeTypes, List<Integer> defaultVolumes, int maxVolume) {
+        super(context, R.layout.item_loc_settings_volumes, volumeTypes);
         this.volumeTypes = volumeTypes;
         this.maxVolume = maxVolume;
         this.volumeLevels = defaultVolumes;
@@ -34,7 +33,7 @@ public class SettingsAdapter extends ArrayAdapter<String> {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = LayoutInflater.from(getContext());
-        View customView = inflater.inflate(R.layout.settings_row, parent, false);
+        View customView = inflater.inflate(R.layout.item_loc_settings_volumes, parent, false);
 
         // Init info
         final TextView volumeTitle = (TextView) customView.findViewById(R.id.title_volumeType);

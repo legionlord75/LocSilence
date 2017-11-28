@@ -16,7 +16,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -114,7 +113,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         locationsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MapsActivity.this, LocationsActivity.class);
+                Intent intent = new Intent(MapsActivity.this, SavedLocActivity.class);
                 startActivity(intent);
             }
         });
@@ -122,7 +121,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MapsActivity.this, GPSSearchActivity.class);
+                Intent intent = new Intent(MapsActivity.this, LocSearchActivity.class);
                 startActivity(intent);
 
             }

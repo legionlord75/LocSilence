@@ -15,13 +15,13 @@ import java.util.List;
  * Created by RamiK on 10/23/2017.
  */
 
-public class LocationsAdapter extends ArrayAdapter<Location> {
+public class SavedLocAdapter extends ArrayAdapter<Location> {
 
     List<Location> locations;
     private Context context;
     SQLDatabaseHandler db;
 
-    public LocationsAdapter(Context context, List<Location> locations, SQLDatabaseHandler db) {
+    public SavedLocAdapter(Context context, List<Location> locations, SQLDatabaseHandler db) {
         super(context, 0, locations);
         this.locations = locations;
         this.context = context;
@@ -47,7 +47,7 @@ public class LocationsAdapter extends ArrayAdapter<Location> {
         button_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent settingsIntent = new Intent(context, AddLocSettingsActivity.class);
+                Intent settingsIntent = new Intent(context, LocSettingsActivity.class);
                 settingsIntent.putExtra("editing", true);
                 settingsIntent.putExtra("selectedLocation", locations.get(position));
                 context.startActivity(settingsIntent);

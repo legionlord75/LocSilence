@@ -35,7 +35,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".LocationsActivity"
+            android:name=".SavedLocActivity"
             android:label="List"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -48,9 +48,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".GPSSearchActivity" />
+        <activity android:name=".LocSearchActivity" />
         <activity
-            android:name=".AddLocSettingsActivity"
+            android:name=".LocSettingsActivity"
             android:label="@string/title_activity_add_loc_settings"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
