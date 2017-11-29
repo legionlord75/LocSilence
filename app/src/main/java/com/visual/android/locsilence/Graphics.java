@@ -52,7 +52,7 @@ public class Graphics extends AppCompatActivity {
     }
 
     public void pointDraw(GoogleMap map, LatLng cent){
-        CircleOptions opt = new CircleOptions().center(cent).radius(5).strokeColor(Color.BLACK).fillColor(R.color.colorAccent);
+        CircleOptions opt = new CircleOptions().center(cent).radius(15).strokeColor(Color.BLACK).fillColor(Color.BLACK);
         final Circle circle = map.addCircle(opt);
     }
 

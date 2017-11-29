@@ -158,10 +158,10 @@ public class CustomProximityMap extends AppCompatActivity implements OnMapReadyC
                 else {
                     locations.add(point);
                     counter++;
-                    draw.pointDraw(mMap,point);
                     if(counter >=3){
                         draw.perimeterDraw(mMap,locations);
                     }
+                    draw.pointDraw(mMap,point);
                 }
 
             }
