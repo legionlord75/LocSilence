@@ -49,19 +49,12 @@ public class AddLocSettingsActivity extends AppCompatActivity {
                 selectedLocation.getVolumes(), am.getStreamMaxVolume(AudioManager.STREAM_SYSTEM));
         ListView settingsListView = (ListView) findViewById(R.id.listView_settings);
         settingsListView.setAdapter(settingsAdapter);
-        final NumberPicker rad = (NumberPicker) findViewById(R.id.numberPicker_radius);
-        rad.setMaxValue(1000);
-        rad.setMinValue(50);
         // Init Listeners
         setButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 List<Integer> volumeLevels = settingsAdapter.getVolumeLevels();
                 selectedLocation.setVolumes(volumeLevels);
-                if(selectedLocation.getRad() == rad.getValue()){
-                    selectedLocation.setRad(rad.getValue());
-                    db.updateLocalGame(selectedLocation);
-                }
                 if (db.getLocation(selectedLocation.getId()) == null) {
                     db.addLocation(selectedLocation);
                 } else {
