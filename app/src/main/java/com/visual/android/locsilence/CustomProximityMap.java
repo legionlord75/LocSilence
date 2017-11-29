@@ -126,6 +126,8 @@ public class CustomProximityMap extends AppCompatActivity implements OnMapReadyC
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        FloatingActionButton fabRevertPoint = (FloatingActionButton) findViewById(R.id.fab_revert_point);
+
 
         if (checkLocationPermission()) {
             if (ContextCompat.checkSelfPermission(this,
@@ -154,11 +156,9 @@ public class CustomProximityMap extends AppCompatActivity implements OnMapReadyC
             @Override
             public void onMapClick(LatLng point) {
                 int MAX_POINTS = 8;
-                if(counter >= MAX_POINTS) {}
-                else {
+                if(locations.size() < MAX_POINTS){
                     locations.add(point);
-                    counter++;
-                    if(counter >=3){
+                    if(locations.size() >=3){
                         draw.perimeterDraw(mMap,locations);
                     }
                     draw.pointDraw(mMap,point);
@@ -166,6 +166,23 @@ public class CustomProximityMap extends AppCompatActivity implements OnMapReadyC
 
             }
         });
+
+        fabRevertPoint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mMap != null) {
+                    locations.remove(locations.size()-1);
+                    mMap.clear();
+                    if(locations.size() >=3){
+                        draw.perimeterDraw(mMap,locations);
+                    }
+                    else{
+                        locations.clear();
+                    }
+                }
+            }
+        });
+
     }
 
 
