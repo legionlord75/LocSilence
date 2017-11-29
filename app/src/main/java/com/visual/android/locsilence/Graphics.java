@@ -8,7 +8,10 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
-
+import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.android.gms.maps.model.Polygon;
+;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,58 +19,51 @@ import java.util.List;
  */
 
 public class Graphics extends AppCompatActivity {
-    public static String ids = null;
+    public static boolean setrad = false;
     //On Start drawing the circles for stored locations
     public SQLDatabaseHandler startDraw(GoogleMap map, SQLDatabaseHandler handler){
         List<Location> enslavingall = handler.getAllLocations();
         //iterates through database and draws the circles
         for (int x = 0; x < enslavingall.size(); x++) {
             Location cur = enslavingall.get(x);
-            Integer tmp = cur.getRad();
-            Log.e("rad",tmp.toString());
+            //Where i will implement
+
             LatLng cent = new LatLng(cur.getLat(),cur.getLng());
-            CircleOptions opt = new CircleOptions().center(cent).radius(100).strokeColor(Color.BLACK).fillColor(0xFFFF0000).clickable(true);
+            CircleOptions opt = new CircleOptions().center(cent).radius(cur.getRad()).strokeColor(Color.BLACK).fillColor(0x88FF6800).clickable(true);
             final Circle circle = map.addCircle(opt);
-           /* map.setOnCircleClickListener(new GoogleMap.OnCircleClickListener() {
+             map.setOnCircleClickListener(new GoogleMap.OnCircleClickListener() {
                 @Override
                 public void onCircleClick(Circle circle) {
+                    setrad = true;
                     Log.e("circle clicked", "Circle " + circle.getId() + " was clicked");
                 }
-            });*/
+            });
             cur.setCid(circle.getId());
-            //cur.setRad(100);
             handler.updateLocalGame(cur);
         }
         return handler;
     }
 
-    // when a new location is added then newLocDraw needs to be called to add the location(for if we add adding locations on map activity)
-  
-    public void newLocDraw(GoogleMap map,Location loc){
-        Circle circle = map.addCircle(new CircleOptions().center(new LatLng(loc.getLat(),loc.getLng())).radius(100).strokeColor(Color.BLACK).fillColor(0x88FF0000));
-        SQLDatabaseHandler handler = new SQLDatabaseHandler(this);
-        circle.setClickable(true);
-        loc.setCid(circle.getId());
-        handler.updateLocalGame(loc);
+    public static boolean getIfClicked(){
+        return setrad;
+    }
+    public static void setIfClicked(){
+        setrad=false;
     }
 
-    //On Click radius changing Method to do so now valid
-    public void radChange(GoogleMap map,String id,int nrad){
-        SQLDatabaseHandler handler = new SQLDatabaseHandler(this);
-        map.clear();
-        Location nloc = handler.getLocation(id);
-        nloc.setRad(nrad);
-        handler.updateLocalGame(nloc);
-        startDraw(map, handler);
+    public void pointDraw(GoogleMap map, LatLng cent){
+        CircleOptions opt = new CircleOptions().center(cent).radius(5).strokeColor(Color.BLACK).fillColor(R.color.colorAccent);
+        final Circle circle = map.addCircle(opt);
     }
 
     //Perimeter outlining (Work in Progress) LatLngBounds promising to help
-    public void perimeter(GoogleMap map){
-        SQLDatabaseHandler handler = new SQLDatabaseHandler(this);
-        List<Location> enslavingall = handler.getAllLocations();
-        for (int x = 0; x < enslavingall.size(); x++) {
-
+    public void perimeterDraw(GoogleMap map, ArrayList<LatLng> points){
+        PolygonOptions opt = new PolygonOptions().strokeColor(Color.BLACK).fillColor(0x88FF6800);
+        for(int x=0; x<points.size();x++){
+            opt.add(points.get(x));
         }
+        map.clear();
+        final Polygon polygon = map.addPolygon(opt);
     }
 
         //LatLng spot = new LatLng(2.2,2.2);

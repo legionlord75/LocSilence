@@ -25,6 +25,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CustomProximityMap extends AppCompatActivity implements OnMapReadyCallback {
@@ -35,7 +36,8 @@ public class CustomProximityMap extends AppCompatActivity implements OnMapReadyC
     Location selectedLocation;
     private double DEFAULT_LAT = 37.4220;
     private double DEFAULT_LONG = -122.0841;
-
+    private int counter = 0;
+    private ArrayList<LatLng> locations = new ArrayList<LatLng>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,9 +100,14 @@ public class CustomProximityMap extends AppCompatActivity implements OnMapReadyC
         button_set.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(counter<3) {
+                    System.out.println("Need to set at least 3 points");
+                }
+                else {
+                    finish();
+                }
                 // Option 1: Set array of (<=8) points to GSON and put object into DB
                 // Option 2: Pass proximity data back through intent and handle it in AddLocSettingsActivity
-                finish();
             }
         });
 
@@ -143,7 +150,24 @@ public class CustomProximityMap extends AppCompatActivity implements OnMapReadyC
             longitude = DEFAULT_LONG;
         }
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 14.5f));
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener(){
+            @Override
+            public void onMapClick(LatLng point) {
+                int MAX_POINTS = 8;
+                if(counter >= MAX_POINTS) {}
+                else {
+                    locations.add(point);
+                    counter++;
+                    draw.pointDraw(mMap,point);
+                    if(counter >=3){
+                        draw.perimeterDraw(mMap,locations);
+                    }
+                }
+
+            }
+        });
     }
+
 
 
     public boolean checkLocationPermission() {
