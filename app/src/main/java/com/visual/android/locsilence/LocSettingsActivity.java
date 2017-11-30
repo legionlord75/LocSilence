@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -24,6 +25,8 @@ public class LocSettingsActivity extends AppCompatActivity {
     private static final String TAG = LocSettingsActivity.class.getSimpleName();
     String[] volumeTypes = {"Ringtone", "Notifications", "Alarms"};
     Location selectedLocation;
+    final int DEFAULT_RADIUS = 100;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +114,7 @@ public class LocSettingsActivity extends AppCompatActivity {
                     // temporary value until we fix the radius/customProx in the recursive task and can set it to -1
                     selectedLocation.setRad(1);
                 } else if((genProximity.getText().toString()).equals("")) {
-                    selectedLocation.setRad(Constants.DEFAULT_RADIUS);
+                    selectedLocation.setRad(DEFAULT_RADIUS);
                 } else{
                     selectedLocation.setRad(Integer.parseInt(genProximity.getText().toString()));
                 }

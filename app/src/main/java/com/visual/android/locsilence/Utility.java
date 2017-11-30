@@ -7,7 +7,10 @@ import android.widget.Toast;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONException;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -37,7 +40,7 @@ public class Utility {
         toast.show();
     }
 
-    public static ArrayList<LatLng> customProxToList(String customProximityJson){
+    public ArrayList<LatLng> customProxToList(String customProximityJson){
         try{
             Type listType =
                     new TypeToken<ArrayList<LatLng>>() {
