@@ -22,7 +22,7 @@ import java.util.List;
 public class LocSettingsActivity extends AppCompatActivity {
 
     int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
-    private static final String TAG = LocSearchActivity.class.getSimpleName();
+    private static final String TAG = LocSettingsActivity.class.getSimpleName();
     String[] volumeTypes = {"Ringtone", "Notifications", "Alarms"};
     Location selectedLocation;
     final int DEFAULT_RADIUS = 100;

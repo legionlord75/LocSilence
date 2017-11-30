@@ -29,6 +29,7 @@ public class Graphics extends AppCompatActivity {
             //Where i will implement
 
             LatLng cent = new LatLng(cur.getLat(),cur.getLng());
+
             CircleOptions opt = new CircleOptions().center(cent).radius(cur.getRad()).strokeColor(Color.BLACK).fillColor(0x88FF6800).clickable(true);
             final Circle circle = map.addCircle(opt);
              map.setOnCircleClickListener(new GoogleMap.OnCircleClickListener() {

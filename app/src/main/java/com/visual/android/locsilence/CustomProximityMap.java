@@ -3,16 +3,14 @@ package com.visual.android.locsilence;
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Criteria;
 import android.location.LocationManager;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -24,6 +22,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 
@@ -34,6 +33,7 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class CustomProximityMap extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -61,6 +61,7 @@ public class CustomProximityMap extends AppCompatActivity implements OnMapReadyC
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map_customProxy);
         mapFragment.getMapAsync(this);
+
 
         // Init listeners
         find_selectedLoc.setOnClickListener(new View.OnClickListener() {
@@ -149,6 +150,7 @@ public class CustomProximityMap extends AppCompatActivity implements OnMapReadyC
                 if (mMap != null) {
                     mMap.setMyLocationEnabled(true);
                     mMap.getUiSettings().setMyLocationButtonEnabled(true);
+                    mMap.getUiSettings().setCompassEnabled(true);
                 }
             }
         }
