@@ -44,9 +44,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     private Graphics draw = new Graphics();
     private GoogleMap mMap;
-    private double DEFAULT_LAT = 37.4220;
-    private double DEFAULT_LONG = -122.0841;
-    final int MAX_DB_SIZE = 5;
     private static final String TAG = MapsActivity.class.getSimpleName();
     int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
 
@@ -232,8 +229,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             longitude = location.getLongitude();
         }
         else {
-            latitude = DEFAULT_LAT;
-            longitude = DEFAULT_LONG;
+            latitude = Constants.DEFAULT_LAT;
+            longitude = Constants.DEFAULT_LONG;
         }
 
         if (!isNotificationPolicyAccessGranted()) {

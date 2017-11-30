@@ -25,8 +25,6 @@ public class LocSettingsActivity extends AppCompatActivity {
     private static final String TAG = LocSettingsActivity.class.getSimpleName();
     String[] volumeTypes = {"Ringtone", "Notifications", "Alarms"};
     Location selectedLocation;
-    final int DEFAULT_RADIUS = 100;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,7 +112,7 @@ public class LocSettingsActivity extends AppCompatActivity {
                     // temporary value until we fix the radius/customProx in the recursive task and can set it to -1
                     selectedLocation.setRad(1);
                 } else if((genProximity.getText().toString()).equals("")) {
-                    selectedLocation.setRad(DEFAULT_RADIUS);
+                    selectedLocation.setRad(Constants.DEFAULT_RADIUS);
                 } else{
                     selectedLocation.setRad(Integer.parseInt(genProximity.getText().toString()));
                 }
@@ -124,7 +122,7 @@ public class LocSettingsActivity extends AppCompatActivity {
                 } else {
                     db.updateLocalGame(selectedLocation);
                 }
-                selectedLocation.printLocation();
+                //selectedLocation.printLocation();
                 Intent i = new Intent(LocSettingsActivity.this, MapsActivity.class);
                 db.close();
                 startActivity(i);
