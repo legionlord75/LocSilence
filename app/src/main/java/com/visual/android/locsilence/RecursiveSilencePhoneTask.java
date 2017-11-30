@@ -60,6 +60,7 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
         Boolean worker_on = prefs.getBoolean("operation_switch", true);
         boolean flag = false;
 
+        List<Location> locations = db.getAllLocations();
 
         if (worker_on) {
             double currentLat = current_location.getLatitude();
@@ -67,7 +68,12 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
             double currentAccuracy = current_location.getAccuracy();
 
             Log.i("Worker Status", "Is On");
-            List<Location> locations = db.getAllLocations();
+            //List<Location> locations = db.getAllLocations();
+
+
+            if(locations.size() == 0){
+                removeNotification();
+            }
 
             flag = false;
             for (Location location : locations) {
@@ -93,7 +99,7 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
                         if (!recentlySilenced) {
                             Log.i("Silencing", "Activated");
                             modifyPhoneVolume(streamTypes, location.getVolumes());
-                            sendNotification("Silencing activated");
+                            sendNotification("activated", location.getName(),true);
                         }
                         recentlySilenced = true;
                     } catch (SecurityException e) {
@@ -103,10 +109,12 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
                     break;
                 } else {
                     Log.i("User", "Not In Circle!");
+                    removeNotification();
                 }
             }
         } else {
             Log.i("Worker Status", "Is Off");
+            removeNotification();
         }
 
         if (!flag) {
@@ -116,7 +124,13 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
                 revertPhoneVolume(streamTypes);
                 if (recentlySilenced) {
                     Log.i("Silencing", "Deactivated");
-                    sendNotification("Silencing deactivated");
+                    if (locations.size() == 0){
+                        Log.i("User", "removing notification");
+                        removeNotification();
+                    }
+                    else{
+                        sendNotification("deactivated", "", false);
+                    }
                     recentlySilenced = false;
                 }
             } catch (SecurityException e) {
@@ -129,7 +143,7 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
 
     }
 
-    public void sendNotification(String message) {
+    public void sendNotification(String activated, String location, Boolean permanent) {
         NotificationManager nm = (NotificationManager) this.context.getSystemService(NOTIFICATION_SERVICE);
 
         if (isNotificationVisible()) {
@@ -142,8 +156,12 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
         notification.setSmallIcon(ic_launcher);
         notification.setTicker("");
         notification.setWhen(System.currentTimeMillis());
-        notification.setContentTitle("LocSilence");
-        notification.setContentText(message);
+        notification.setContentTitle("LocSilence " + activated);
+        notification.setContentText(location);
+
+        notification.setOngoing(permanent);
+        notification.setAutoCancel(!permanent);
+
 
         Intent intent = new Intent(this.context, MapsActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this.context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -151,6 +169,14 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
 
         //issues notification
         nm.notify(notifID, notification.build());
+    }
+
+    public void removeNotification() {
+        //if(isNotificationVisible()){
+            NotificationManager nm = (NotificationManager) this.context.getSystemService(NOTIFICATION_SERVICE);
+            nm.cancel(notifID);
+        //}
+
     }
 
     private boolean isNotificationVisible() {

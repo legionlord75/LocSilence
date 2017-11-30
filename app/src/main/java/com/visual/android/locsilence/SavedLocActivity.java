@@ -22,7 +22,7 @@ import java.util.List;
 
 
 public class SavedLocActivity extends AppCompatActivity {
-    private static final String TAG = LocSearchActivity.class.getSimpleName();
+    private static final String TAG = SavedLocActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
