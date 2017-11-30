@@ -41,17 +41,13 @@ import java.util.List;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
+    private static final String TAG = MapsActivity.class.getSimpleName();
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+    private boolean mPermissionDenied = false;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
     private Graphics draw = new Graphics();
     private GoogleMap mMap;
-    private double DEFAULT_LAT = 37.4220;
-    private double DEFAULT_LONG = -122.0841;
-    final int MAX_DB_SIZE = 5;
-    private static final String TAG = MapsActivity.class.getSimpleName();
-    int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
-
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
-    private boolean mPermissionDenied = false;
 
     final SQLDatabaseHandler db = new SQLDatabaseHandler(this);
     PlaceAutocompleteFragment autocompleteFragment;
@@ -232,8 +228,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             longitude = location.getLongitude();
         }
         else {
-            latitude = DEFAULT_LAT;
-            longitude = DEFAULT_LONG;
+            latitude = Constants.DEFAULT_LAT;
+            longitude = Constants.DEFAULT_LONG;
         }
 
         if (!isNotificationPolicyAccessGranted()) {
@@ -250,12 +246,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Obtain all locations
         List<Location> locations = db.getAllLocations();
 
-        for (Location Savedlocation : locations) {
-            System.out.println("marker maker hit");
-            System.out.println("current lat: " + Savedlocation.getLat());
-            System.out.println("current lng: " + Savedlocation.getLng());
-            LatLng loc = new LatLng(Savedlocation.getLat(), Savedlocation.getLng());
-            mMap.addMarker(new MarkerOptions().position(loc).title(Savedlocation.getName()));
+        for (Location loc : locations) {
+            Log.i(TAG, "marker set at" + loc.getName() + ", LatLng: " + loc.getLat() + " : " + loc.getLng());
+            LatLng coordinate = new LatLng(loc.getLat(), loc.getLng());
+            mMap.addMarker(new MarkerOptions().position(coordinate).title(loc.getName()));
         }
 
 
