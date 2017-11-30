@@ -22,6 +22,12 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
 public class CustomProximityMap extends AppCompatActivity implements OnMapReadyCallback {
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
@@ -30,7 +36,8 @@ public class CustomProximityMap extends AppCompatActivity implements OnMapReadyC
     Location selectedLocation;
     private double DEFAULT_LAT = 37.4220;
     private double DEFAULT_LONG = -122.0841;
-
+    private int counter = 0;
+    private ArrayList<LatLng> locations = new ArrayList<LatLng>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,9 +101,14 @@ public class CustomProximityMap extends AppCompatActivity implements OnMapReadyC
         button_set.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(counter<3) {
+                    System.out.println("Need to set at least 3 points");
+                }
+                else {
+                    finish();
+                }
                 // Option 1: Set array of (<=8) points to GSON and put object into DB
                 // Option 2: Pass proximity data back through intent and handle it in AddLocSettingsActivity
-                finish();
             }
         });
 
@@ -115,6 +127,8 @@ public class CustomProximityMap extends AppCompatActivity implements OnMapReadyC
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        FloatingActionButton fabRevertPoint = (FloatingActionButton) findViewById(R.id.fab_revert_point);
+
 
         if (checkLocationPermission()) {
             if (ContextCompat.checkSelfPermission(this,
@@ -140,7 +154,39 @@ public class CustomProximityMap extends AppCompatActivity implements OnMapReadyC
             longitude = DEFAULT_LONG;
         }
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 14.5f));
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener(){
+            @Override
+            public void onMapClick(LatLng point) {
+                int MAX_POINTS = 8;
+                if(locations.size() < MAX_POINTS){
+                    locations.add(point);
+                    if(locations.size() >=3){
+                        draw.perimeterDraw(mMap,locations);
+                    }
+                    draw.pointDraw(mMap,point);
+                }
+
+            }
+        });
+
+        fabRevertPoint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mMap != null) {
+                    locations.remove(locations.size()-1);
+                    mMap.clear();
+                    if(locations.size() >=3){
+                        draw.perimeterDraw(mMap,locations);
+                    }
+                    else{
+                        locations.clear();
+                    }
+                }
+            }
+        });
+
     }
+
 
 
     public boolean checkLocationPermission() {

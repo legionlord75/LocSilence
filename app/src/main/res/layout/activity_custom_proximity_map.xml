@@ -23,6 +23,18 @@
         />
 
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_revert_point"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/place_autocomplete_fragment"
+        android:layout_marginEnd="12dp"
+        android:layout_marginRight="12dp"
+        android:clickable="true"
+        app:srcCompat="@android:drawable/ic_menu_revert" />
+
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_go_to_selectedLoc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

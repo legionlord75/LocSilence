@@ -83,10 +83,11 @@ public class LocSettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (custProximity.isChecked()) {
-                    genProximity.setText("");
+                    //genProximity.setText("");
                     Intent customProxIntent = new Intent(LocSettingsActivity.this, CustomProximityMap.class);
                     customProxIntent.putExtra("selectedLocation", selectedLocation);
                     startActivity(customProxIntent);
+                    custProximity.setChecked(false);
                 }
                 else{
                     // Option 1: If proximity point data was set in lcoation customProximityMap then Clear the data
