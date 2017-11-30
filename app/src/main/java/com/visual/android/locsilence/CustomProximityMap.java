@@ -14,6 +14,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -24,26 +25,32 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CustomProximityMap extends AppCompatActivity implements OnMapReadyCallback {
 
+    private static final String TAG = CustomProximityMap.class.getSimpleName();
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+    private ArrayList<LatLng> boundary = new ArrayList<LatLng>();
     private Graphics draw = new Graphics();
     private GoogleMap mMap;
     Location selectedLocation;
-    private double DEFAULT_LAT = 37.4220;
-    private double DEFAULT_LONG = -122.0841;
-    private int counter = 0;
-    private ArrayList<LatLng> locations = new ArrayList<LatLng>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_custom_proximity_map);
 
         // Init info
+        final SQLDatabaseHandler db = new SQLDatabaseHandler(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         selectedLocation = (Location) getIntent().getParcelableExtra("selectedLocation");
         FloatingActionButton find_selectedLoc = (FloatingActionButton) findViewById(R.id.fab_go_to_selectedLoc);
@@ -79,8 +86,8 @@ public class CustomProximityMap extends AppCompatActivity implements OnMapReadyC
                         latitude = selectedLocation.getLat();
                         longitude = selectedLocation.getLng();
                     } else {
-                        latitude = DEFAULT_LAT;
-                        longitude = DEFAULT_LONG;
+                        latitude = Constants.DEFAULT_LAT;
+                        longitude = Constants.DEFAULT_LONG;
                     }
 
                     CameraUpdate cam_loc = CameraUpdateFactory.newLatLngZoom(
@@ -93,6 +100,9 @@ public class CustomProximityMap extends AppCompatActivity implements OnMapReadyC
         button_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent customSettingsIntent = new Intent(CustomProximityMap.this, LocSettingsActivity.class);
+                customSettingsIntent.putExtra("selectedLocation", selectedLocation);
+                startActivity(customSettingsIntent);
                 finish();
             }
         });
@@ -100,14 +110,17 @@ public class CustomProximityMap extends AppCompatActivity implements OnMapReadyC
         button_set.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(counter<3) {
-                    System.out.println("Need to set at least 3 points");
+                if(boundary.size()<3) {
+                    Utility.alertToast(CustomProximityMap.this, "Need to set at least 3 points");
                 }
                 else {
+                    String customProximityJSON = new Gson().toJson(boundary);
+                    selectedLocation.setCustomProximity(customProximityJSON);
+                    Intent customSettingsIntent = new Intent(CustomProximityMap.this, LocSettingsActivity.class);
+                    customSettingsIntent.putExtra("selectedLocation", selectedLocation);
+                    startActivity(customSettingsIntent);
                     finish();
                 }
-                // Option 1: Set array of (<=8) points to GSON and put object into DB
-                // Option 2: Pass proximity data back through intent and handle it in AddLocSettingsActivity
             }
         });
 
@@ -148,20 +161,24 @@ public class CustomProximityMap extends AppCompatActivity implements OnMapReadyC
             latitude = selectedLocation.getLat();
             longitude = selectedLocation.getLng();
         } else {
-            latitude = DEFAULT_LAT;
-            longitude = DEFAULT_LONG;
+            latitude = Constants.DEFAULT_LAT;
+            longitude = Constants.DEFAULT_LONG;
         }
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 14.5f));
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener(){
             @Override
             public void onMapClick(LatLng point) {
                 int MAX_POINTS = 8;
-                if(locations.size() < MAX_POINTS){
-                    locations.add(point);
-                    if(locations.size() >=3){
-                        draw.perimeterDraw(mMap,locations);
+                if(boundary.size() < MAX_POINTS){
+                    boundary.add(point);
+                    Log.i(TAG, "Point added to custom proximity boundary["+(boundary.size()-1)+"]");
+                    if(boundary.size() >=3){
+                        draw.perimeterDraw(mMap,boundary);
                     }
                     draw.pointDraw(mMap,point);
+                }
+                else{
+                    Utility.alertToast(CustomProximityMap.this, "Maximum 8 points");
                 }
 
             }
@@ -171,21 +188,20 @@ public class CustomProximityMap extends AppCompatActivity implements OnMapReadyC
             @Override
             public void onClick(View v) {
                 if (mMap != null) {
-                    locations.remove(locations.size()-1);
+                    boundary.remove(boundary.size()-1);
+                    Log.i(TAG, "Point added to custom proximity boundary["+(boundary.size()-1)+"]");
                     mMap.clear();
-                    if(locations.size() >=3){
-                        draw.perimeterDraw(mMap,locations);
+                    if(boundary.size() >=3){
+                        draw.perimeterDraw(mMap,boundary);
                     }
                     else{
-                        locations.clear();
+                        boundary.clear();
                     }
                 }
             }
         });
 
     }
-
-
 
     public boolean checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this,

@@ -29,6 +29,7 @@ public class Location implements Parcelable{
     private int vol_alarms;
     private String cid;
     private int rad;
+    private String customProximity;
 
     public Location(){}
 
@@ -46,6 +47,7 @@ public class Location implements Parcelable{
         this.vol_alarms = 0;
         this.cid=cid;
         this.rad=100;
+        this.customProximity = "null";
     }
     // default parcel constructor
     public Location(Parcel parcel) {
@@ -61,6 +63,7 @@ public class Location implements Parcelable{
         this.vol_alarms = parcel.readInt();
         this.cid = parcel.readString();
         this.rad = parcel.readInt();
+        this.customProximity = parcel.readString();
     }
 
     @Override
@@ -77,6 +80,7 @@ public class Location implements Parcelable{
         parcel.writeInt(this.vol_alarms);
         parcel.writeString(this.cid);
         parcel.writeInt(this.rad);
+        parcel.writeString(this.customProximity);
     }
 
     public static final Creator<Location> CREATOR=new Creator<Location>(){
@@ -140,6 +144,8 @@ public class Location implements Parcelable{
 
     public int getRad() { return rad; }
 
+    public String getCustomProximity(){ return customProximity; }
+
     // SET methods
 
     public void setId(String id) {
@@ -184,6 +190,8 @@ public class Location implements Parcelable{
 
     public void setRad(int rad) { this.rad = rad; }
 
+    public void setCustomProximity(String customProximity){ this.customProximity = customProximity; }
+
     public void printLocation(){
         Log.i("logDB", "Location: (name: " + this.getName() + ") | " +
                 "(Address: " + this.getAddress() + ") | " +
@@ -192,7 +200,7 @@ public class Location implements Parcelable{
                 "(vol_media: " + this.getVolNotifications() + ") |" +
                 "(vol_alarms: " + this.getVolAlarms() + ") |" +
                 "(ID: " + this.getId() + ") | " + "(Cid: " + this.getCid() + ") |" +
-                "(Radius: " + this.getRad() + ") |"
+                "(Radius: " + this.getRad() + ") |" + "(customProx: " + this.getCustomProximity() + ") |"
         );
     }
 }

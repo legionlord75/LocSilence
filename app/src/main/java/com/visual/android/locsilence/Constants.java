@@ -6,5 +6,7 @@ package com.visual.android.locsilence;
 
 public class Constants {
     final static int MAX_DB_SIZE = 100;
-
+    final static double DEFAULT_LAT = 37.4220;
+    final static double DEFAULT_LONG = -122.0841;
+    final static String JSON_NULL = "null";
 }
