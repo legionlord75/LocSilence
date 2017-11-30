@@ -160,6 +160,7 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
         notification.setContentText(location);
 
         notification.setOngoing(permanent);
+        notification.setAutoCancel(!permanent);
 
 
         Intent intent = new Intent(this.context, MapsActivity.class);
