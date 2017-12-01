@@ -101,6 +101,7 @@ public class LocSettingsActivity extends AppCompatActivity {
                     customProxIntent.putExtra("selectedLocation", selectedLocation);
                     startActivity(customProxIntent);
                     finish();
+                    overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_down);
                 }
             }
         });

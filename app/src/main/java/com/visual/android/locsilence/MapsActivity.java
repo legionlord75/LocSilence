@@ -79,12 +79,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         mMapButton.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
 
-
         mLocationsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MapsActivity.this, SavedLocActivity.class);
                 startActivity(intent);
+                finish();
+                overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
             }
         });
 
@@ -156,11 +157,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         switch (item.getItemId()){
             case R.id.setting_id:
                 //Go to settings activity
-                //Toast.makeText(getApplicationContext(), "Settings button hit", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(MapsActivity.this, SettingsActivity.class);
-
                 startActivity(intent);
-                startActivity(new Intent(MapsActivity.this, SettingsActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -60,7 +60,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:text="or" />
+            android:text="@string/or" />
 
         <LinearLayout
             android:id="@+id/customProx_layout"
@@ -74,7 +74,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/customProx_checkBox"
-                android:text="proximity" />
+                android:text="@string/proximity" />
 
             <CheckBox
                 android:id="@+id/customProx_checkBox"
@@ -99,7 +99,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Delete" />
+            android:text="@string/delete" />
 
         <Button
             android:id="@+id/set_button"
@@ -108,7 +108,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Set" />
+            android:text="@string/set" />
 
     </LinearLayout>
 

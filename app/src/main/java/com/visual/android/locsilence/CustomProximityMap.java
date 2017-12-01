@@ -20,7 +20,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 import java.util.ArrayList;
 
@@ -78,6 +78,7 @@ public class CustomProximityMap extends AppCompatActivity implements OnMapReadyC
 
                     CameraUpdate mCameraLocation = CameraUpdateFactory.newLatLngZoom(
                             new LatLng(latitude, longitude), 14.5f);
+
                     mMap.animateCamera(mCameraLocation);
                 }
             }
@@ -90,6 +91,7 @@ public class CustomProximityMap extends AppCompatActivity implements OnMapReadyC
                 customSettingsIntent.putExtra("selectedLocation", selectedLocation);
                 startActivity(customSettingsIntent);
                 finish();
+                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
             }
         });
 
@@ -106,6 +108,7 @@ public class CustomProximityMap extends AppCompatActivity implements OnMapReadyC
                     customSettingsIntent.putExtra("selectedLocation", selectedLocation);
                     startActivity(customSettingsIntent);
                     finish();
+                    overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
                 }
             }
         });
@@ -126,7 +129,6 @@ public class CustomProximityMap extends AppCompatActivity implements OnMapReadyC
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         FloatingActionButton fabRevertPoint = (FloatingActionButton) findViewById(R.id.fab_revert_point);
-
 
         if (checkLocationPermission()) {
             if (ContextCompat.checkSelfPermission(this,
@@ -149,6 +151,10 @@ public class CustomProximityMap extends AppCompatActivity implements OnMapReadyC
             latitude = Constants.DEFAULT_LAT;
             longitude = Constants.DEFAULT_LONG;
         }
+
+        LatLng loc = new LatLng(latitude, longitude);
+        mMap.addMarker(new MarkerOptions().position(loc).title(selectedLocation.getName()));
+
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 14.5f));
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener(){
             @Override

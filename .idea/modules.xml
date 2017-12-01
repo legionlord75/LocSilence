@@ -3,8 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/LocSilence.iml" filepath="$PROJECT_DIR$/LocSilence.iml" />
+      <module fileurl="file://$PROJECT_DIR$/LocSilence.iml" filepath="$PROJECT_DIR$/LocSilence.iml" />
       <module fileurl="file://C:\Users\ErikL\AndroidStudioProjects\Locsilencereal\LocSilence.iml" filepath="C:\Users\ErikL\AndroidStudioProjects\Locsilencereal\LocSilence.iml" />
       <module fileurl="file://C:\Users\Thomas Brochard\Documents\LocSilence\LocSilence\Locsilencereal.iml" filepath="C:\Users\Thomas Brochard\Documents\LocSilence\LocSilence\Locsilencereal.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://C:\Users\ErikL\AndroidStudioProjects\Locsilencereal\app\app.iml" filepath="C:\Users\ErikL\AndroidStudioProjects\Locsilencereal\app\app.iml" />
     </modules>
