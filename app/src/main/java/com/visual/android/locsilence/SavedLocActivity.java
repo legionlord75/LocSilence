@@ -65,7 +65,6 @@ public class SavedLocActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(SavedLocActivity.this, MapsActivity.class);
-                //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 finish();
                 overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);

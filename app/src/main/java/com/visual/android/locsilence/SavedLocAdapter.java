@@ -44,8 +44,8 @@ public class SavedLocAdapter extends ArrayAdapter<Location> {
             final Button mDeleteButton = (Button) convertView.findViewById(R.id.delete_button);
 
             // Set basic ui
-            locationName.setText(Utility.cropText(location.getName(), 21, " ..."));
-            locationAddress.setText(Utility.cropText(location.getAddress(), 35, " ..."));
+            locationName.setText(location.getName());
+            locationAddress.setText(location.getAddress());
 
             mEditButton.setOnClickListener(new View.OnClickListener() {
                 @Override
