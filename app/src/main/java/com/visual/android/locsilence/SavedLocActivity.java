@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -14,7 +13,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-
 import com.google.android.gms.location.places.Place;
 
 import java.util.Date;
@@ -22,7 +20,6 @@ import java.util.List;
 
 
 public class SavedLocActivity extends AppCompatActivity {
-    private static final String TAG = SavedLocActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +31,7 @@ public class SavedLocActivity extends AppCompatActivity {
         final List<Location> locations = db.getAllLocations();
         ListView listView = (ListView) findViewById(R.id.listview);
         Toolbar toolbar = (Toolbar) findViewById(R.id.list_toolbar);
-        Button mapButton = (Button) findViewById(R.id.mapButton);
+        Button mMapButton = (Button) findViewById(R.id.mapButton);
 
         // Set Basic ui
         setSupportActionBar(toolbar);
@@ -64,8 +61,7 @@ public class SavedLocActivity extends AppCompatActivity {
             }
         });
 
-
-        mapButton.setOnClickListener(new View.OnClickListener() {
+        mMapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(SavedLocActivity.this, MapsActivity.class);
@@ -82,7 +78,6 @@ public class SavedLocActivity extends AppCompatActivity {
     public Location getSelectedLocation(Place place, SQLDatabaseHandler db) {
         // If place is in db already update location info in db
         Location selectedLocation = null;
-        Log.i("plz", db.getSize()+"");
         if (db.locationInDB(place.getId())) {
             selectedLocation = db.getLocation(place.getId());
         }
@@ -113,10 +108,8 @@ public class SavedLocActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.setting_id:
                 //Go to settings activity
-                //Toast.makeText(getApplicationContext(), "Settings button hit", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(SavedLocActivity.this, SettingsActivity.class);
                 startActivity(intent);
-                //startActivity(new Intent(MapsActivity.this, SettingsActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -68,18 +68,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         actionBar.setDisplayShowHomeEnabled(true);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        SupportMapFragment mMapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        mMapFragment.getMapAsync(this);
 
 
-        Button mapButton = (Button) findViewById(R.id.mapButton);
-        Button locationsButton = (Button) findViewById(R.id.locButton);
+        Button mMapButton = (Button) findViewById(R.id.mapButton);
+        Button mLocationsButton = (Button) findViewById(R.id.locButton);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
-        mapButton.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+        mMapButton.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
 
-        locationsButton.setOnClickListener(new View.OnClickListener() {
+        mLocationsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MapsActivity.this, SavedLocActivity.class);

@@ -17,11 +17,9 @@ import java.util.List;
 
 public class LocSettingsVolumeAdapter extends ArrayAdapter<String> {
 
-    String[] volumeTypes;
-    List<Integer> volumeLevels;
-    int maxVolume;
-    CheckBox silenceCheckBox;
-    List<CheckBox> box;
+    private String[] volumeTypes;
+    private List<Integer> volumeLevels;
+    private int maxVolume;
 
     public LocSettingsVolumeAdapter(Context context, String[] volumeTypes, List<Integer> defaultVolumes, int maxVolume) {
         super(context, R.layout.item_loc_settings_volumes, volumeTypes);
@@ -36,47 +34,49 @@ public class LocSettingsVolumeAdapter extends ArrayAdapter<String> {
         View customView = inflater.inflate(R.layout.item_loc_settings_volumes, parent, false);
 
         // Init info
-        final TextView volumeTitle = (TextView) customView.findViewById(R.id.title_volumeType);
-        volumeTitle.setText(getItem(position));
-        final SeekBar volumeSeekbar = (SeekBar) customView.findViewById(R.id.seekBar_volume);
-        final CheckBox defaultCheckBox = (CheckBox) customView.findViewById(R.id.check_default);
+        final TextView mVolumeTitle = (TextView) customView.findViewById(R.id.title_volumeType);
+        mVolumeTitle.setText(getItem(position));
+        final SeekBar mVolumeSeekBar = (SeekBar) customView.findViewById(R.id.seekBar_volume);
+        final CheckBox mDefaultCheckBox = (CheckBox) customView.findViewById(R.id.check_default);
 
         // Set seekbar to default value
-        volumeSeekbar.setMax(this.maxVolume);
+        mVolumeSeekBar.setMax(this.maxVolume);
         if (volumeLevels.get(position) >= 0) {
-            volumeSeekbar.setProgress(volumeLevels.get(position));
+            mVolumeSeekBar.setProgress(volumeLevels.get(position));
         } else {
-            defaultCheckBox.setChecked(true);
-            volumeSeekbar.setEnabled(false);
+            mDefaultCheckBox.setChecked(true);
+            mVolumeSeekBar.setEnabled(false);
         }
 
         // Init Listeners
-        volumeSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        mVolumeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 volumeLevels.set(position, progress);
-                defaultCheckBox.setChecked(false);
+                mDefaultCheckBox.setChecked(false);
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
+                //TODO: Auto-generated stub
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                //TODO: Auto-generated stub
             }
         });
 
         // Set checkbox and listener
-        defaultCheckBox.setOnClickListener(new View.OnClickListener() {
+        mDefaultCheckBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (defaultCheckBox.isChecked()) {
+                if (mDefaultCheckBox.isChecked()) {
                     volumeLevels.set(position, -1);
-                    volumeSeekbar.setEnabled(false);
+                    mVolumeSeekBar.setEnabled(false);
                 } else {
-                    volumeSeekbar.setEnabled(true);
-                    volumeLevels.set(position, volumeSeekbar.getProgress());
+                    mVolumeSeekBar.setEnabled(true);
+                    volumeLevels.set(position, mVolumeSeekBar.getProgress());
                 }
             }
         });
