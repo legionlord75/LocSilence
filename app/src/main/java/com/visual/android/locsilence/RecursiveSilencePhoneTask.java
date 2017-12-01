@@ -28,7 +28,8 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
     private SQLDatabaseHandler db;
     private Context context;
     private AudioManager audio;
-    private List<Integer> savedVolumes;
+    private static List<Integer> savedVolumes;
+    private static Location currentlySilencedLocation;
 
     private static boolean recentlySilenced = false;
 
@@ -40,7 +41,9 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
         this.locationManager = locationManager;
         this.db = db;
         this.context = context;
-        this.savedVolumes = new ArrayList<>();
+        if (savedVolumes == null) {
+            savedVolumes = new ArrayList<>();
+        }
         audio = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
     }
 
@@ -98,6 +101,7 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
                         //audio.setRingerMode(AudioManager.RINGER_MODE_SILENT);
                         if (!recentlySilenced) {
                             Log.i("Silencing", "Activated");
+                            currentlySilencedLocation = location;
                             modifyPhoneVolume(streamTypes, location.getVolumes());
                             sendNotification("activated", location.getName(),true);
                         }
@@ -129,6 +133,7 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
                         removeNotification();
                     }
                     else{
+                        System.out.println("SEND DEACTIVATION NOTIFICATION");
                         sendNotification("deactivated", "", false);
                     }
                     recentlySilenced = false;
@@ -186,8 +191,10 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
     }
 
     private void modifyPhoneVolume(List<Integer> streamTypes, List<Integer> volumeLevels) {
+        System.out.println("MODIFYING VOLUME");
         for (int i = 0; i < streamTypes.size(); i++) {
             if (volumeLevels.get(i) != -1) {
+                System.out.println(audio.getStreamVolume(streamTypes.get(i)));
                 savedVolumes.add(audio.getStreamVolume(streamTypes.get(i)));
                 audio.setStreamVolume(streamTypes.get(i), volumeLevels.get(i), 0);
             } else {
@@ -196,12 +203,21 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
         }
     }
 
-    private void revertPhoneVolume(List<Integer> streamType) {
-        for (int i = 0; i < streamType.size(); i++) {
-            if (savedVolumes.size() > 0 && savedVolumes.get(i) != -1) {
-                audio.setStreamVolume(streamType.get(i), savedVolumes.get(i), 0);
+    private void revertPhoneVolume(List<Integer> streamTypes) {
+        System.out.println("REVERT PHONE VOLUME!!!!");
+        List<Integer> volumeLevels = new ArrayList<>();
+        if (currentlySilencedLocation != null) {
+            volumeLevels = currentlySilencedLocation.getVolumes();
+        }
+        for (int i = 0; i < streamTypes.size(); i++) {
+            System.out.println(i + " streamType: " + streamTypes.get(i) + ", audio: " + audio.getStreamVolume(streamTypes.get(i)));
+            if (savedVolumes.size() > 0 && savedVolumes.get(i) != -1 && i < volumeLevels.size() &&
+                    volumeLevels.get(i) == audio.getStreamVolume(streamTypes.get(i))) {
+                System.out.println("savedVolume: " + savedVolumes.get(i));
+                audio.setStreamVolume(streamTypes.get(i), savedVolumes.get(i), 0);
             }
         }
+        savedVolumes.clear();
     }
 
 }
