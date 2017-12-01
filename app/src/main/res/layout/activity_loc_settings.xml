@@ -15,7 +15,7 @@
     </android.support.v7.widget.Toolbar>
 
     <ListView
-        android:id="@+id/listView_settings"
+        android:id="@+id/settings_listview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -24,28 +24,28 @@
     </ListView>
 
     <LinearLayout
+        android:id="@+id/proximity_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginTop="10dp"
-        android:layout_below="@id/listView_settings"
-        android:id="@+id/linearLayout_proximity">
+        android:layout_below="@id/settings_listview">
 
         <LinearLayout
+            android:id="@+id/genericProxy_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:id="@+id/linearLayout_genericProxy">
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/title_proximity"
+                android:id="@+id/proximity_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/editText_genericProxy"
+                android:layout_above="@+id/genericProxy_editText"
                 android:text="proximity" />
 
             <EditText
-                android:id="@+id/editText_genericProxy"
+                android:id="@+id/genericProxy_editText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:inputType="number"
@@ -53,58 +53,58 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/text_or"
+            android:id="@+id/or_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/linearLayout_genericProxy"
+            android:layout_toRightOf="@+id/genericProxy_layout"
             android:layout_alignParentBottom="true"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:text="or" />
 
         <LinearLayout
+            android:id="@+id/customProx_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_toRightOf="@id/text_or"
-            android:id="@+id/linearLayout_customProx">
+            android:layout_toRightOf="@id/or_textview">
 
             <TextView
-                android:id="@+id/title_customProx"
+                android:id="@+id/customProx_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/checkBox_customProx"
+                android:layout_above="@+id/customProx_checkBox"
                 android:text="proximity" />
 
             <CheckBox
-                android:id="@+id/checkBox_customProx"
+                android:id="@+id/customProx_checkBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/text_or"/>
+                android:layout_toRightOf="@+id/or_textview"/>
 
         </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/buttons_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal"
-        android:id="@+id/linearLayout_buttons">
+        android:orientation="horizontal">
 
         <Button
+            android:id="@+id/delete_button"
             android:textColor="@color/white"
             android:background="@drawable/button"
-            android:id="@+id/button_deleteSettings"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Delete" />
 
         <Button
+            android:id="@+id/set_button"
             android:textColor="@color/white"
             android:background="@drawable/button"
-            android:id="@+id/button_setSettings"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

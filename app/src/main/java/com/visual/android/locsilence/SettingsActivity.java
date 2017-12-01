@@ -4,6 +4,7 @@ package com.visual.android.locsilence;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -69,6 +70,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             //PrefsFragment.context = getApplicationContext();
             addPreferencesFromResource(R.xml.activity_settings);
             final Preference pref_about = (Preference) findPreference("about");
+            final Preference pref_help = (Preference) findPreference("help");
 
             pref_about.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
@@ -87,9 +89,20 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                     AlertDialog alert = a_builder.create();
                     alert.setTitle("About Us");
                     alert.show();
-                    return false;
+                    return true;
                 }
             });
+
+            pref_help.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    System.out.println("help preference hit");
+                    Intent helpIntent = new Intent(context, settingsHelpActivity.class);
+                    startActivity(helpIntent);
+                    return true;
+                }
+            });
+
         }
 
         @Override
