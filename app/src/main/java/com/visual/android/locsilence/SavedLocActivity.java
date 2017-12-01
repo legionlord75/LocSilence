@@ -15,10 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
-import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 
 import java.util.Date;
 import java.util.List;
@@ -67,38 +64,16 @@ public class SavedLocActivity extends AppCompatActivity {
             }
         });
 
-        // Set searchBar
-//        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
-//                getFragmentManager().findFragmentById(R.id.locList_place_autocomplete_fragment);
-//        autocompleteFragment.setHint("Update or add location");
-//        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-//            @Override
-//            public void onPlaceSelected(Place place) {
-//                Location selectedLocation = getSelectedLocation(place, db);
-//                if(selectedLocation != null) {
-//                    Intent settingsIntent = new Intent(SavedLocActivity.this, LocSettingsActivity.class);
-//                    settingsIntent.putExtra("selectedLocation", selectedLocation);
-//                    startActivity(settingsIntent);
-//                }
-//                else{
-//                    Utility.alertToast(SavedLocActivity.this, "saved locations is limited to " + Constants.MAX_DB_SIZE);
-//                }
-//            }
-//
-//
-//            @Override
-//            public void onError(Status status) {
-//                Utility.alertToast(getApplicationContext(), "An error occurred with google location");
-//                Log.i(TAG, "An error occurred: " + status);
-//            }
-//        });
 
         mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent mapIntent = new Intent(SavedLocActivity.this, MapsActivity.class);
-                startActivity(mapIntent);
+                Intent intent = new Intent(SavedLocActivity.this, MapsActivity.class);
+                //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
                 finish();
+                overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
+
             }
         });
     }

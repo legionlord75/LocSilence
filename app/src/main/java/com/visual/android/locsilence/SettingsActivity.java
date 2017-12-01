@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
-import android.preference.SwitchPreference;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.view.MenuItem;
@@ -49,7 +48,11 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //getSupportActionBar().setTitle("Settings");
+
         setupActionBar();
+        getSupportActionBar().setTitle("Settings");
 
         SettingsActivity.context = getApplicationContext();
 
@@ -59,8 +62,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
     }
 
-
-
+    
     public static class PrefsFragment extends PreferenceFragment{
 
         @Override
@@ -110,7 +112,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
      */
     private void setupActionBar() {
         ActionBar actionBar = getSupportActionBar();
-        //actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
 
         if (actionBar != null) {
