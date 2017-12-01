@@ -4,12 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import com.google.android.gms.common.api.Status;
@@ -31,7 +34,7 @@ public class SavedLocActivity extends AppCompatActivity {
 
         // Init info
         final SQLDatabaseHandler db = new SQLDatabaseHandler(this);
-        List<Location> locations = db.getAllLocations();
+        final List<Location> locations = db.getAllLocations();
         ListView listView = (ListView) findViewById(R.id.listview);
         Toolbar toolbar = (Toolbar) findViewById(R.id.list_toolbar);
         Button mapButton = (Button) findViewById(R.id.mapButton);
@@ -41,34 +44,54 @@ public class SavedLocActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Saved Locations");
         toolbar.setSubtitle("LocSilence");
 
-        SavedLocAdapter savedLocAdapter = new SavedLocAdapter(this, locations, db);
+        final SavedLocAdapter savedLocAdapter = new SavedLocAdapter(this, locations, db);
         listView.setAdapter(savedLocAdapter);
 
-        // Set searchBar
-        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
-                getFragmentManager().findFragmentById(R.id.locList_place_autocomplete_fragment);
-        autocompleteFragment.setHint("Update or add location");
-        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+        savedLocAdapter.notifyDataSetChanged();
+
+        EditText searchBar = (EditText)findViewById(R.id.search);
+        searchBar.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onPlaceSelected(Place place) {
-                Location selectedLocation = getSelectedLocation(place, db);
-                if(selectedLocation != null) {
-                    Intent settingsIntent = new Intent(SavedLocActivity.this, LocSettingsActivity.class);
-                    settingsIntent.putExtra("selectedLocation", selectedLocation);
-                    startActivity(settingsIntent);
-                }
-                else{
-                    Utility.alertToast(SavedLocActivity.this, "saved locations is limited to " + Constants.MAX_DB_SIZE);
-                }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                //TODO: Auto-generated stub
             }
 
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                savedLocAdapter.updateLocations(db.getAllLocations(charSequence.toString()));
+            }
 
             @Override
-            public void onError(Status status) {
-                Utility.alertToast(getApplicationContext(), "An error occurred with google location");
-                Log.i(TAG, "An error occurred: " + status);
+            public void afterTextChanged(Editable editable) {
+                //TODO: Auto-generated stub
             }
         });
+
+        // Set searchBar
+//        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+//                getFragmentManager().findFragmentById(R.id.locList_place_autocomplete_fragment);
+//        autocompleteFragment.setHint("Update or add location");
+//        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+//            @Override
+//            public void onPlaceSelected(Place place) {
+//                Location selectedLocation = getSelectedLocation(place, db);
+//                if(selectedLocation != null) {
+//                    Intent settingsIntent = new Intent(SavedLocActivity.this, LocSettingsActivity.class);
+//                    settingsIntent.putExtra("selectedLocation", selectedLocation);
+//                    startActivity(settingsIntent);
+//                }
+//                else{
+//                    Utility.alertToast(SavedLocActivity.this, "saved locations is limited to " + Constants.MAX_DB_SIZE);
+//                }
+//            }
+//
+//
+//            @Override
+//            public void onError(Status status) {
+//                Utility.alertToast(getApplicationContext(), "An error occurred with google location");
+//                Log.i(TAG, "An error occurred: " + status);
+//            }
+//        });
 
         mapButton.setOnClickListener(new View.OnClickListener() {
             @Override

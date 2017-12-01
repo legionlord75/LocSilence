@@ -7,6 +7,7 @@ package com.visual.android.locsilence;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -149,11 +150,16 @@ public class SQLDatabaseHandler extends SQLiteOpenHelper {
         return null;
     }
 
-    // Getting All Contacts
     public List<Location> getAllLocations() {
+        return getAllLocations("");
+    }
+
+    // Getting All Contacts
+    public List<Location> getAllLocations(String query) {
         List<Location> allLocations = new ArrayList<>();
         // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_LOCATIONS;
+        String selectQuery = "SELECT  * FROM " + TABLE_LOCATIONS + " WHERE name LIKE " +
+                DatabaseUtils.sqlEscapeString(query + "%");
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
