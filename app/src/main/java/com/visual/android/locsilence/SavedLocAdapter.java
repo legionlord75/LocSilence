@@ -17,9 +17,9 @@ import java.util.List;
 
 public class SavedLocAdapter extends ArrayAdapter<Location> {
 
-    List<Location> locations;
+    private List<Location> locations;
     private Context context;
-    SQLDatabaseHandler db;
+    private SQLDatabaseHandler db;
 
     public SavedLocAdapter(Context context, List<Location> locations, SQLDatabaseHandler db) {
         super(context, 0, locations);
@@ -34,40 +34,51 @@ public class SavedLocAdapter extends ArrayAdapter<Location> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_location, parent, false);
         }
 
-        // Init info
-        final TextView locationName = (TextView) convertView.findViewById(R.id.name);
-        final TextView locationAddress = (TextView) convertView.findViewById(R.id.address);
-        final Button button_edit = (Button) convertView.findViewById(R.id.button_locList_edit);
-        final Button button_del = (Button) convertView.findViewById(R.id.button_locList_delete);
+        final Location location = locations.get(position);
 
-        // Set basic ui
-        locationName.setText(Utility.cropText(locations.get(position).getName(), 21, " ..."));
-        locationAddress.setText(Utility.cropText(locations.get(position).getAddress(), 35, " ..."));
+        if (location != null) {
+            // Init info
+            final TextView locationName = (TextView) convertView.findViewById(R.id.name);
+            final TextView locationAddress = (TextView) convertView.findViewById(R.id.address);
+            final Button mEditButton = (Button) convertView.findViewById(R.id.edit_button);
+            final Button mDeleteButton = (Button) convertView.findViewById(R.id.delete_button);
 
-        button_edit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent settingsIntent = new Intent(context, LocSettingsActivity.class);
-                settingsIntent.putExtra("editing", true);
-                settingsIntent.putExtra("selectedLocation", locations.get(position));
-                context.startActivity(settingsIntent);
-            }
-        });
+            // Set basic ui
+            locationName.setText(Utility.cropText(location.getName(), 21, " ..."));
+            locationAddress.setText(Utility.cropText(location.getAddress(), 35, " ..."));
 
-        button_del.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (db.getLocation(locations.get(position).getId()) != null) {
-                    db.deleteLocalGame(locations.get(position).getId());
+            mEditButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent settingsIntent = new Intent(context, LocSettingsActivity.class);
+                    settingsIntent.putExtra("editing", true);
+                    settingsIntent.putExtra("selectedLocation", location);
+                    context.startActivity(settingsIntent);
                 }
-                locations.remove(position);
-                notifyDataSetChanged();
-            }
-        });
+            });
+
+            mDeleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (db.getLocation(location.getId()) != null) {
+                        db.deleteLocalGame(location.getId());
+                    }
+                    locations.remove(position);
+                    notifyDataSetChanged();
+                }
+            });
+        }
+
         return convertView;
     }
 
     public Location getItem(int position) {
         return locations.get(position);
+    }
+
+    public void updateLocations(List<Location> locations) {
+        this.locations.clear();
+        this.locations.addAll(locations);
+        notifyDataSetChanged();
     }
 }

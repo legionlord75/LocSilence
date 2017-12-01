@@ -4,11 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
-import com.google.android.gms.location.places.Place;
-
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -24,17 +20,17 @@ public class Location implements Parcelable{
     private double lng;
     private String createdAt;
     private String updatedAt;
-    private int vol_ringtone;
-    private int vol_notifications;
-    private int vol_alarms;
-    private String cid;
-    private int rad;
+    private int ringtoneVolume;
+    private int notificationsVolume;
+    private int alarmsVolume;
+    private String circleId;
+    private int radius;
     private String customProximity;
 
     public Location(){}
 
     public Location(String id, String name, String address, double lat, double lng,
-                    String createdAt, String updatedAt, String cid) {
+                    String createdAt, String updatedAt, String circleId) {
         this.id = id;
         this.name = name;
         this.address = address;
@@ -42,11 +38,11 @@ public class Location implements Parcelable{
         this.lng = lng;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.vol_ringtone = 0;
-        this.vol_notifications = 0;
-        this.vol_alarms = 0;
-        this.cid=cid;
-        this.rad=100;
+        this.ringtoneVolume = 0;
+        this.notificationsVolume = 0;
+        this.alarmsVolume = 0;
+        this.circleId = circleId;
+        this.radius = 100;
         this.customProximity = "null";
     }
     // default parcel constructor
@@ -58,11 +54,11 @@ public class Location implements Parcelable{
         this.lng = parcel.readDouble();
         this.createdAt = parcel.readString();
         this.updatedAt = parcel.readString();
-        this.vol_ringtone = parcel.readInt();
-        this.vol_notifications = parcel.readInt();
-        this.vol_alarms = parcel.readInt();
-        this.cid = parcel.readString();
-        this.rad = parcel.readInt();
+        this.ringtoneVolume = parcel.readInt();
+        this.notificationsVolume = parcel.readInt();
+        this.alarmsVolume = parcel.readInt();
+        this.circleId = parcel.readString();
+        this.radius = parcel.readInt();
         this.customProximity = parcel.readString();
     }
 
@@ -75,11 +71,11 @@ public class Location implements Parcelable{
         parcel.writeDouble(this.lng);
         parcel.writeString(this.createdAt);
         parcel.writeString(this.updatedAt);
-        parcel.writeInt(this.vol_ringtone);
-        parcel.writeInt(this.vol_notifications);
-        parcel.writeInt(this.vol_alarms);
-        parcel.writeString(this.cid);
-        parcel.writeInt(this.rad);
+        parcel.writeInt(this.ringtoneVolume);
+        parcel.writeInt(this.notificationsVolume);
+        parcel.writeInt(this.alarmsVolume);
+        parcel.writeString(this.circleId);
+        parcel.writeInt(this.radius);
         parcel.writeString(this.customProximity);
     }
 
@@ -94,8 +90,9 @@ public class Location implements Parcelable{
         }
     };
     @Override
-    public int describeContents(){return 0;}
-
+    public int describeContents(){
+        return 0;
+    }
 
     // GET methods
     public String getId() {
@@ -125,24 +122,24 @@ public class Location implements Parcelable{
     }
 
     public List<Integer> getVolumes(){
-        return Arrays.asList(this.vol_ringtone, this.vol_notifications, this.vol_alarms);
+        return Arrays.asList(this.ringtoneVolume, this.notificationsVolume, this.alarmsVolume);
     }
 
     public int getVolRingtone() {
-        return vol_ringtone;
+        return ringtoneVolume;
     }
 
     public int getVolNotifications() {
-        return vol_notifications;
+        return notificationsVolume;
     }
 
     public int getVolAlarms() {
-        return vol_alarms;
+        return alarmsVolume;
     }
 
-    public String getCid() { return cid; }
+    public String getCircleId() { return circleId; }
 
-    public int getRad() { return rad; }
+    public int getRadius() { return radius; }
 
     public String getCustomProximity(){ return customProximity; }
 
@@ -180,15 +177,15 @@ public class Location implements Parcelable{
         this.setVolAlarms(volumeLevels.get(2));
     };
 
-    public void setVolRingtone(int vol_ringtone) { this.vol_ringtone = vol_ringtone; }
+    public void setVolRingtone(int vol_ringtone) { this.ringtoneVolume = vol_ringtone; }
 
-    public void setVolNotifications(int vol_notifications) { this.vol_notifications = vol_notifications; }
+    public void setVolNotifications(int vol_notifications) { this.notificationsVolume = vol_notifications; }
 
-    public void setVolAlarms(int vol_alarms) { this.vol_alarms = vol_alarms; }
+    public void setVolAlarms(int vol_alarms) { this.alarmsVolume = vol_alarms; }
 
-    public void setCid(String cid) { this.cid = cid; }
+    public void setCircleId(String circleId) { this.circleId = circleId; }
 
-    public void setRad(int rad) { this.rad = rad; }
+    public void setRadius(int radius) { this.radius = radius; }
 
     public void setCustomProximity(String customProximity){ this.customProximity = customProximity; }
 
@@ -196,11 +193,11 @@ public class Location implements Parcelable{
         Log.i("logDB", "Location: (name: " + this.getName() + ") | " +
                 "(Address: " + this.getAddress() + ") | " +
                 "(LatLong: " + this.getLat() + ":" + this.getLng() + ") |" +
-                "(vol_ringtone: " + this.getVolRingtone() + ") |" +
+                "(ringtoneVolume: " + this.getVolRingtone() + ") |" +
                 "(vol_media: " + this.getVolNotifications() + ") |" +
-                "(vol_alarms: " + this.getVolAlarms() + ") |" +
-                "(ID: " + this.getId() + ") | " + "(Cid: " + this.getCid() + ") |" +
-                "(Radius: " + this.getRad() + ") |" + "(customProx: " + this.getCustomProximity() + ") |"
+                "(alarmsVolume: " + this.getVolAlarms() + ") |" +
+                "(ID: " + this.getId() + ") | " + "(Cid: " + this.getCircleId() + ") |" +
+                "(Radius: " + this.getRadius() + ") |" + "(customProx: " + this.getCustomProximity() + ") |"
         );
     }
 }

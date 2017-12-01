@@ -31,13 +31,13 @@
         android:layout_height="wrap_content">
         <Button
             android:background="@drawable/ic_edit"
-            android:id="@+id/button_locList_edit"
+            android:id="@+id/edit_button"
             android:layout_width="48dp"
             android:layout_height="48dp"/>
 
         <Button
             android:background="@drawable/ic_delete"
-            android:id="@+id/button_locList_delete"
+            android:id="@+id/delete_button"
             android:layout_width="48dp"
             android:layout_height="48dp" />
     </LinearLayout>
