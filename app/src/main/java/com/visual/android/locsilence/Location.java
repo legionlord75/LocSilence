@@ -4,6 +4,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import com.google.gson.Gson;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,6 +23,7 @@ public class Location implements Parcelable{
     private double lng;
     private String createdAt;
     private String updatedAt;
+    private String volumes;
     private int ringtoneVolume;
     private int notificationsVolume;
     private int alarmsVolume;
@@ -38,6 +42,7 @@ public class Location implements Parcelable{
         this.lng = lng;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.volumes = new Gson().toJson(Arrays.asList(0,0,0));
         this.ringtoneVolume = 0;
         this.notificationsVolume = 0;
         this.alarmsVolume = 0;
@@ -54,6 +59,7 @@ public class Location implements Parcelable{
         this.lng = parcel.readDouble();
         this.createdAt = parcel.readString();
         this.updatedAt = parcel.readString();
+        this.volumes = parcel.readString();
         this.ringtoneVolume = parcel.readInt();
         this.notificationsVolume = parcel.readInt();
         this.alarmsVolume = parcel.readInt();
@@ -71,6 +77,7 @@ public class Location implements Parcelable{
         parcel.writeDouble(this.lng);
         parcel.writeString(this.createdAt);
         parcel.writeString(this.updatedAt);
+        parcel.writeString(this.volumes);
         parcel.writeInt(this.ringtoneVolume);
         parcel.writeInt(this.notificationsVolume);
         parcel.writeInt(this.alarmsVolume);
@@ -121,9 +128,7 @@ public class Location implements Parcelable{
         return updatedAt;
     }
 
-    public List<Integer> getVolumes(){
-        return Arrays.asList(this.ringtoneVolume, this.notificationsVolume, this.alarmsVolume);
-    }
+    public String getVolumes(){ return  this.volumes; }
 
     public int getVolRingtone() {
         return ringtoneVolume;
@@ -171,11 +176,7 @@ public class Location implements Parcelable{
         this.updatedAt = updatedAt;
     }
 
-    public void setVolumes(List<Integer> volumeLevels){
-        this.setVolRingtone(volumeLevels.get(0));
-        this.setVolNotifications(volumeLevels.get(1));
-        this.setVolAlarms(volumeLevels.get(2));
-    };
+    public void setVolumes(String volumes){ this.volumes = volumes; };
 
     public void setVolRingtone(int vol_ringtone) { this.ringtoneVolume = vol_ringtone; }
 

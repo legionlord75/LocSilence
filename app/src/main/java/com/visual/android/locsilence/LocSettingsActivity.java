@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -48,16 +49,17 @@ public class LocSettingsActivity extends AppCompatActivity {
 
 
         // Create and set custom adapter of different volume type settings
+        Log.i("halp", "settings volume adapter");
         AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         final LocSettingsVolumeAdapter locSettingsVolumeAdapter = new LocSettingsVolumeAdapter(this, volumeTypes,
-
-                selectedLocation.getVolumes(), audioManager.getStreamMaxVolume(AudioManager.STREAM_SYSTEM));
+                JsonUtils.volumeLevelsToList(selectedLocation.getVolumes()),
+                audioManager.getStreamMaxVolume(AudioManager.STREAM_SYSTEM));
+        Log.i("halp", "completed setting volume adapter");
         ListView settingsListView = (ListView) findViewById(R.id.settings_listview);
         settingsListView.setAdapter(locSettingsVolumeAdapter);
 
 
-        // Init Listeners
-
+        // Init Listener
         mGeneralProximity.addTextChangedListener(new TextWatcher() {
             // editingText flag used for preventing infinite recursive loop
             boolean editingText = false;
@@ -108,7 +110,7 @@ public class LocSettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 List<Integer> volumeLevels = locSettingsVolumeAdapter.getVolumeLevels();
-                selectedLocation.setVolumes(volumeLevels);
+                selectedLocation.setVolumes(new Gson().toJson(volumeLevels));
 
                 if (mCustomProximity.isChecked()) {
                     // temporary value until we fix the radius/customProx in the recursive task and can set it to -1
