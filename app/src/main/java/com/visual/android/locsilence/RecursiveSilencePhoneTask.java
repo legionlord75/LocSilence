@@ -60,12 +60,12 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
 
         //super.onPostExecute(current_location);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.context);
-        Boolean worker_on = prefs.getBoolean("operation_switch", true);
+        Boolean workerOn = prefs.getBoolean("operation_switch", true);
         boolean flag = false;
 
         List<Location> locations = db.getAllLocations();
 
-        if (worker_on) {
+        if (workerOn) {
             double currentLat = current_location.getLatitude();
             double currentLon = current_location.getLongitude();
             double currentAccuracy = current_location.getAccuracy();
@@ -74,7 +74,7 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
             //List<Location> locations = db.getAllLocations();
 
 
-            if(locations.size() == 0){
+            if (locations.size() == 0) {
                 removeNotification();
             }
 
@@ -83,7 +83,7 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
                 Log.i(".", "---------------------------------------------");
                 Log.i("Location", location.getAddress());
                 float[] results = new float[5];
-                int radius = location.getRad();
+                int radius = location.getRadius();
                 Log.i("Current radius", Integer.toString(radius));
                 Log.i("Current accuracy", Double.toString(currentAccuracy));
                 double lat = location.getLat();
@@ -103,7 +103,7 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
                             Log.i("Silencing", "Activated");
                             currentlySilencedLocation = location;
                             modifyPhoneVolume(streamTypes, location.getVolumes());
-                            sendNotification("activated", location.getName(),true);
+                            sendNotification("activated", location.getName(), true);
                         }
                         recentlySilenced = true;
                     } catch (SecurityException e) {
@@ -128,11 +128,10 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
                 revertPhoneVolume(streamTypes);
                 if (recentlySilenced) {
                     Log.i("Silencing", "Deactivated");
-                    if (locations.size() == 0){
+                    if (locations.size() == 0) {
                         Log.i("User", "removing notification");
                         removeNotification();
-                    }
-                    else{
+                    } else {
                         System.out.println("SEND DEACTIVATION NOTIFICATION");
                         sendNotification("deactivated", "", false);
                     }
@@ -167,7 +166,6 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
         notification.setOngoing(permanent);
         notification.setAutoCancel(!permanent);
 
-
         Intent intent = new Intent(this.context, MapsActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this.context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         notification.setContentIntent(pendingIntent);
@@ -177,10 +175,8 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
     }
 
     public void removeNotification() {
-        //if(isNotificationVisible()){
-            NotificationManager nm = (NotificationManager) this.context.getSystemService(NOTIFICATION_SERVICE);
-            nm.cancel(notifID);
-        //}
+        NotificationManager nm = (NotificationManager) this.context.getSystemService(NOTIFICATION_SERVICE);
+        nm.cancel(notifID);
 
     }
 

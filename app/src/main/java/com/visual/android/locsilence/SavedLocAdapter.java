@@ -17,9 +17,9 @@ import java.util.List;
 
 public class SavedLocAdapter extends ArrayAdapter<Location> {
 
-    List<Location> locations;
+    private List<Location> locations;
     private Context context;
-    SQLDatabaseHandler db;
+    private SQLDatabaseHandler db;
 
     public SavedLocAdapter(Context context, List<Location> locations, SQLDatabaseHandler db) {
         super(context, 0, locations);
@@ -40,14 +40,14 @@ public class SavedLocAdapter extends ArrayAdapter<Location> {
             // Init info
             final TextView locationName = (TextView) convertView.findViewById(R.id.name);
             final TextView locationAddress = (TextView) convertView.findViewById(R.id.address);
-            final Button button_edit = (Button) convertView.findViewById(R.id.button_locList_edit);
-            final Button button_del = (Button) convertView.findViewById(R.id.button_locList_delete);
+            final Button mEditButton = (Button) convertView.findViewById(R.id.edit_button);
+            final Button mDeleteButton = (Button) convertView.findViewById(R.id.delete_button);
 
             // Set basic ui
             locationName.setText(Utility.cropText(location.getName(), 21, " ..."));
             locationAddress.setText(Utility.cropText(location.getAddress(), 35, " ..."));
 
-            button_edit.setOnClickListener(new View.OnClickListener() {
+            mEditButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent settingsIntent = new Intent(context, LocSettingsActivity.class);
@@ -57,7 +57,7 @@ public class SavedLocAdapter extends ArrayAdapter<Location> {
                 }
             });
 
-            button_del.setOnClickListener(new View.OnClickListener() {
+            mDeleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (db.getLocation(location.getId()) != null) {

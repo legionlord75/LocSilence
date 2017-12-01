@@ -97,8 +97,8 @@ public class SQLDatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_VOL_RINGTONE, location.getVolRingtone());
         values.put(KEY_VOL_NOTIFS, location.getVolNotifications());
         values.put(KEY_VOL_ALARMS, location.getVolAlarms());
-        values.put(KEY_CID, location.getCid());
-        values.put(KEY_RAD, location.getRad());
+        values.put(KEY_CID, location.getCircleId());
+        values.put(KEY_RAD, location.getRadius());
         values.put(KEY_CUST_PROX, location.getCustomProximity());
         // Inserting Row
         try {
@@ -136,8 +136,8 @@ public class SQLDatabaseHandler extends SQLiteOpenHelper {
             location.setVolRingtone(cursor.getInt(7));
             location.setVolNotifications(cursor.getInt(8));
             location.setVolAlarms(cursor.getInt(9));
-            location.setCid(cursor.getString(10));
-            location.setRad(cursor.getInt(11));
+            location.setCircleId(cursor.getString(10));
+            location.setRadius(cursor.getInt(11));
             location.setCustomProximity(cursor.getString(12));
 
             cursor.close();
@@ -178,8 +178,8 @@ public class SQLDatabaseHandler extends SQLiteOpenHelper {
                 location.setVolRingtone(cursor.getInt(7));
                 location.setVolNotifications(cursor.getInt(8));
                 location.setVolAlarms(cursor.getInt(9));
-                location.setCid(cursor.getString(10));
-                location.setRad(cursor.getInt(11));
+                location.setCircleId(cursor.getString(10));
+                location.setRadius(cursor.getInt(11));
                 location.setCustomProximity(cursor.getString(12));
                 // Adding contact to list
                 allLocations.add(location);
@@ -213,8 +213,8 @@ public class SQLDatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_VOL_RINGTONE, location.getVolRingtone());
         values.put(KEY_VOL_NOTIFS, location.getVolNotifications());
         values.put(KEY_VOL_ALARMS, location.getVolAlarms());
-        values.put(KEY_CID, location.getCid());
-        values.put(KEY_RAD, location.getRad());
+        values.put(KEY_CID, location.getCircleId());
+        values.put(KEY_RAD, location.getRadius());
         values.put(KEY_CUST_PROX, location.getCustomProximity());
         // updating row
         return db.update(TABLE_LOCATIONS, values, KEY_ID + "='" + location.getId() + "'", null);
@@ -264,8 +264,8 @@ public class SQLDatabaseHandler extends SQLiteOpenHelper {
                     "(vol_ringtone: " + location.getVolRingtone() + ") |" +
                     "(vol_media: " + location.getVolNotifications() + ") |" +
                     "(vol_alarms: " + location.getVolAlarms() + ") |" +
-                    "(ID: " + location.getId() + ") | " + "(Cid: " + location.getCid() + ") |" +
-                    "(Radius: " + location.getRad() + ") |" +
+                    "(ID: " + location.getId() + ") | " + "(Cid: " + location.getCircleId() + ") |" +
+                    "(Radius: " + location.getRadius() + ") |" +
                     "(Custom_proximity "+ location.getCustomProximity() + ") |"
             );
         }

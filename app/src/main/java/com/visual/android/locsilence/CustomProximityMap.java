@@ -43,7 +43,7 @@ public class CustomProximityMap extends AppCompatActivity implements OnMapReadyC
     private ArrayList<LatLng> boundary = new ArrayList<LatLng>();
     private Graphics draw = new Graphics();
     private GoogleMap mMap;
-    Location selectedLocation;
+    private Location selectedLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,21 +51,18 @@ public class CustomProximityMap extends AppCompatActivity implements OnMapReadyC
         setContentView(R.layout.activity_custom_proximity_map);
 
         // Init info
-        final SQLDatabaseHandler db = new SQLDatabaseHandler(this);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        selectedLocation = (Location) getIntent().getParcelableExtra("selectedLocation");
-        FloatingActionButton find_selectedLoc = (FloatingActionButton) findViewById(R.id.fab_go_to_selectedLoc);
-        Button button_back = (Button) findViewById(R.id.button_customProxy_back);
-        Button button_set = (Button) findViewById(R.id.button_customProxy_set);
+        selectedLocation = getIntent().getParcelableExtra("selectedLocation");
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_go_to_selectedLoc);
+        Button mBackButton = (Button) findViewById(R.id.button_customProxy_back);
+        Button mSetButton = (Button) findViewById(R.id.button_customProxy_set);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map_customProxy);
         mapFragment.getMapAsync(this);
 
-
         // Init listeners
-        find_selectedLoc.setOnClickListener(new View.OnClickListener() {
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mMap != null) {
@@ -79,8 +76,6 @@ public class CustomProximityMap extends AppCompatActivity implements OnMapReadyC
                             }
                         }
                     }
-                    LocationManager locationManager = (LocationManager)
-                            getSystemService(Context.LOCATION_SERVICE);
 
                     double latitude;
                     double longitude;
@@ -92,14 +87,14 @@ public class CustomProximityMap extends AppCompatActivity implements OnMapReadyC
                         longitude = Constants.DEFAULT_LONG;
                     }
 
-                    CameraUpdate cam_loc = CameraUpdateFactory.newLatLngZoom(
+                    CameraUpdate mCameraLocation = CameraUpdateFactory.newLatLngZoom(
                             new LatLng(latitude, longitude), 14.5f);
-                    mMap.animateCamera(cam_loc);
+                    mMap.animateCamera(mCameraLocation);
                 }
             }
         });
 
-        button_back.setOnClickListener(new View.OnClickListener() {
+        mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent customSettingsIntent = new Intent(CustomProximityMap.this, LocSettingsActivity.class);
@@ -109,10 +104,10 @@ public class CustomProximityMap extends AppCompatActivity implements OnMapReadyC
             }
         });
 
-        button_set.setOnClickListener(new View.OnClickListener() {
+        mSetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(boundary.size()<3) {
+                if(boundary.size() < 3) {
                     Utility.alertToast(CustomProximityMap.this, "Need to set at least 3 points");
                 }
                 else {
@@ -155,8 +150,6 @@ public class CustomProximityMap extends AppCompatActivity implements OnMapReadyC
                 }
             }
         }
-        LocationManager locationManager = (LocationManager)
-                getSystemService(Context.LOCATION_SERVICE);
 
         double latitude;
         double longitude;
@@ -194,7 +187,7 @@ public class CustomProximityMap extends AppCompatActivity implements OnMapReadyC
                     boundary.remove(boundary.size()-1);
                     Log.i(TAG, "Point added to custom proximity boundary["+(boundary.size()-1)+"]");
                     mMap.clear();
-                    if(boundary.size() >=3){
+                    if(boundary.size() >= 3){
                         draw.perimeterDraw(mMap,boundary);
                     }
                     else{

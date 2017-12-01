@@ -59,22 +59,17 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
     }
 
-
-
     public static class PrefsFragment extends PreferenceFragment{
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            //PrefsFragment.context = getApplicationContext();
             addPreferencesFromResource(R.xml.activity_settings);
-            final Preference pref_about = (Preference) findPreference("about");
+            final Preference mPrefAbout = (Preference) findPreference("about");
 
-            pref_about.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            mPrefAbout.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    System.out.println("about preference hit");
-
                     AlertDialog.Builder a_builder = new AlertDialog.Builder(getActivity());
                     a_builder.setMessage("Developed by Alon Pekurovsky, Erik Lau, Rami Khadder, and Thomas Brochard")
                             .setCancelable(false)
@@ -95,7 +90,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         @Override
         public boolean onOptionsItemSelected(MenuItem item) {
             int id = item.getItemId();
-            System.out.println("id: " + Integer.toString(id));
             if (id == android.R.id.home) {
                 getActivity().onBackPressed();
                 return true;
