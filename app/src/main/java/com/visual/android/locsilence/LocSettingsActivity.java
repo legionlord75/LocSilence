@@ -20,8 +20,9 @@ import java.util.List;
 
 public class LocSettingsActivity extends AppCompatActivity {
 
-    String[] volumeTypes = {"Ringtone", "Notifications", "Alarms"};
-    Location selectedLocation;
+    private static final String TAG = LocSettingsActivity.class.getSimpleName();
+    private String[] volumeTypes = {"Ringtone", "Notifications", "Alarms"};
+    private Location selectedLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,18 +31,18 @@ public class LocSettingsActivity extends AppCompatActivity {
 
         // Init info
         final SQLDatabaseHandler db = new SQLDatabaseHandler(this);
-        selectedLocation = getIntent().getParcelableExtra("selectedLocation");
-        Toolbar mToolBar = (Toolbar) findViewById(R.id.toolbar);
-        final Button mSetButton = (Button) findViewById(R.id.button_setSettings);
-        final Button mDeleteButton = (Button) findViewById(R.id.button_deleteSettings);
-        final EditText mGeneralProximity = (EditText) findViewById(R.id.editText_genericProxy);
-        final CheckBox mCustomProximity = (CheckBox) findViewById(R.id.checkBox_customProx);
+        selectedLocation = (Location) getIntent().getParcelableExtra("selectedLocation");
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        final Button mSetButton = (Button) findViewById(R.id.set_button);
+        final Button mDeleteButton = (Button) findViewById(R.id.delete_button);
+        final EditText mGeneralProximity = (EditText) findViewById(R.id.genericProxy_editText);
+        final CheckBox mCustomProximity = (CheckBox) findViewById(R.id.customProx_checkBox);
 
         // Set basic ui
-        setSupportActionBar(mToolBar);
+        setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(selectedLocation.getAddress());
-        mToolBar.setSubtitle("LocSilence");
-        if(!selectedLocation.getCustomProximity().equals(Constants.JSON_NULL)){
+        mToolbar.setSubtitle("LocSilence");
+        if (!selectedLocation.getCustomProximity().equals(Constants.JSON_NULL)) {
             mCustomProximity.setChecked(true);
         }
 
@@ -49,37 +50,41 @@ public class LocSettingsActivity extends AppCompatActivity {
         // Create and set custom adapter of different volume type settings
         AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         final LocSettingsVolumeAdapter locSettingsVolumeAdapter = new LocSettingsVolumeAdapter(this, volumeTypes,
+
                 selectedLocation.getVolumes(), audioManager.getStreamMaxVolume(AudioManager.STREAM_SYSTEM));
-        ListView settingsListView = (ListView) findViewById(R.id.listView_settings);
+        ListView settingsListView = (ListView) findViewById(R.id.settings_listview);
         settingsListView.setAdapter(locSettingsVolumeAdapter);
 
 
         // Init Listeners
+
         mGeneralProximity.addTextChangedListener(new TextWatcher() {
             // editingText flag used for preventing infinite recursive loop
             boolean editingText = false;
+
             public void afterTextChanged(Editable s) {
-                String valStr = mGeneralProximity.getText().toString();
-                if (!valStr.equals("") && editingText == false) {
-                    int val = Integer.parseInt(valStr);
+                String proximityString = mGeneralProximity.getText().toString();
+                if (!proximityString.equals("") && editingText == false) {
+                    int proximity = Integer.parseInt(proximityString);
                     editingText = true;
-                    if (val > 300) {
+                    if (proximity > 300) {
                         //s.replace(0, s.length(), "300", 0, 3);
                         mGeneralProximity.setText("");
                         mGeneralProximity.setHint(" 300 max");
-                    } else if (val < 1) {
+                    } else if (proximity < 1) {
                         s.replace(0, s.length(), "1", 0, 1);
                     }
                     editingText = false;
                 }
             }
 
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                //TODO: Auto-generated stub
+            }
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (mCustomProximity.isChecked()) {
                     mCustomProximity.setChecked(false);
-                    // Clear proximity point data if it was set
                 }
             }
         });
@@ -105,12 +110,12 @@ public class LocSettingsActivity extends AppCompatActivity {
                 List<Integer> volumeLevels = locSettingsVolumeAdapter.getVolumeLevels();
                 selectedLocation.setVolumes(volumeLevels);
 
-                if(mCustomProximity.isChecked()) {
+                if (mCustomProximity.isChecked()) {
                     // temporary value until we fix the radius/customProx in the recursive task and can set it to -1
                     selectedLocation.setRadius(1);
-                } else if((mGeneralProximity.getText().toString()).equals("")) {
+                } else if ((mGeneralProximity.getText().toString()).equals("")) {
                     selectedLocation.setRadius(Constants.DEFAULT_RADIUS);
-                } else{
+                } else {
                     selectedLocation.setRadius(Integer.parseInt(mGeneralProximity.getText().toString()));
                 }
 
@@ -119,10 +124,8 @@ public class LocSettingsActivity extends AppCompatActivity {
                 } else {
                     db.updateLocalGame(selectedLocation);
                 }
-                //selectedLocation.printLocation();
-                Intent i = new Intent(LocSettingsActivity.this, MapsActivity.class);
                 db.close();
-                startActivity(i);
+                startActivity(new Intent(LocSettingsActivity.this, MapsActivity.class));
                 finish();
             }
         });
@@ -133,9 +136,8 @@ public class LocSettingsActivity extends AppCompatActivity {
                 if (db.getLocation(selectedLocation.getId()) != null) {
                     db.deleteLocalGame(selectedLocation.getId());
                 }
-                Intent i = new Intent(LocSettingsActivity.this, MapsActivity.class);
                 db.close();
-                startActivity(i);
+                startActivity(new Intent(LocSettingsActivity.this, MapsActivity.class));
                 finish();
             }
         });

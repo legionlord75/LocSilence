@@ -13,7 +13,11 @@
     <Preference
         android:key="about"
         android:title="About Us" >
+    </Preference>
 
+    <Preference
+        android:key="help"
+        android:title="help" >
     </Preference>
 
 
