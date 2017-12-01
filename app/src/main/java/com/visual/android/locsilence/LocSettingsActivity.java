@@ -20,10 +20,10 @@ import java.util.List;
 
 public class LocSettingsActivity extends AppCompatActivity {
 
-    int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
+    private int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
     private static final String TAG = LocSettingsActivity.class.getSimpleName();
-    String[] volumeTypes = {"Ringtone", "Notifications", "Alarms"};
-    Location selectedLocation;
+    private String[] volumeTypes = {"Ringtone", "Notifications", "Alarms"};
+    private Location selectedLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,8 +75,9 @@ public class LocSettingsActivity extends AppCompatActivity {
                 }
             }
 
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                //TODO: Auto-generated stub
+            }
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (mCustProximity.isChecked()) {
                     mCustProximity.setChecked(false);
