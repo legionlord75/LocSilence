@@ -64,9 +64,12 @@ public class SavedLocActivity extends AppCompatActivity {
         mMapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent mapIntent = new Intent(SavedLocActivity.this, MapsActivity.class);
-                startActivity(mapIntent);
+                Intent intent = new Intent(SavedLocActivity.this, MapsActivity.class);
+                //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
                 finish();
+                overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
+
             }
         });
     }

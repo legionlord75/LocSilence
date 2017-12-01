@@ -49,7 +49,11 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //getSupportActionBar().setTitle("Settings");
+
         setupActionBar();
+        getSupportActionBar().setTitle("Settings");
 
         SettingsActivity.context = getApplicationContext();
 
@@ -59,8 +63,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
     }
 
+  
     public static class PrefsFragment extends PreferenceFragment{
-
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -116,7 +120,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
      */
     private void setupActionBar() {
         ActionBar actionBar = getSupportActionBar();
-        //actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
 
         if (actionBar != null) {
