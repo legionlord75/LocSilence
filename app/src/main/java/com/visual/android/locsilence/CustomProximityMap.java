@@ -1,19 +1,16 @@
 package com.visual.android.locsilence;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Criteria;
-import android.location.LocationManager;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -24,31 +21,29 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-
+import com.google.gson.Gson;
 import java.util.ArrayList;
-import java.util.List;
+
 
 public class CustomProximityMap extends AppCompatActivity implements OnMapReadyCallback {
 
+    private static final String TAG = CustomProximityMap.class.getSimpleName();
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+    private ArrayList<LatLng> boundary = new ArrayList<LatLng>();
     private Graphics draw = new Graphics();
     private GoogleMap mMap;
-    Location selectedLocation;
-    private double DEFAULT_LAT = 37.4220;
-    private double DEFAULT_LONG = -122.0841;
-    private int counter = 0;
-    private ArrayList<LatLng> locations = new ArrayList<LatLng>();
+    private Location selectedLocation;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_custom_proximity_map);
 
         // Init info
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        selectedLocation = (Location) getIntent().getParcelableExtra("selectedLocation");
-        FloatingActionButton find_selectedLoc = (FloatingActionButton) findViewById(R.id.fab_go_to_selectedLoc);
-        Button button_back = (Button) findViewById(R.id.button_customProxy_back);
-        Button button_set = (Button) findViewById(R.id.button_customProxy_set);
+        selectedLocation = getIntent().getParcelableExtra("selectedLocation");
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_go_to_selectedLoc);
+        Button mBackButton = (Button) findViewById(R.id.button_customProxy_back);
+        Button mSetButton = (Button) findViewById(R.id.button_customProxy_set);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -56,7 +51,7 @@ public class CustomProximityMap extends AppCompatActivity implements OnMapReadyC
         mapFragment.getMapAsync(this);
 
         // Init listeners
-        find_selectedLoc.setOnClickListener(new View.OnClickListener() {
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mMap != null) {
@@ -70,8 +65,6 @@ public class CustomProximityMap extends AppCompatActivity implements OnMapReadyC
                             }
                         }
                     }
-                    LocationManager locationManager = (LocationManager)
-                            getSystemService(Context.LOCATION_SERVICE);
 
                     double latitude;
                     double longitude;
@@ -79,35 +72,44 @@ public class CustomProximityMap extends AppCompatActivity implements OnMapReadyC
                         latitude = selectedLocation.getLat();
                         longitude = selectedLocation.getLng();
                     } else {
-                        latitude = DEFAULT_LAT;
-                        longitude = DEFAULT_LONG;
+                        latitude = Constants.DEFAULT_LAT;
+                        longitude = Constants.DEFAULT_LONG;
                     }
 
-                    CameraUpdate cam_loc = CameraUpdateFactory.newLatLngZoom(
+                    CameraUpdate mCameraLocation = CameraUpdateFactory.newLatLngZoom(
                             new LatLng(latitude, longitude), 14.5f);
-                    mMap.animateCamera(cam_loc);
+
+                    mMap.animateCamera(mCameraLocation);
                 }
             }
         });
 
-        button_back.setOnClickListener(new View.OnClickListener() {
+        mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent customSettingsIntent = new Intent(CustomProximityMap.this, LocSettingsActivity.class);
+                customSettingsIntent.putExtra("selectedLocation", selectedLocation);
+                startActivity(customSettingsIntent);
                 finish();
+                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
             }
         });
 
-        button_set.setOnClickListener(new View.OnClickListener() {
+        mSetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(counter<3) {
-                    System.out.println("Need to set at least 3 points");
+                if(boundary.size() < 3) {
+                    Utility.alertToast(CustomProximityMap.this, "Need to set at least 3 points");
                 }
                 else {
+                    String customProximityJSON = new Gson().toJson(boundary);
+                    selectedLocation.setCustomProximity(customProximityJSON);
+                    Intent customSettingsIntent = new Intent(CustomProximityMap.this, LocSettingsActivity.class);
+                    customSettingsIntent.putExtra("selectedLocation", selectedLocation);
+                    startActivity(customSettingsIntent);
                     finish();
+                    overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
                 }
-                // Option 1: Set array of (<=8) points to GSON and put object into DB
-                // Option 2: Pass proximity data back through intent and handle it in AddLocSettingsActivity
             }
         });
 
@@ -126,6 +128,7 @@ public class CustomProximityMap extends AppCompatActivity implements OnMapReadyC
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        FloatingActionButton fabRevertPoint = (FloatingActionButton) findViewById(R.id.fab_revert_point);
 
         if (checkLocationPermission()) {
             if (ContextCompat.checkSelfPermission(this,
@@ -134,11 +137,10 @@ public class CustomProximityMap extends AppCompatActivity implements OnMapReadyC
                 if (mMap != null) {
                     mMap.setMyLocationEnabled(true);
                     mMap.getUiSettings().setMyLocationButtonEnabled(true);
+                    mMap.getUiSettings().setCompassEnabled(true);
                 }
             }
         }
-        LocationManager locationManager = (LocationManager)
-                getSystemService(Context.LOCATION_SERVICE);
 
         double latitude;
         double longitude;
@@ -146,29 +148,51 @@ public class CustomProximityMap extends AppCompatActivity implements OnMapReadyC
             latitude = selectedLocation.getLat();
             longitude = selectedLocation.getLng();
         } else {
-            latitude = DEFAULT_LAT;
-            longitude = DEFAULT_LONG;
+            latitude = Constants.DEFAULT_LAT;
+            longitude = Constants.DEFAULT_LONG;
         }
+
+        LatLng loc = new LatLng(latitude, longitude);
+        mMap.addMarker(new MarkerOptions().position(loc).title(selectedLocation.getName()));
+
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 14.5f));
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener(){
             @Override
             public void onMapClick(LatLng point) {
                 int MAX_POINTS = 8;
-                if(counter >= MAX_POINTS) {}
-                else {
-                    locations.add(point);
-                    counter++;
-                    draw.pointDraw(mMap,point);
-                    if(counter >=3){
-                        draw.perimeterDraw(mMap,locations);
+                if(boundary.size() < MAX_POINTS){
+                    boundary.add(point);
+                    Log.i(TAG, "Point added to custom proximity boundary["+(boundary.size()-1)+"]");
+                    if(boundary.size() >=3){
+                        draw.perimeterDraw(mMap,boundary);
                     }
+                    draw.pointDraw(mMap,point);
+                }
+                else{
+                    Utility.alertToast(CustomProximityMap.this, "Maximum 8 points");
                 }
 
             }
         });
+
+        fabRevertPoint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mMap != null) {
+                    boundary.remove(boundary.size()-1);
+                    Log.i(TAG, "Point added to custom proximity boundary["+(boundary.size()-1)+"]");
+                    mMap.clear();
+                    if(boundary.size() >= 3){
+                        draw.perimeterDraw(mMap,boundary);
+                    }
+                    else{
+                        boundary.clear();
+                    }
+                }
+            }
+        });
+
     }
-
-
 
     public boolean checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this,

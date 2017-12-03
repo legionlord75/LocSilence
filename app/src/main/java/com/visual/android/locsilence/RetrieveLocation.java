@@ -25,9 +25,6 @@ public abstract class RetrieveLocation extends AsyncTask<LocationManager, Void, 
             e.printStackTrace();
         }
 
-        //double latitude = location.getLatitude();
-        //double longitude = location.getLongitude();
-
         if (!Utility.firstRecursiveExecution) {
             try {
                 Thread.sleep(5000);

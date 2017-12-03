@@ -8,21 +8,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.google.gson.Gson;
+
 import java.util.List;
 
 public class LocSettingsActivity extends AppCompatActivity {
 
-    int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
-    private static final String TAG = LocSearchActivity.class.getSimpleName();
-    String[] volumeTypes = {"Ringtone", "Notifications", "Alarms"};
-    final int DEFAULT_RADIUS = 100;
-
+    private static final String TAG = LocSettingsActivity.class.getSimpleName();
+    private String[] volumeTypes = {"Ringtone", "Notifications", "Alarms"};
+    private Location selectedLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,82 +32,94 @@ public class LocSettingsActivity extends AppCompatActivity {
 
         // Init info
         final SQLDatabaseHandler db = new SQLDatabaseHandler(this);
-        final Location selectedLocation = (Location)getIntent().getParcelableExtra("selectedLocation");
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        final Button setButton = (Button) findViewById(R.id.button_setSettings);
-        final Button deleteButton = (Button) findViewById(R.id.button_deleteSettings);
-        final EditText genProximity = (EditText) findViewById(R.id.editText_genericProxy);
-        final CheckBox custProximity = (CheckBox) findViewById(R.id.checkBox_customProx);
+        selectedLocation = (Location) getIntent().getParcelableExtra("selectedLocation");
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        final Button mSetButton = (Button) findViewById(R.id.set_button);
+        final Button mDeleteButton = (Button) findViewById(R.id.delete_button);
+        final EditText mGeneralProximity = (EditText) findViewById(R.id.genericProxy_editText);
+        final CheckBox mCustomProximity = (CheckBox) findViewById(R.id.customProx_checkBox);
 
         // Set basic ui
-        setSupportActionBar(toolbar);
+        setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(selectedLocation.getAddress());
-        toolbar.setSubtitle("LocSilence");
+        mToolbar.setSubtitle("LocSilence");
+        if (!selectedLocation.getCustomProximity().equals(Constants.JSON_NULL)) {
+            mCustomProximity.setChecked(true);
+        }
+
 
         // Create and set custom adapter of different volume type settings
-        AudioManager am = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+        Log.i("halp", "settings volume adapter");
+        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         final LocSettingsVolumeAdapter locSettingsVolumeAdapter = new LocSettingsVolumeAdapter(this, volumeTypes,
-                selectedLocation.getVolumes(), am.getStreamMaxVolume(AudioManager.STREAM_SYSTEM));
-        ListView settingsListView = (ListView) findViewById(R.id.listView_settings);
+                JsonUtils.volumeLevelsToList(selectedLocation.getVolumes()),
+                audioManager.getStreamMaxVolume(AudioManager.STREAM_SYSTEM));
+        Log.i("halp", "completed setting volume adapter");
+        ListView settingsListView = (ListView) findViewById(R.id.settings_listview);
         settingsListView.setAdapter(locSettingsVolumeAdapter);
 
-        // Init Listeners
-        genProximity.addTextChangedListener(new TextWatcher(){
+
+        // Init Listener
+        mGeneralProximity.addTextChangedListener(new TextWatcher() {
             // editingText flag used for preventing infinite recursive loop
             boolean editingText = false;
+
             public void afterTextChanged(Editable s) {
-                String valStr = genProximity.getText().toString();
-                if(!valStr.equals("") && editingText == false) {
-                    int val = Integer.parseInt(valStr);
+                String proximityString = mGeneralProximity.getText().toString();
+                if (!proximityString.equals("") && editingText == false) {
+                    int proximity = Integer.parseInt(proximityString);
                     editingText = true;
-                    if (val > 300) {
+                    if (proximity > 300) {
                         //s.replace(0, s.length(), "300", 0, 3);
-                        genProximity.setText("");
-                        genProximity.setHint(" 300 max");
-                    } else if (val < 1) {
+                        mGeneralProximity.setText("");
+                        mGeneralProximity.setHint(" 300 max");
+                    } else if (proximity < 1) {
                         s.replace(0, s.length(), "1", 0, 1);
                     }
                     editingText = false;
                 }
             }
-            public void beforeTextChanged(CharSequence s, int start, int count, int after){}
 
-            public void onTextChanged(CharSequence s, int start, int before, int count){
-                if(custProximity.isChecked()) {
-                    custProximity.setChecked(false);
-                    // Clear proximity point data if it was set
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                //TODO: Auto-generated stub
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (mCustomProximity.isChecked()) {
+                    mCustomProximity.setChecked(false);
                 }
             }
         });
 
-        custProximity.setOnClickListener(new View.OnClickListener() {
+        mCustomProximity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (custProximity.isChecked()) {
-                    genProximity.setText("");
+                selectedLocation.setCustomProximity(new Gson().toJson(null));
+                if (mCustomProximity.isChecked()) {
+                    mGeneralProximity.setText("");
                     Intent customProxIntent = new Intent(LocSettingsActivity.this, CustomProximityMap.class);
                     customProxIntent.putExtra("selectedLocation", selectedLocation);
                     startActivity(customProxIntent);
-                }
-                else{
-                    // Option 1: If proximity point data was set in lcoation customProximityMap then Clear the data
-                    // Option 2: If proximity point data was passed back to this activity through the intent(?) then set that variable to null
+                    finish();
+                    overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_down);
                 }
             }
         });
 
 
-        setButton.setOnClickListener(new View.OnClickListener() {
+        mSetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 List<Integer> volumeLevels = locSettingsVolumeAdapter.getVolumeLevels();
-                selectedLocation.setVolumes(volumeLevels);
-                if(custProximity.isChecked()){
-                    // Option 2: here we would set proximity data
-                } else if((genProximity.getText().toString()).equals("")){
-                    selectedLocation.setRad(DEFAULT_RADIUS);
-                } else{
-                    selectedLocation.setRad(Integer.parseInt(genProximity.getText().toString()));
+                selectedLocation.setVolumes(new Gson().toJson(volumeLevels));
+
+                if (mCustomProximity.isChecked()) {
+                    // temporary value until we fix the radius/customProx in the recursive task and can set it to -1
+                    selectedLocation.setRadius(1);
+                } else if ((mGeneralProximity.getText().toString()).equals("")) {
+                    selectedLocation.setRadius(Constants.DEFAULT_RADIUS);
+                } else {
+                    selectedLocation.setRadius(Integer.parseInt(mGeneralProximity.getText().toString()));
                 }
 
                 if (db.getLocation(selectedLocation.getId()) == null) {
@@ -114,23 +127,20 @@ public class LocSettingsActivity extends AppCompatActivity {
                 } else {
                     db.updateLocalGame(selectedLocation);
                 }
-                selectedLocation.printLocation();
-                Intent i = new Intent(LocSettingsActivity.this, MapsActivity.class);
                 db.close();
-                startActivity(i);
+                startActivity(new Intent(LocSettingsActivity.this, MapsActivity.class));
                 finish();
             }
         });
 
-        deleteButton.setOnClickListener(new View.OnClickListener() {
+        mDeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (db.getLocation(selectedLocation.getId()) != null) {
                     db.deleteLocalGame(selectedLocation.getId());
                 }
-                Intent i = new Intent(LocSettingsActivity.this, MapsActivity.class);
                 db.close();
-                startActivity(i);
+                startActivity(new Intent(LocSettingsActivity.this, MapsActivity.class));
                 finish();
             }
         });

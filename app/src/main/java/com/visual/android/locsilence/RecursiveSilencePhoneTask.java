@@ -28,7 +28,8 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
     private SQLDatabaseHandler db;
     private Context context;
     private AudioManager audio;
-    private List<Integer> savedVolumes;
+    private static List<Integer> savedVolumes;
+    private static Location currentlySilencedLocation;
 
     private static boolean recentlySilenced = false;
 
@@ -40,7 +41,9 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
         this.locationManager = locationManager;
         this.db = db;
         this.context = context;
-        this.savedVolumes = new ArrayList<>();
+        if (savedVolumes == null) {
+            savedVolumes = new ArrayList<>();
+        }
         audio = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
     }
 
@@ -57,24 +60,30 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
 
         //super.onPostExecute(current_location);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.context);
-        Boolean worker_on = prefs.getBoolean("operation_switch", true);
+        Boolean workerOn = prefs.getBoolean("operation_switch", true);
         boolean flag = false;
 
+        List<Location> locations = db.getAllLocations();
 
-        if (worker_on) {
+        if (workerOn) {
             double currentLat = current_location.getLatitude();
             double currentLon = current_location.getLongitude();
             double currentAccuracy = current_location.getAccuracy();
 
             Log.i("Worker Status", "Is On");
-            List<Location> locations = db.getAllLocations();
+            //List<Location> locations = db.getAllLocations();
+
+
+            if (locations.size() == 0) {
+                removeNotification();
+            }
 
             flag = false;
             for (Location location : locations) {
                 Log.i(".", "---------------------------------------------");
                 Log.i("Location", location.getAddress());
                 float[] results = new float[5];
-                int radius = location.getRad();
+                int radius = location.getRadius();
                 Log.i("Current radius", Integer.toString(radius));
                 Log.i("Current accuracy", Double.toString(currentAccuracy));
                 double lat = location.getLat();
@@ -92,8 +101,9 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
                         //audio.setRingerMode(AudioManager.RINGER_MODE_SILENT);
                         if (!recentlySilenced) {
                             Log.i("Silencing", "Activated");
-                            modifyPhoneVolume(streamTypes, location.getVolumes());
-                            sendNotification("Silencing activated");
+                            currentlySilencedLocation = location;
+                            modifyPhoneVolume(streamTypes, JsonUtils.volumeLevelsToList(location.getVolumes()));
+                            sendNotification("activated", location.getName(), true);
                         }
                         recentlySilenced = true;
                     } catch (SecurityException e) {
@@ -103,10 +113,12 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
                     break;
                 } else {
                     Log.i("User", "Not In Circle!");
+                    removeNotification();
                 }
             }
         } else {
             Log.i("Worker Status", "Is Off");
+            removeNotification();
         }
 
         if (!flag) {
@@ -116,7 +128,13 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
                 revertPhoneVolume(streamTypes);
                 if (recentlySilenced) {
                     Log.i("Silencing", "Deactivated");
-                    sendNotification("Silencing deactivated");
+                    if (locations.size() == 0) {
+                        Log.i("User", "removing notification");
+                        removeNotification();
+                    } else {
+                        System.out.println("SEND DEACTIVATION NOTIFICATION");
+                        sendNotification("deactivated", "", false);
+                    }
                     recentlySilenced = false;
                 }
             } catch (SecurityException e) {
@@ -129,7 +147,7 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
 
     }
 
-    public void sendNotification(String message) {
+    public void sendNotification(String activated, String location, Boolean permanent) {
         NotificationManager nm = (NotificationManager) this.context.getSystemService(NOTIFICATION_SERVICE);
 
         if (isNotificationVisible()) {
@@ -142,8 +160,11 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
         notification.setSmallIcon(ic_launcher);
         notification.setTicker("");
         notification.setWhen(System.currentTimeMillis());
-        notification.setContentTitle("LocSilence");
-        notification.setContentText(message);
+        notification.setContentTitle("LocSilence " + activated);
+        notification.setContentText(location);
+
+        notification.setOngoing(permanent);
+        notification.setAutoCancel(!permanent);
 
         Intent intent = new Intent(this.context, MapsActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this.context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -153,6 +174,12 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
         nm.notify(notifID, notification.build());
     }
 
+    public void removeNotification() {
+        NotificationManager nm = (NotificationManager) this.context.getSystemService(NOTIFICATION_SERVICE);
+        nm.cancel(notifID);
+
+    }
+
     private boolean isNotificationVisible() {
         Intent notificationIntent = new Intent(context, RecursiveSilencePhoneTask.class);
         PendingIntent test = PendingIntent.getActivity(context, notifID, notificationIntent, PendingIntent.FLAG_NO_CREATE);
@@ -160,8 +187,10 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
     }
 
     private void modifyPhoneVolume(List<Integer> streamTypes, List<Integer> volumeLevels) {
+        System.out.println("MODIFYING VOLUME");
         for (int i = 0; i < streamTypes.size(); i++) {
             if (volumeLevels.get(i) != -1) {
+                System.out.println(audio.getStreamVolume(streamTypes.get(i)));
                 savedVolumes.add(audio.getStreamVolume(streamTypes.get(i)));
                 audio.setStreamVolume(streamTypes.get(i), volumeLevels.get(i), 0);
             } else {
@@ -170,12 +199,21 @@ public class RecursiveSilencePhoneTask extends RetrieveLocation {
         }
     }
 
-    private void revertPhoneVolume(List<Integer> streamType) {
-        for (int i = 0; i < streamType.size(); i++) {
-            if (savedVolumes.size() > 0 && savedVolumes.get(i) != -1) {
-                audio.setStreamVolume(streamType.get(i), savedVolumes.get(i), 0);
+    private void revertPhoneVolume(List<Integer> streamTypes) {
+        System.out.println("REVERT PHONE VOLUME!!!!");
+        List<Integer> volumeLevels = new ArrayList<>();
+        if (currentlySilencedLocation != null) {
+            volumeLevels = JsonUtils.volumeLevelsToList(currentlySilencedLocation.getVolumes());
+        }
+        for (int i = 0; i < streamTypes.size(); i++) {
+            System.out.println(i + " streamType: " + streamTypes.get(i) + ", audio: " + audio.getStreamVolume(streamTypes.get(i)));
+            if (savedVolumes.size() > 0 && savedVolumes.get(i) != -1 && i < volumeLevels.size() &&
+                    volumeLevels.get(i) == audio.getStreamVolume(streamTypes.get(i))) {
+                System.out.println("savedVolume: " + savedVolumes.get(i));
+                audio.setStreamVolume(streamTypes.get(i), savedVolumes.get(i), 0);
             }
         }
+        savedVolumes.clear();
     }
 
 }
