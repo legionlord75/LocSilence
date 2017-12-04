@@ -20,6 +20,7 @@ import java.util.List;
 
 public class Graphics extends AppCompatActivity {
     public static boolean setRadius = false;
+    private static double PI = 3.14159265;
     //On Start drawing the circles for stored locations
     public SQLDatabaseHandler startDraw(GoogleMap map, SQLDatabaseHandler handler) {
         List<Location> allLocations = handler.getAllLocations();
@@ -57,7 +58,7 @@ public class Graphics extends AppCompatActivity {
 
     public static boolean customInLocation(Location current , LatLng cur){
         ArrayList<LatLng> intermediary = JsonUtils.customProxToList(current.getCustomProximity());
-        double target = 180 * (intermediary.size() - 2);
+        double target = 360;
         double latmax = intermediary.get(0).latitude;
         double lngmax = intermediary.get(0).longitude;
         double latmin = intermediary.get(0).latitude;
@@ -88,11 +89,11 @@ public class Graphics extends AppCompatActivity {
                 if (x == intermediary.size() - 1) {
                     LatLng tmp2 = intermediary.get(0);
                     angletotal += ((Math.atan2((tmp.longitude - cur.longitude), (tmp.latitude - cur.latitude))) -
-                            (Math.atan2((tmp2.longitude - cur.longitude), (tmp2.latitude - cur.latitude))) + 360) % 360;
+                            (Math.atan2((tmp2.longitude - cur.longitude), (tmp2.latitude - cur.latitude)))*(180/(2*PI)) + 180) % 180;
                 } else {
                     LatLng tmp2 = intermediary.get(x + 1);
                     angletotal += ((Math.atan2((tmp.longitude - cur.longitude), (tmp.latitude - cur.latitude))) -
-                            (Math.atan2((tmp2.longitude - cur.longitude), (tmp2.latitude - cur.latitude))) + 360) % 360;
+                            (Math.atan2((tmp2.longitude - cur.longitude), (tmp2.latitude - cur.latitude)))*(180/(2*PI)) + 180) % 180;
                 }
             }
             if (angletotal == target) {
@@ -123,4 +124,3 @@ public class Graphics extends AppCompatActivity {
         final Polygon polygon = map.addPolygon(polygonOptions);
     }
 }
-
