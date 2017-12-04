@@ -89,11 +89,11 @@ public class Graphics extends AppCompatActivity {
                 if (x == intermediary.size() - 1) {
                     LatLng tmp2 = intermediary.get(0);
                     angletotal += ((Math.atan2((tmp.longitude - cur.longitude), (tmp.latitude - cur.latitude))) -
-                            (Math.atan2((tmp2.longitude - cur.longitude), (tmp2.latitude - cur.latitude)))*(180/(2*PI)) + 180) % 180;
+                            (Math.atan2((tmp2.longitude - cur.longitude), (tmp2.latitude - cur.latitude)))*(180/(PI)) + 180) % 180;
                 } else {
                     LatLng tmp2 = intermediary.get(x + 1);
                     angletotal += ((Math.atan2((tmp.longitude - cur.longitude), (tmp.latitude - cur.latitude))) -
-                            (Math.atan2((tmp2.longitude - cur.longitude), (tmp2.latitude - cur.latitude)))*(180/(2*PI)) + 180) % 180;
+                            (Math.atan2((tmp2.longitude - cur.longitude), (tmp2.latitude - cur.latitude)))*(180/(PI)) + 180) % 180;
                 }
             }
             if (angletotal == target) {
