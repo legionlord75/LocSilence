@@ -12,7 +12,14 @@
     <string name="locationButton">Locations</string>
     <string name="title_activity_add_loc_settings">addLocSettingsActivity</string>
     <string name="title_activity_settings">Settings</string>
-
+    <string name="back">Back</string>
+    <string name="set">Set</string>
+    <string name="delete">Delete</string>
+    <string name="search">Search</string>
+    <string name="defaultText">Default</string>
+    <string name="volumeTitle">Volume Title</string>
+    <string name="or">or</string>
+    <string name="proximity">Proximity</string>
     <!-- Strings related to Settings -->
 
     <!-- Example General settings -->

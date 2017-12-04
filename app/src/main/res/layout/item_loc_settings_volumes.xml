@@ -12,7 +12,7 @@
         android:layout_alignBottom="@+id/check_default"
         android:layout_alignLeft="@+id/seekBar_volume"
         android:layout_alignStart="@+id/seekBar_volume"
-        android:text="volume-title" />
+        android:text="@string/volumeTitle" />
 
     <SeekBar
         android:id="@+id/seekBar_volume"
@@ -28,7 +28,7 @@
         android:id="@+id/check_default"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Default"
+        android:text="@string/defaultText"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"

@@ -16,13 +16,19 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -30,6 +36,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.Date;
 import java.util.List;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -37,17 +44,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     private Graphics draw = new Graphics();
     private GoogleMap mMap;
-    private double DEFAULT_LAT = 37.4220;
-    private double DEFAULT_LONG = -122.0841;
-    final int MAX_DB_SIZE = 5;
-    SQLDatabaseHandler db;
+    private static final String TAG = MapsActivity.class.getSimpleName();
+    int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
+
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    private boolean mPermissionDenied = false;
+
+    final SQLDatabaseHandler db = new SQLDatabaseHandler(this);
+    PlaceAutocompleteFragment autocompleteFragment;
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        db = new SQLDatabaseHandler(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
@@ -57,67 +68,24 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         actionBar.setDisplayShowHomeEnabled(true);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        SupportMapFragment mMapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        mMapFragment.getMapAsync(this);
 
 
-        Button mapButton = (Button) findViewById(R.id.mapButton);
-        Button locationsButton = (Button) findViewById(R.id.locButton);
+        Button mMapButton = (Button) findViewById(R.id.mapButton);
+        Button mLocationsButton = (Button) findViewById(R.id.locButton);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        FloatingActionButton fab_cur = (FloatingActionButton) findViewById(R.id.fab_go_to_cur_loc);
 
+        mMapButton.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
 
-        mapButton.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
-
-        fab_cur.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mMap != null){
-                    if (checkLocationPermission()) {
-                        if (ContextCompat.checkSelfPermission(getApplicationContext(),
-                                Manifest.permission.ACCESS_FINE_LOCATION)
-                                == PackageManager.PERMISSION_GRANTED) {
-                            if (mMap != null) {
-                                mMap.setMyLocationEnabled(true);
-                                mMap.getUiSettings().setMyLocationButtonEnabled(true);
-                            }
-                        }
-                    }
-                    LocationManager locationManager = (LocationManager)
-                            getSystemService(Context.LOCATION_SERVICE);
-                    Criteria criteria = new Criteria();
-                    android.location.Location location = locationManager.getLastKnownLocation(locationManager
-                            .getBestProvider(criteria, false));
-
-                    double latitude;
-                    double longitude;
-                    if (location != null) {
-                        latitude = location.getLatitude();
-                        longitude = location.getLongitude();
-                    }
-                    else {
-                        latitude = 36.9914;
-                        longitude = -122.0609;
-                    }
-
-                    if (!isNotificationPolicyAccessGranted()) {
-                        requestNotificationPolicyAccess();
-                    }
-
-                    CameraUpdate cam_loc = CameraUpdateFactory.newLatLngZoom(
-                            new LatLng(latitude, longitude), 14.5f);
-                    mMap.animateCamera(cam_loc);
-
-                }
-            }
-        });
-
-        locationsButton.setOnClickListener(new View.OnClickListener() {
+        mLocationsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MapsActivity.this, SavedLocActivity.class);
                 startActivity(intent);
+                finish();
+                overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
             }
         });
 
@@ -125,17 +93,57 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View view) {
                 if(db.getSize()<Constants.MAX_DB_SIZE) {
-                    Intent intent = new Intent(MapsActivity.this, LocSearchActivity.class);
-                    startActivity(intent);
+                    addLocationAction();
+                }
+                else{
+                    Utility.alertToast(MapsActivity.this, "saved locations is limited to " + Constants.MAX_DB_SIZE);
+                }
+            }
+        });
+
+    }
+
+    public void addLocationAction(){
+        try {
+            Intent intent =
+                    new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
+                            .build(this);
+            startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
+        } catch (GooglePlayServicesRepairableException e) {
+            // TODO: Handle the error.
+        } catch (GooglePlayServicesNotAvailableException e) {
+            // TODO: Handle the error.
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                Place place = PlaceAutocomplete.getPlace(this, data);
+                Log.i(TAG, "Place: " + place.getName());
+
+                Location selectedLocation = getSelectedLocation(place, db);
+                if(selectedLocation != null) {
+                    Intent settingsIntent = new Intent(MapsActivity.this, LocSettingsActivity.class);
+                    settingsIntent.putExtra("selectedLocation", selectedLocation);
+                    startActivity(settingsIntent);
                 }
                 else{
                     Utility.alertToast(MapsActivity.this, "saved locations is limited to " + Constants.MAX_DB_SIZE);
                 }
 
-            }
-        });
+            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+                Status status = PlaceAutocomplete.getStatus(this, data);
+                // TODO: Handle the error.
+                Log.i(TAG, status.getStatusMessage());
 
+            } else if (resultCode == RESULT_CANCELED) {
+                // The user canceled the operation.
+            }
+        }
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
@@ -149,14 +157,35 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         switch (item.getItemId()){
             case R.id.setting_id:
                 //Go to settings activity
-                //Toast.makeText(getApplicationContext(), "Settings button hit", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(MapsActivity.this, SettingsActivity.class);
                 startActivity(intent);
-                //startActivity(new Intent(MapsActivity.this, SettingsActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+
+    // Return either a location object if 'place' already exists in db, else a new location object
+    public Location getSelectedLocation(Place place, SQLDatabaseHandler db){
+        // If place is in db already update location info in db
+        Location selectedLocation;
+        if (db.locationInDB(place.getId())) {
+            selectedLocation = db.getLocation(place.getId());
+        }
+        // If place is new set basic new locations
+        else {
+            selectedLocation = new Location(
+                    place.getId(),
+                    place.getName().toString(),
+                    place.getAddress().toString(),
+                    (float) place.getLatLng().latitude,
+                    (float) place.getLatLng().longitude,
+                    new Date().toString(),
+                    new Date().toString(),
+                    "");
+        }
+        return selectedLocation;
     }
 
 
@@ -183,6 +212,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             }
         }
+
         LocationManager locationManager = (LocationManager)
                 getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
@@ -197,8 +227,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             longitude = location.getLongitude();
         }
         else {
-            latitude = DEFAULT_LAT;
-            longitude = DEFAULT_LONG;
+            latitude = Constants.DEFAULT_LAT;
+            longitude = Constants.DEFAULT_LONG;
         }
 
         if (!isNotificationPolicyAccessGranted()) {
@@ -228,7 +258,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Utility.recursiveSilencePhoneTask.execute(locationManager);
 
     }
-
 
 
     private boolean isNotificationPolicyAccessGranted() {

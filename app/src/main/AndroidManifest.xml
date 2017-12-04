@@ -48,15 +48,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LocSearchActivity" />
         <activity
             android:name=".LocSettingsActivity"
             android:label="@string/title_activity_add_loc_settings"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings" />
-        <activity android:name=".CustomProximityMap"></activity>
+            android:label="@string/title_activity_settings"
+            android:theme="@style/AppTheme.Settings"
+            />
+        <activity android:name=".CustomProximityMap" />
+        <activity android:name=".settingsHelpActivity"></activity>
     </application>
 
 </manifest>
