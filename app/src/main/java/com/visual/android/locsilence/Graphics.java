@@ -27,6 +27,7 @@ public class Graphics extends AppCompatActivity {
         for (Location location : allLocations) {
             LatLng center = new LatLng(location.getLat(), location.getLng());
             if(location.getRadius()<1){
+                
                 perimDraw(map,JsonUtils.customProxToList(location.getCustomProximity()));
             }
             else {
