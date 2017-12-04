@@ -29,7 +29,7 @@ public class SavedLocActivity extends AppCompatActivity {
         // Init info
         final SQLDatabaseHandler db = new SQLDatabaseHandler(this);
         final List<Location> locations = db.getAllLocations();
-        ListView listView = (ListView) findViewById(R.id.listview);
+        ListView listView = (ListView) findViewById(R.id.listview_savedLocs);
         Toolbar toolbar = (Toolbar) findViewById(R.id.list_toolbar);
         Button mMapButton = (Button) findViewById(R.id.mapButton);
 

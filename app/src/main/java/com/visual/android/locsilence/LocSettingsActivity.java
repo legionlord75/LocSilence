@@ -49,17 +49,15 @@ public class LocSettingsActivity extends AppCompatActivity {
 
 
         // Create and set custom adapter of different volume type settings
-        Log.i("halp", "settings volume adapter");
         AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         final LocSettingsVolumeAdapter locSettingsVolumeAdapter = new LocSettingsVolumeAdapter(this, volumeTypes,
                 JsonUtils.volumeLevelsToList(selectedLocation.getVolumes()),
                 audioManager.getStreamMaxVolume(AudioManager.STREAM_SYSTEM));
-        Log.i("halp", "completed setting volume adapter");
         ListView settingsListView = (ListView) findViewById(R.id.settings_listview);
         settingsListView.setAdapter(locSettingsVolumeAdapter);
 
 
-        // Init Listener
+        // Init Listeners
         mGeneralProximity.addTextChangedListener(new TextWatcher() {
             // editingText flag used for preventing infinite recursive loop
             boolean editingText = false;
@@ -103,6 +101,9 @@ public class LocSettingsActivity extends AppCompatActivity {
                     finish();
                     overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_down);
                 }
+                else{
+                    selectedLocation.setCustomProximity(Constants.JSON_NULL);
+                }
             }
         });
 
@@ -112,7 +113,6 @@ public class LocSettingsActivity extends AppCompatActivity {
             public void onClick(View view) {
                 List<Integer> volumeLevels = locSettingsVolumeAdapter.getVolumeLevels();
                 selectedLocation.setVolumes(new Gson().toJson(volumeLevels));
-
                 if (mCustomProximity.isChecked()) {
                     // temporary value until we fix the radius/customProx in the recursive task and can set it to -1
                     selectedLocation.setRadius(1);
